@@ -1,0 +1,22 @@
+Source: kylin-bootrepair
+Section: utils
+Priority: optional
+Maintainer: hanzehui <hanzehui@kylinos.com>
+Build-Depends: debhelper (>=9.0.0),
+               pkg-config,
+               qtbase5-dev,
+               libqt5x11extras5-dev,
+               libqt5svg5-dev,
+               liblightdm-qt5-3-dev,
+               libx11-dev,
+               libxtst-dev,
+               libxrandr-dev,
+               libgcc-s1 (>= 3.0),
+               libqt5core5a (>= 5.12.2),
+               qttools5-dev-tools
+Standards-Version: 3.9.5
+
+Package: kylin-bootrepair
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description:kylin-bootrepair

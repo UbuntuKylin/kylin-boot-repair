@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>data/PingFang-Jian-ChangGuiTi-2.ttf</file>
+        <file>data/guide_repair24.png</file>
+        <file>data/close_p.png</file>
+        <file>data/loading.png</file>
+        <file>data/main.png</file>
+        <file>data/finish.gif</file>
+        <file>data/loading.gif</file>
+        <file>data/finish.png</file>
+        <file>data/close_d.png</file>
+        <file>data/close_h.png</file>
+        <file>data/min_d.png</file>
+        <file>data/min_h.png</file>
+    </qresource>
+</RCC>
