@@ -1,7 +1,7 @@
 [Desktop Entry]
-Name=bootrepair
+Name=kylin-boot-repair
 Name[zh_CN]= 引导修复工具
 Icon=/usr/share/pixmaps/icon.png
-Exec=/usr/bin/bootrepair %u
+Exec=/usr/bin/kylin-boot-repair %u
 Type=Application
 Categories=GNOME;Utility;

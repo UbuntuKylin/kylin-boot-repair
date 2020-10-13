@@ -1,4 +1,4 @@
-Source: kylin-bootrepair
+Source: kylin-boot-repair
 Section: utils
 Priority: optional
 Maintainer: hanzehui <hanzehui@kylinos.com>
@@ -16,7 +16,7 @@ Build-Depends: debhelper (>=9.0.0),
                qttools5-dev-tools
 Standards-Version: 3.9.5
 
-Package: kylin-bootrepair
+Package: kylin-boot-repair
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description:kylin-bootrepair
+Description:kylin-boot-repair

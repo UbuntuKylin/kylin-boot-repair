@@ -64,7 +64,7 @@ target.source += $$TARGET
 icon.path = /usr/share/pixmaps
 icon.files = data/icon.png
 desktop.path = /usr/share/applications/
-desktop.files = bootrepair.desktop
+desktop.files = kylin-boot-repair.desktop
 
 INSTALLS += target \
             icon \
