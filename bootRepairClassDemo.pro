@@ -62,7 +62,7 @@ TARGET = kylin-boot-repair
 target.path = /usr/bin
 target.source += $$TARGET
 icon.path = /usr/share/pixmaps
-icon.files = data/icon.png
+icon.files = data/bootrepair_icon.png
 desktop.path = /usr/share/applications/
 desktop.files = kylin-boot-repair.desktop
 
