@@ -36,9 +36,11 @@ FdiskThread::FdiskThread(QObject *parent) : QObject(parent)
 *************************************************/
 FdiskThread::~FdiskThread()
 {
-    cmdFdiskBash->deleteLater(); //这句加上会导致只关闭主界面，授权窗口一直不关闭，去掉影响未知。
-    //cmdFdiskBash->close();           //销毁时结束外部程序
-
+    if(NULL != cmdFdiskBash)
+    {
+        cmdFdiskBash->close(); //这句加上会导致只关闭主界面，授权窗口一直不关闭，去掉影响未知。
+        delete cmdFdiskBash;
+    }
 }
 
 /************************************************
@@ -67,7 +69,6 @@ void FdiskThread::startFdisk(QString fdiskCmd)
     cmdFdiskBash->write(fdiskCmd.toLocal8Bit() + '\n');
 
     cmdFdiskBash->waitForStarted();
-
 }
 
 /************************************************

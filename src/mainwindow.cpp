@@ -43,17 +43,40 @@ MainWindow::MainWindow(QWidget *parent)
 *************************************************/
 MainWindow::~MainWindow()
 {
-    delete mycmdFdiskBash;
-    pFdiskthread->quit();
+    if(mycmdFdiskBash)
+    {
+        mycmdFdiskBash->deleteLater();
+    }
 
-    delete mycmdPreRepairBash;
-    pPreRepair->quit();
+    if(pFdiskthread)
+    {
+        pFdiskthread->quit();
+        pFdiskthread->deleteLater();
+    }
 
-    delete pFdiskthread;
-    delete pPreRepair;
+    if(mycmdPreRepairBash)
+    {
+        mycmdPreRepairBash->deleteLater();
+    }
 
-    delete stackedWidget;
-    delete styleWidget;
+    if(pPreRepair)
+    {
+        pPreRepair->quit();
+        pPreRepair->deleteLater();
+    }
+
+    if(stackedWidget)
+    {
+        stackedWidget->deleteLater();
+    }
+
+    if(styleWidget)
+    {
+        styleWidget->deleteLater();
+    }
+
+//    delete stackedWidget;
+//    delete styleWidget;
 }
 
 /************************************************
@@ -144,6 +167,8 @@ void MainWindow::prepareAction()
     fdiskCmd = "pkexec sudo -S fdisk -l";    //通过pkexec提权
 
     emit startFdisk(fdiskCmd);
+    styleWidget->widgetClose->setEnabled(false);
+    styleWidget->widgetMin->setEnabled(false);
 }
 
 /************************************************
@@ -157,6 +182,9 @@ void MainWindow::prepareAction()
 *************************************************/
 int MainWindow::changePage()
 {
+    styleWidget->widgetClose->setEnabled(true);
+    styleWidget->widgetMin->setEnabled(true);
+
     int count = stackedWidget->count();
 
     int index = stackedWidget->currentIndex();
@@ -178,6 +206,7 @@ int MainWindow::changePage()
 *************************************************/
 void MainWindow::makeStart()
 {
+
     hardDisklist = mycmdFdiskBash->listOfDevice;
     hardDiskNum  = mycmdFdiskBash->numOfLinuxPartion;
 
@@ -187,7 +216,8 @@ void MainWindow::makeStart()
     qDebug() << "主线程的makeStart!";
     stackedWidget->setCurrentIndex(changePage());
 
-    start_pushButton_clicked(hardDisklist, hardDiskNum);
+    emit start_pushButton_clicked(hardDisklist, hardDiskNum);
+    styleWidget->widgetClose->setEnabled(false);
 
 }
 

@@ -1,6 +1,7 @@
 kylin-boot-repair (1.0.2kord) v101; urgency=medium
 
   * 增加功能：Qt单例模式支持vnc远程桌面。
+  * 解决退出时子线程异常结束，限制扫描和修复时窗口关闭按钮。
 
  -- hanzehui <hanzehui@kylinos.cn>  Mon, 26 Oct 2020 17:27:40 +0800
 

@@ -42,6 +42,9 @@ public:
 
     void ThemeChooseForWidget(QString str);
 
+    QPushButton *widgetClose = nullptr;//关闭窗口
+    QPushButton *widgetMin = nullptr;//最小化窗口
+
 private:
     virtual void paintEvent(QPaintEvent *ev);//重绘窗口
 
@@ -54,8 +57,7 @@ private:
     QLabel *text = nullptr;//标题
     QLabel *icon = nullptr;//图标
     QPixmap titleImage;   //标题栏图片
-    QPushButton *widgetClose = nullptr;//关闭窗口
-    QPushButton *widgetMin = nullptr;//最小化窗口
+
     bool m_isDialog =false;//如果是窗口
     bool paintOnce=false;//只绘制一次
     bool m_isLeftButtonPressed = false;

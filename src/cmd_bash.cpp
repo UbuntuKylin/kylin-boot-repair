@@ -38,9 +38,12 @@ CmdBash::CmdBash(QString inputCmd, QObject *parent) : QObject(parent)
 *************************************************/
 CmdBash::~CmdBash()
 {
-    currentBash->waitForFinished();
-    currentBash->close();
-    delete currentBash;
+    if(currentBash)
+    {
+        currentBash->waitForFinished();
+        currentBash->close();
+        currentBash->deleteLater();
+    }
 }
 
 /************************************************
