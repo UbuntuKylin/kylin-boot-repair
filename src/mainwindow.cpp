@@ -235,8 +235,10 @@ void MainWindow::passwordNoInput()
 void MainWindow::checkSingle()
 {
     QStringList homePath = QStandardPaths::standardLocations(QStandardPaths::HomeLocation);
-    QString lockPath = homePath.at(0) + "/.config/kylin-boot-repair";
-    int fd = open(lockPath.toUtf8().data(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+//    QString lockPath = homePath.at(0) + "/.config/kylin-boot-repair";//不支持vnc远程使用
+//    int fd = open(lockPath.toUtf8().data(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
+
+    int fd = open(QString(homePath.at(0) + "/.config/kylin-boot-repair%1.lock").arg(getenv("DISPLAY")).toUtf8().data(), O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR);
 
     if (fd < 0) { exit(1); }
 
