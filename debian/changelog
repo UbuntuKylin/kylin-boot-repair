@@ -1,3 +1,9 @@
+kylin-boot-repair (1.0.3kord) v101; urgency=medium
+
+  * 修改desktop文件，调用系统主题图标
+
+ -- hanzehui <hanzehui@kylinos.cn>  Mon, 28 Oct 2020 13:27:40 +0800
+
 kylin-boot-repair (1.0.2kord) v101; urgency=medium
 
   * 增加功能：Qt单例模式支持vnc远程桌面。
