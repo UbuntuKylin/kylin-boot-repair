@@ -1,3 +1,9 @@
+kylin-boot-repair (1.0.4kord) v101; urgency=medium
+
+  * 解决2010系统fdisk命令显示硬盘名称字符与2004不同，无法提取硬盘分区名bug
+
+ -- hanzehui <hanzehui@kylinos.cn>  Mon, 28 Oct 2020 13:27:40 +0800
+
 kylin-boot-repair (1.0.3kord) v101; urgency=medium
 
   * 修改desktop文件，调用系统主题图标

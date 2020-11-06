@@ -136,7 +136,8 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
     {
         //sudo fdisk -l的固定返回信息，最后一列为Linux 文件系统或EFI 文件系统为系统相关目录，home目录无影响，不提取。
         if(cmdOutFromFdisk.count("Linux 文件系统") || cmdOutFromFdisk.count("Linux filesystem") ||\
-           cmdOutFromFdisk.count("EFI 文件系统") || cmdOutFromFdisk.count("EFI filesystem"))
+           cmdOutFromFdisk.count("EFI 文件系统") || cmdOutFromFdisk.count("EFI filesystem")\
+                || cmdOutFromFdisk.count("Linux") || cmdOutFromFdisk.count("EFI"))
         {
             qDebug() << "有Linux文件系统。";
             numOfLinuxPartion = 0;
@@ -152,9 +153,16 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
                 {
                     continue;
                 }
+                //2010
+                if(("Linux" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data()))\
+                    || ("EFI" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data())))
+                {
+                    //TODO此处可以增加限定，已有的分区不要再加入
+                    allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
 
-
-                if(((("filesystem" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data()))\
+                }
+                //2004
+                else if(((("filesystem" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data()))\
                     || ("文件系统" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data())))\
                         && ("Linux" == QString::fromLocal8Bit(strlist.at(size - 2).toLocal8Bit().data())))\
                     ||  ("EFI" == QString::fromLocal8Bit(strlist.at(size - 2).toLocal8Bit().data())))
