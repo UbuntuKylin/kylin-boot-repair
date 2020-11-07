@@ -89,6 +89,14 @@ void PartionDevice::prepareOfFirstMount()
     connect(cmdMkdirBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
     cmdMkdirBash->cmdExecute();
 
+    //此处不能去除，否则会导致创建文件夹失败，无法挂载
+    qDebug() << "cmdExecute()" ;
+    qDebug() << cmdMkdirBash->currentBash->readAll();
+
+    qDebug() << "获取线程end!";
+    //应增加文件夹创建失效的判断，延时循环
+
+
     //挂载对应的硬盘
     qDebug() << "执行挂载硬盘指令：" << cmdMountStr;
     cmdMountBash = new CmdBash(cmdMountStr,this);
