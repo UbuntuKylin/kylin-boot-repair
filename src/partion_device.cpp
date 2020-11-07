@@ -87,13 +87,7 @@ void PartionDevice::prepareOfFirstMount()
     qDebug() << "执行创建文件夹指令：" << cmdMkdirStr;
     cmdMkdirBash = new CmdBash(cmdMkdirStr,this);
     connect(cmdMkdirBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
-    qDebug() << "new cmdBash" ;
     cmdMkdirBash->cmdExecute();
-
-    qDebug() << "cmdExecute()" ;
-    qDebug() << cmdMkdirBash->currentBash->readAll();
-
-    qDebug() << "获取线程end!";
 
     //挂载对应的硬盘
     qDebug() << "执行挂载硬盘指令：" << cmdMountStr;

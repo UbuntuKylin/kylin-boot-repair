@@ -57,7 +57,7 @@ FdiskThread::~FdiskThread()
 *************************************************/
 void FdiskThread::startFdisk(QString fdiskCmd)
 {
-    qDebug() << "startFdisk!";
+    qDebug() << "开始用fdisk命令获取信息" << "startFdisk!";
 
     cmdFdiskBash = new QProcess();   //创建QProcess对象并连接信号与槽
 
@@ -86,10 +86,10 @@ void FdiskThread::readcmdFdiskBashErrorInfo()
 {
     QByteArray cmdStdOut = cmdFdiskBash->readAllStandardError();
 
-    qDebug() << "授权窗口被关闭";
+    qDebug() << "授权窗口被用户关闭";
     if(cmdStdOut.count("Error"))
     {
-        qDebug() << "向主线程发送信号，关闭程序";
+        qDebug() << "向主线程发送信号，关闭本程序";
         emit passwordNoInput();
     }
 
@@ -100,16 +100,17 @@ void FdiskThread::readcmdFdiskBashErrorInfo()
 * 功能描述：读取标准输出，调用处理函数startPreHandle进行
 *          文字处理，提取相关信息。
 * 输出参数：
-* 修改日期：2020.10.12
+* 修改日期：2020.11.07
 * 修改内容：
 *   创建  HZH
+*   修改  完善打印信息
 *
 *************************************************/
 void FdiskThread::readcmdFdiskBashInfo()
 {
     QByteArray cmdStdOut = cmdFdiskBash->readAllStandardOutput();
     if(!cmdStdOut.isEmpty() ){
-        qDebug() << cmdStdOut;
+        qDebug() << QString::fromLocal8Bit(cmdStdOut);
         //emit setInfo(QString::fromLocal8Bit(cmdStdOut));   //向主线程发送信息，暂无处显示，注释掉。
         startPreHandle(cmdStdOut);
     }
@@ -119,14 +120,15 @@ void FdiskThread::readcmdFdiskBashInfo()
 * 函数名称：startPreHandle
 * 功能描述：处理fdisk -l命令的返回内容
 * 输出参数：无
-* 修改日期：2020.10.12
+* 修改日期：2020.11.07
 * 修改内容：
 *   创建  HZH
+*   兼容V10.1，其fdisk命令回显内容无系统文件字样，导致失效
 *
 *************************************************/
 void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
 {
-    qDebug() << "startPreHandle!";
+    qDebug() << "开始处理fdisk返回信息";
     //入参检查
     if(cmdOutFromFdisk.isEmpty())
     {
@@ -159,7 +161,9 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
                 {
                     //TODO此处可以增加限定，已有的分区不要再加入
                     allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
-
+                    QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
+                    QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
+                    qDebug() << deviceLocation << "为" << deviceType << "类型分区";
                 }
                 //2004
                 else if(((("filesystem" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data()))\
@@ -169,7 +173,9 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
                 {
                     //TODO此处可以增加限定，已有的分区不要再加入
                     allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
-
+                    QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
+                    QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
+                    qDebug() << deviceLocation << "为" << deviceType << "类型分区";
                 }
             }
         }
@@ -177,15 +183,14 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
 
         numOfLinuxPartion = listOfDevice.size();//计算列表中分区的数量
 
-        qDebug() << "Linux系统文件分区个数为:";
-        qDebug() << QString::number(numOfLinuxPartion);
+        qDebug() << "Linux系统文件分区个数为:" << QString::number(numOfLinuxPartion) << "个";
 
         //结束准备界面，进入修复开始界面，命令执行过程很快，增加4秒延时，防止页面一闪而过，给用户造成疑惑。
         QTimer::singleShot(4000, [=](){
             emit mainWindowChangePage();//向主窗口发送信号，执行下一流程
         });
 
-        qDebug() << "提取硬盘信息流程结束！";
+        qDebug() << "从fdisk命令回显中提取硬盘信息流程结束！";
 
     }
 }

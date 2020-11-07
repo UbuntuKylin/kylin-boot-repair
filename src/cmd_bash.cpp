@@ -82,6 +82,7 @@ void CmdBash::cmdExecute()
 * 修改日期：2020.10.12
 * 修改内容：
 *   创建  HZH
+*   修改  完善打印信息  HZH
 *
 *************************************************/
 void CmdBash::readCmdBashInfo()
@@ -90,13 +91,12 @@ void CmdBash::readCmdBashInfo()
 
     if(!cmdStdOut.isEmpty()){
         qDebug() << cmdStdOut;
-        //qDebug() << "命令" << cmd<< "获取数据信息成功";
+        qDebug() << "命令" << cmd<< "获取数据信息成功";
         qDebug() << "cmdbash类有返回信息";
         emit cmdInfo(cmdStdOut);
     }
     else
     {
-        qDebug() << "实验内容";
         qDebug() << "命令" << cmd<< "无返回信息";
         emit cmdInfo(cmd + "无返回信息");
     }

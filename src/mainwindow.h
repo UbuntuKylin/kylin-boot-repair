@@ -24,6 +24,8 @@
 #include <QStackedWidget>
 #include <QProcess>
 #include <QDebug>
+#include <QFile>
+#include <QTextStream>
 #include <QFileDialog>
 #include <QThread>
 #include <QFontDatabase>
@@ -63,6 +65,7 @@ public:
 public slots://提供给各线程的槽函数
     void passwordNoInput();                               //密码输入对话框弹窗没有输入就被关闭
     void makeStart();                                     //开始修复槽函数
+    void closeMainWin();                                  //供子线程调用的关闭主程序窗口的函数接口
 
 private slots:
     void changeToNextPage();                              //翻页槽函数

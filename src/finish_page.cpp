@@ -59,7 +59,8 @@ void FinishPage::initControlQss()
     connect(nowButton,&QPushButton::clicked,this,[=](){
         QProcess::execute("sudo -S shutdown -r now");
         QApplication::exit();
-        qDebug() << "按钮被触发";
+        qDebug() << "用户点击现在重启按钮！程序关闭";
+        qDebug() << "*******************************************************";
     });
 
     //完成图标

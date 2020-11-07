@@ -57,6 +57,7 @@ void StartPage::initControlQss()
 
     connect(advanceChoice,&QPushButton::clicked,this,[=](){
         int tempCheck = 0;
+
         tempCheck = system("mate-terminal --title='手动修复' -x  \
                             bash -c 'echo 手动修复优麒麟系统方法，请勿贸然尝试：; \
                                      echo 本方法仅适用于优麒麟系统，对于双系统等复杂情况，需视情况自行调整。; \
@@ -84,7 +85,12 @@ void StartPage::initControlQss()
             qDebug() << "改用kylin终端！";
             //system("kylin-terminal")
         }
-        qDebug() << "按钮被触发";
+        qDebug() << "用户选择手动修复模式！";
+        qDebug() << "关闭手动模式即退出程序！";
+        emit closeMainWin();
+        qDebug() << "关闭主程序！";
+        qDebug() << "*******************************************************";
+
     });
 
     startIcon = new QLabel;

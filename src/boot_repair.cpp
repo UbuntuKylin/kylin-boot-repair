@@ -60,39 +60,42 @@ BootRepair::~BootRepair()
 *         cmd_bash对象，执行对应语句。
 * 输入参数：
 * 输出参数：
-* 修改日期：2020.10.12
+* 修改日期：2020.11.07
 * 修改内容：
 *   创建  HZH
+*   修改  完善打印信息
 *
 *************************************************/
 void BootRepair::repairGrubFile()
 {
     if (false == currentSystem.isUEFIBoot)
     {
-        qDebug() << "无法检测到efi分区，无法修复！";
+        qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+        qDebug() << "严重错误！！！无法检测到efi分区，无法继续修复！";
+        qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
         return;
     }
 
 
 
-    qDebug() << currentSystem.treeMkdirCmd;
+    qDebug() << "创建挂载文件所需要文件夹：" << currentSystem.treeMkdirCmd;
     treeMkdirCmd = new CmdBash(currentSystem.treeMkdirCmd,this);
     connect(treeMkdirCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
     treeMkdirCmd->cmdExecute();
 
-    qDebug() << currentSystem.rootMkdirCmd;
+    qDebug() << "创建挂载根目录文件夹：" << currentSystem.rootMkdirCmd;
     rootMkdirCmd = new CmdBash(currentSystem.rootMkdirCmd,this);
     connect(rootMkdirCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
     rootMkdirCmd->cmdExecute();
 
-    qDebug() << currentSystem.rootMountCmd;
+    qDebug() << "挂载根目录：" << currentSystem.rootMountCmd;
     rootMountCmd = new CmdBash(currentSystem.rootMountCmd,this);
     connect(rootMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
     rootMountCmd->cmdExecute();
 
     if(currentSystem.bootIsSeparate)
     {
-        qDebug() << "/boot单独分区了";
+        qDebug() << "该系统中，存在/boot单独分区";
         qDebug() << currentSystem.bootMountCmd;
         bootMountCmd = new CmdBash(currentSystem.bootMountCmd,this);
         connect(bootMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
@@ -100,7 +103,7 @@ void BootRepair::repairGrubFile()
     }
     else
     {
-        qDebug() << "/boot未单独分区";
+        qDebug() << "该系统中/boot未单独分区";
     }
 
     qDebug() << currentSystem.efiMountCmd;
@@ -110,7 +113,7 @@ void BootRepair::repairGrubFile()
 
     if(currentSystem.homeIsSeparate)
     {
-        qDebug() << "/home单独分区了";
+        qDebug() << "该系统中/home单独分区了";
         qDebug() << currentSystem.homeIsSeparate;
         homeMountCmd = new CmdBash(currentSystem.homeMountCmd,this);
         connect(homeMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
@@ -118,7 +121,7 @@ void BootRepair::repairGrubFile()
     }
     else
     {
-        qDebug() << "/home未单独分区";
+        qDebug() << "该系统中/home未单独分区";
     }
 
     qDebug() << currentSystem.devMountCmd;

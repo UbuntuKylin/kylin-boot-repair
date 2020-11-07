@@ -33,6 +33,7 @@ public:
 
 signals:
     void makeStart();                          //开始修复信号
+    void closeMainWin();
 
 private:
 
