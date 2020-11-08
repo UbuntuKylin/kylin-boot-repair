@@ -94,7 +94,7 @@ void MainWindow::myStyle()
     //double style_shadowAlpha=0.00, int style_titleHeight=0, int style_itemHeight=0, bool style_middle=true
     StyleWidgetAttribute swa(WINDOWWIDETH,WINDOWHEIGHT,0,WIDGETRADIUS,SHADOWWIDTH,SHADOWALPHA,TITLEHEIGHT);
     styleWidget=new StyleWidget(swa,tr("麒麟引导修复"));
-
+    
     prePage = new PrePage(swa);
 
     startPage = new StartPage(swa);
@@ -102,6 +102,7 @@ void MainWindow::myStyle()
     connect(startPage,&StartPage::closeMainWin,this,&MainWindow::closeMainWin);
 
     warningPage = new WarningPage(swa);
+    connect(warningPage,&WarningPage::closeMainWin,this,&MainWindow::closeMainWin);
 
     repairPage = new RepairPage(swa);
 
@@ -153,6 +154,8 @@ void MainWindow::prepareAction()
     connect(mycmdFdiskBash,&FdiskThread::passwordNoInput,this,&MainWindow::passwordNoInput);
     connect(mycmdFdiskBash,&FdiskThread::mainWindowChangePage,this,&MainWindow::changeToNextPage);
 
+    connect(mycmdFdiskBash,&FdiskThread::failAndReturn,this,&MainWindow::failAndReturn);
+
     mycmdPreRepairBash = new PreRepair();   //创建repair线程
     pPreRepair = new QThread();
     mycmdPreRepairBash->moveToThread(pPreRepair);//将pRepairthread移动到子线程mycmdRepairBash中
@@ -170,6 +173,7 @@ void MainWindow::prepareAction()
     emit startFdisk(fdiskCmd);
     styleWidget->widgetClose->setEnabled(false);
     styleWidget->widgetMin->setEnabled(false);
+    styleWidget->widgetMenu->setEnabled(false);
 }
 
 /************************************************
@@ -185,6 +189,7 @@ int MainWindow::changePage()
 {
     styleWidget->widgetClose->setEnabled(true);
     styleWidget->widgetMin->setEnabled(true);
+    styleWidget->widgetMenu->setEnabled(true);
 
     int count = stackedWidget->count();
 
@@ -331,6 +336,9 @@ void MainWindow::setThemeStyle()
     styleWidget->ThemeChooseForWidget(nowThemeStyle);
 
     prePage->pageChangeForTheme(nowThemeStyle);
+    startPage->pageChangeForTheme(nowThemeStyle);
+    finishPage->pageChangeForTheme(nowThemeStyle);
+    warningPage->pageChangeForTheme(nowThemeStyle);
 
 }
 /************************************************
@@ -350,5 +358,24 @@ void MainWindow::closeMainWin()
 //    QTimer::singleShot(2000, [=](){
 //        this->~MainWindow();//延迟两秒，关闭主窗口
 //    });
+}
+
+/************************************************
+* 函数名称：failAndReturn
+* 功能描述：修复报错，主线程槽函数
+* 输入参数：无
+* 输出参数：
+* 修改日期：2020.11.07
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void MainWindow::failAndReturn()
+{
+    qDebug() << "主线程收到支线程错误信号！";
+    stackedWidget->setCurrentIndex(stackedWidget->count()-1);
+    styleWidget->widgetClose->setEnabled(true);
+    styleWidget->widgetMenu->setEnabled(true);
+    styleWidget->widgetMin->setEnabled(true);
 }
 

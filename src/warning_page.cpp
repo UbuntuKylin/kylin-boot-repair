@@ -21,6 +21,12 @@ WarningPage::WarningPage(StyleWidgetAttribute page_swa)
 {
     swa=page_swa;
     initControlQss();//初始化样式
+
+    StyleWidgetAttribute logWin(LOGWINDOWWIDETH,LOGWINDOWHEIGHT,0,LOGWIDGETRADIUS,LOGSHADOWWIDTH,LOGSHADOWALPHA,LOGTITLEHEIGHT);
+    logWinWidget=new LogWidget(logWin,tr("麒麟引导修复日志"));
+
+    //logWinWidget->hide();
+    logWinWidget->showOrHide();
 }
 
 /************************************************
@@ -34,32 +40,36 @@ WarningPage::WarningPage(StyleWidgetAttribute page_swa)
 *************************************************/
 void WarningPage::initControlQss()
 {
-    cancelButton = new QPushButton(this);
+    logButton = new QPushButton(this);
     QFont pushButton_cancelButton;
     pushButton_cancelButton.setFamily(QFontDatabase::applicationFontFamilies(QFontDatabase::addApplicationFont(":/data/PingFang-Jian-ChangGuiTi-2.ttf")).at(0));//读取字体
-    cancelButton->setFixedSize(140,40);
-    cancelButton->setText(tr("取消"));
-    cancelButton->setEnabled(false);
-    cancelButton->setStyleSheet("color:rgba(0, 0, 0, 0.85);");
-    cancelButton->setStyleSheet("background-color:rgba(231, 231, 231, 1);border-radius:6px;");
-    //connect(repairStart,&QPushButton::clicked,this,&PrePage::on_pushButton_clicked);
+    logButton->setFixedSize(240,40);
+    logButton->setText(tr("查看修复日志"));
+    logButton->setEnabled(true);
+    logButton->setStyleSheet("color:rgba(0, 0, 0, 0.85);");
+    logButton->setStyleSheet("background-color:rgba(62, 108, 229, 1);border-radius:6px;");
+    connect(logButton,&QPushButton::clicked,this,[=](){
+        logWinWidget->showOrHide();
+    });
 
-    continueButton = new QPushButton(this);
+    exitButton = new QPushButton(this);
     QFont pushButton_continueButton;
     pushButton_continueButton.setFamily(QFontDatabase::applicationFontFamilies(QFontDatabase::addApplicationFont(":/data/PingFang-Jian-ChangGuiTi-2.ttf")).at(0));//读取字体
-    continueButton->setFixedSize(140,40);
-    continueButton->setText(tr("继续"));
-    continueButton->setEnabled(false);
-    continueButton->setStyleSheet("color:rgba(0, 0, 0, 0.85);");
-    continueButton->setStyleSheet("background-color:rgba(231, 231, 231, 1);border-radius:6px;");
-    //connect(repairStart,&QPushButton::clicked,this,&PrePage::on_pushButton_clicked);
+    exitButton->setFixedSize(240,40);
+    exitButton->setText(tr("退出程序"));
+    exitButton->setEnabled(true);
+    exitButton->setStyleSheet("color:rgba(0, 0, 0, 0.85);");
+    exitButton->setStyleSheet("background-color:rgba(231, 231, 231, 1);border-radius:6px;");
+    connect(exitButton,&QPushButton::clicked,this,[=](){
+        emit closeMainWin();
+    });
 
     warningIcon = new QLabel;
-    warningIcon->setStyleSheet("border-image:url(:/data/main.png);border:0px;");
-    warningIcon->setFixedSize(144,144);
+    warningIcon->setStyleSheet("border-image:url(:/data/fail.png);border:0px;");
+    warningIcon->setFixedSize(118,118);
 
     warningText=new QLabel;
-    warningText->setText(tr("引导修复需要授权，请不要关闭授权页面\n是否继续？"));
+    warningText->setText(tr("过程出现问题，修复失败！"));
     warningText->setAlignment(Qt::AlignHCenter);
     warningText->setStyleSheet("color:rgba(0, 0, 0, 0.85);font-size:14px;");
 
@@ -81,18 +91,25 @@ void WarningPage::initControlQss()
     hl2->addSpacing(0);
     hl2->setMargin(0);
     hl2->addStretch(10);
-    hl2->addWidget(cancelButton,1);
-    hl2->addSpacing(32);
-    hl2->addWidget(continueButton,1);
+    hl2->addWidget(logButton,1);
     hl2->addStretch(10);
 
+    QHBoxLayout *hl3=new QHBoxLayout;
+    hl3->addSpacing(0);
+    hl3->setMargin(0);
+    hl3->addStretch(10);
+    hl3->addWidget(exitButton,1);
+    hl3->addStretch(10);
+
     QVBoxLayout *vl0=new QVBoxLayout;
-    vl0->addSpacing(26);
+    vl0->addSpacing(44);
     vl0->addLayout(hl0);
-    vl0->addSpacing(15);
+    vl0->addSpacing(5);
     vl0->addLayout(hl1);
-    vl0->addSpacing(61);
+    vl0->addSpacing(34);
     vl0->addLayout(hl2);
+    vl0->addSpacing(22);
+    vl0->addLayout(hl3);
     vl0->addStretch();
 
     QHBoxLayout *vl00=new QHBoxLayout;
@@ -101,5 +118,42 @@ void WarningPage::initControlQss()
     //vl00->addStretch(3);
     this->setLayout(vl00);
 
+}
+
+/************************************************
+* 函数名称：pageChangeForTheme
+* 功能描述：主题颜色适配
+* 输入参数：StyleWidgetAttribute page_swa
+* 输出参数：无
+* 修改日期：2020.10.12
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void WarningPage::pageChangeForTheme(QString str)
+{
+    logWinWidget->ThemeChooseForWidget(str);
+    if("ukui-dark" == str || "ukui-black" == str)
+    {
+        warningText->setStyleSheet("color:rgba(0, 0, 0, 0.85);font-size:14px;");
+        logButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.65);background-color:rgba(62, 108, 229, 1);border-radius:6px;}"
+                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.65);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
+                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.65);background-color:rgba(151, 151, 151, 1);border-radius:6px;}");
+        exitButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.65);background-color:rgba(151, 151, 151, 1);border-radius:6px;}"
+                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.65);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
+                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.65);background-color:rgba(151, 151, 151, 1);border-radius:6px;}");
+
+    }
+    else
+    {
+        warningText->setStyleSheet("color:rgba(255, 255, 255, 0.85);font-size:14px;");
+        logButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(62, 108, 229, 1);border-radius:6px;}"
+                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
+                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(151, 151, 151, 1);border-radius:6px;}");
+        exitButton->setStyleSheet(".QPushButton{color:rgba(0, 0, 0, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;}"
+                                   ".QPushButton:hover{color:rgba(0, 0, 0, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
+                                   ".QPushButton:pressed{color:rgba(0, 0, 0, 0.85);background-color:rgba(151, 151, 151, 1);border-radius:6px;}");
+
+    }
 }
 

@@ -6,21 +6,12 @@
 * 修改内容：
 *   创建  HZH
 *************************************************/
-#ifndef STYLEWIDGET_H
-#define STYLEWIDGET_H
+#ifndef LOGWIDGET_H
+#define LOGWIDGET_H
 
 #define VALUE_DIS 2000
 
-#define TABWINDOWWIDETH 80                   //窗口宽度
-#define TABWINDOWHEIGHT 100                  //窗口高度
-#define TABTITLEHEIGHT 50                    //标题栏高度
-#define TABSHADOWWIDTH 10                    //阴影宽度
-#define TABWIDGETRADIUS 12                   //窗口圆角
-#define TABBUTTONRADIUS 6                    //按钮圆角
-#define TABSHADOWALPHA 0.08                  //阴影透明度
-
 #include "stylewidgetshadow.h"
-#include "tabwidget.h"
 
 //控件
 #include <QWidget>
@@ -35,7 +26,7 @@
 //鼠标拖动事件
 #include <QMouseEvent>
 #include <QPoint>
-class StyleWidget : public QWidget
+class LogWidget : public QWidget
 {
     Q_OBJECT
 signals:
@@ -43,8 +34,8 @@ signals:
     void doSomethig();
 
 public:
-    StyleWidget(StyleWidgetAttribute swa, QString dialogTitleText,bool isDialog=false);
-    ~StyleWidget();
+    LogWidget(StyleWidgetAttribute swa, QString dialogTitleText,bool isDialog=false);
+    ~LogWidget();
     QWidget *body  = nullptr;//窗体
     void showOrHide();//切换显示和隐藏状态
     void WidgetStyleClose();//点击关闭事件
@@ -63,7 +54,6 @@ private:
     StyleWidgetAttribute local_swa;
 
     StyleWidgetShadow *swshadow = nullptr;//阴影
-    TabWidget *tabWinWidget = nullptr;
     QWidget *title = nullptr;//标题栏
     QLabel *text = nullptr;//标题
     QLabel *icon = nullptr;//图标
@@ -75,4 +65,4 @@ private:
     QPoint m_last;
 };
 
-#endif // STYLEWIDGET_H
+#endif // LOGWIDGET_H

@@ -32,7 +32,7 @@ class FinishPage : public QWidget
     Q_OBJECT
 public:
     explicit FinishPage( StyleWidgetAttribute);
-
+    void pageChangeForTheme(QString str);
 public slots:
 
 signals:
@@ -52,7 +52,6 @@ private:
 
     void initControlQss();
 
-    void pageChangeForTheme(QString str);
 };
 
 #endif // FINISHPAGE_H

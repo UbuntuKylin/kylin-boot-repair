@@ -58,7 +58,9 @@ int main(int argc, char *argv[])
     qDebug() << "*";
     qDebug() << "*******************************************************";
 
+    QString latestTime = QString(QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss"));
     MainWindow w;
+    w.outputTime = latestTime;
 
     return a.exec();
 }

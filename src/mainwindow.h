@@ -62,10 +62,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    QString outputTime = nullptr;                         //用于获取本次程序启动时间
+
 public slots://提供给各线程的槽函数
     void passwordNoInput();                               //密码输入对话框弹窗没有输入就被关闭
     void makeStart();                                     //开始修复槽函数
     void closeMainWin();                                  //供子线程调用的关闭主程序窗口的函数接口
+    void failAndReturn();
 
 private slots:
     void changeToNextPage();                              //翻页槽函数
@@ -94,8 +97,6 @@ private:
     WarningPage *warningPage = nullptr;
     RepairPage2 *repairPage2 = nullptr;
     FinishPage *finishPage   = nullptr ;
-
-
 
     PreRepair* mycmdPreRepairBash;                                   //PreRepair线程
     QThread *pPreRepair;

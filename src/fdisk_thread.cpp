@@ -128,11 +128,18 @@ void FdiskThread::readcmdFdiskBashInfo()
 *************************************************/
 void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
 {
+    emit failAndReturn();
+    return;
     qDebug() << "开始处理fdisk返回信息";
     //入参检查
     if(cmdOutFromFdisk.isEmpty())
     {
         //TODO:emit setInfo("无硬盘介质！");
+        qDebug() << "！！！！！！！！！！";
+        qDebug() << "错误：未能读取硬盘！";
+        qDebug() << "！！！！！！！！！！";
+        emit failAndReturn();
+        return;
     }
     else
     {

@@ -22,6 +22,7 @@ SOURCES += \
     src/cmd_bash.cpp \
     src/fdisk_thread.cpp \
     src/finish_page.cpp \
+    src/logwidget.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/partion_device.cpp \
@@ -33,6 +34,7 @@ SOURCES += \
     src/stylewidget.cpp \
     src/stylewidgetattribute.cpp \
     src/stylewidgetshadow.cpp \
+    src/tabwidget.cpp \
     src/warning_page.cpp
 
 HEADERS += \
@@ -40,6 +42,7 @@ HEADERS += \
     src/cmd_bash.h \
     src/fdisk_thread.h \
     src/finish_page.h \
+    src/logwidget.h \
     src/mainwindow.h \
     src/partion_device.h \
     src/pre_page.h \
@@ -51,6 +54,7 @@ HEADERS += \
     src/stylewidget.h \
     src/stylewidgetattribute.h \
     src/stylewidgetshadow.h \
+    src/tabwidget.h \
     src/warning_page.h
 
 FORMS +=
