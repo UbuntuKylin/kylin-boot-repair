@@ -21,8 +21,8 @@ StyleWidget::StyleWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool
 {
     local_swa = swa;
     m_isDialog=isDialog;
-    //swshadow = new StyleWidgetShadow(swa);
-    this->setWindowIcon(QIcon(":/data/main.png"));
+    swshadow = new StyleWidgetShadow(swa);
+    this->setWindowIcon(QIcon(":/data/guide_repair24.png"));
     this->setWindowTitle(tr("麒麟引导修复工具"));
     myStyle(swa);
     text->setText(dialogTitleText);
@@ -39,7 +39,7 @@ StyleWidget::StyleWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool
 *************************************************/
 StyleWidget::~StyleWidget()
 {
-    //swshadow->deleteLater();
+    swshadow->deleteLater();
 }
 
 /************************************************
@@ -56,7 +56,7 @@ void StyleWidget::WidgetStyleClose()
     //emit doSomethig();
     emit allClose();
     this->close();
-    //swshadow->close();
+    swshadow->close();
 }
 
 /************************************************
@@ -79,12 +79,12 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
     this->move((availableGeometry.width() - this->width())/2, (availableGeometry.height() - this->height())/2);
 
     //设置阴影
-    //QHBoxLayout *hblayout=new QHBoxLayout(swshadow);
-    //hblayout->setMargin(0);//控件间距
-    //hblayout->setSpacing(0);//控件间距
-    //hblayout->addWidget(this);
-    //swshadow->show();
-    this->show();
+    QHBoxLayout *hblayout=new QHBoxLayout(swshadow);
+    hblayout->setMargin(0);//控件间距
+    hblayout->setSpacing(0);//控件间距
+    hblayout->addWidget(this);
+    swshadow->show();
+    //this->show();
 
     //控件
     title = new QWidget;//标题栏
@@ -93,7 +93,7 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
     title->setObjectName("title");
 
     body = new QWidget;//窗体
-    body->setFixedHeight(this->height()-title->height());
+    body->setFixedHeight(this->height()-title->height()-swa.shadow*2);
     body->setObjectName("body");
 
     icon = new QLabel;//图标
@@ -123,12 +123,12 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
     hlt0->addSpacing(4);
     hlt0->addWidget(widgetClose, 1);
 
-    QVBoxLayout *vlt0=new QVBoxLayout;//右上角按钮外部，垂直布局
-    vlt0->setMargin(0);
-    vlt0->setSpacing(0);
-    vlt0->addSpacing(6);
-    vlt0->addLayout(hlt0);
-    vlt0->addSpacing(14);
+//    QVBoxLayout *vlt0=new QVBoxLayout;//右上角按钮外部，垂直布局
+//    vlt0->setMargin(0);
+//    vlt0->setSpacing(0);
+//    vlt0->addSpacing(6);
+//    vlt0->addLayout(hlt0);
+//    vlt0->addSpacing(14);
 
     QHBoxLayout *hlt=new QHBoxLayout;//标题栏内部，水平布局
     hlt->setMargin(0);
@@ -138,26 +138,40 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
     hlt->addSpacing(8);
     hlt->addWidget(text,1);
     hlt->addStretch(99);
-    hlt->addLayout(vlt0,1);
+    hlt->addLayout(hlt0,1);
     hlt->addSpacing(8);
 
-    title->setLayout(hlt);
+    QVBoxLayout *vlt_temp=new QVBoxLayout;//标题栏内部，水平布局
+    vlt_temp->setMargin(0);
+    vlt_temp->setSpacing(0);
+    vlt_temp->addSpacing(6);
+    vlt_temp->addLayout(hlt,1);
+    vlt_temp->addStretch(99);
+
+    title->setLayout(vlt_temp);
 
     QHBoxLayout *hlt2=new QHBoxLayout;//标题栏外部
     hlt2->setMargin(0);
     hlt2->setSpacing(0);
+    hlt2->addSpacing(swa.shadow);
     hlt2->addWidget(title);
+    hlt2->addSpacing(swa.shadow);
 
     QHBoxLayout *hlt3=new QHBoxLayout;//窗体
     hlt3->setMargin(0);
     hlt3->setSpacing(0);
+    hlt3->addSpacing(swa.shadow);
     hlt3->addWidget(body);
+    hlt3->addSpacing(swa.shadow);
 
     QVBoxLayout *vl=new QVBoxLayout;//总体
     vl->setMargin(0);
     vl->setSpacing(0);
+    vl->addSpacing(swa.shadow);
     vl->addLayout(hlt2);
     vl->addLayout(hlt3);
+    vl->addStretch(99);
+    vl->addSpacing(swa.shadow);
     this->setLayout(vl);
 
 }
@@ -233,8 +247,8 @@ void StyleWidget::ThemeChooseForWidget(QString str)
 
 
         widgetMin->setStyleSheet("StyleWidget #widgetMin{background-color:rgba(255,255,255,0);border-image:url(:/data/min_h.png);border-radius:4px;}"
-                                 "StyleWidget #widgetMin:hover{background-color:rgba(100,105,241,1);border-image:url(:/data/min_h.png);border-radius:4px;}"
-                                 "StyleWidget #widgetMin:pressed{background-color:rgba(82,87,217,1);border-image:url(:/data/min_h.png);border-radius:4px;}");
+                                 "StyleWidget #widgetMin:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;}"
+                                 "StyleWidget #widgetMin:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;}");
         widgetClose->setStyleSheet("StyleWidget #widgetClose{background-color:rgba(255,255,255,0);border-image:url(:/data/close_h.png);border-radius:4px;}"
                                    "StyleWidget #widgetClose:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;}"
                                    "StyleWidget #widgetClose:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;}");
@@ -253,8 +267,8 @@ void StyleWidget::ThemeChooseForWidget(QString str)
 
 
        widgetMin->setStyleSheet("StyleWidget #widgetMin{background-color:rgba(255,255,255,0);border-image:url(:/data/min_d.png);border-radius:4px;}"
-                                "StyleWidget #widgetMin:hover{background-color:rgba(100,105,241,1);border-image:url(:/data/min_h.png);border-radius:4px;}"
-                                "StyleWidget #widgetMin:pressed{background-color:rgba(82,87,217,1);border-image:url(:/data/min_h.png);border-radius:4px;}");
+                                "StyleWidget #widgetMin:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;}"
+                                "StyleWidget #widgetMin:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;}");
        widgetClose->setStyleSheet("StyleWidget #widgetClose{background-color:rgba(255,255,255,0);border-image:url(:/data/close_d.png);border-radius:4px;}"
                                   "StyleWidget #widgetClose:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;}"
                                   "StyleWidget #widgetClose:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;}");

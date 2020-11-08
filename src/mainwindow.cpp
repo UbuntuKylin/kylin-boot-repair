@@ -92,7 +92,7 @@ void MainWindow::myStyle()
 {
     //设置外观(有参构造)int style_w, int style_h, bool style_allRadius=1, int style_radius=0, int style_shadow =0,
     //double style_shadowAlpha=0.00, int style_titleHeight=0, int style_itemHeight=0, bool style_middle=true
-    StyleWidgetAttribute swa(WINDOWWIDETH,WINDOWHEIGHT,0,WIDGETRADIUS,SHADOWALPHA,SHADOWALPHA,TITLEHEIGHT);
+    StyleWidgetAttribute swa(WINDOWWIDETH,WINDOWHEIGHT,0,WIDGETRADIUS,SHADOWWIDTH,SHADOWALPHA,TITLEHEIGHT);
     styleWidget=new StyleWidget(swa,tr("麒麟引导修复"));
 
     prePage = new PrePage(swa);

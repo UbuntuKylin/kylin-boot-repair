@@ -12,5 +12,6 @@
         <file>data/close_h.png</file>
         <file>data/min_d.png</file>
         <file>data/min_h.png</file>
+        <file>data/bootrepair_icon.png</file>
     </qresource>
 </RCC>

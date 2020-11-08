@@ -70,7 +70,8 @@ INSTALLS += target \
             icon \
             desktop
 
-DISTFILES +=
+DISTFILES += \
+    data/bootrepair_icon.png
 
 RESOURCES += \
     data.qrc

@@ -1,3 +1,9 @@
+kylin-boot-repair (1.0.6kord) v101; urgency=medium
+
+  * 增加边框阴影，修复图标错误。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Sun, 08 Nov 2020 11:27:40 +0800
+
 kylin-boot-repair (1.0.5kord) v101; urgency=medium
 
   * 增加日志记录文件，修正部分打印内容，增加关闭手工修复弹窗即关闭主程序功能
