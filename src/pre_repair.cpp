@@ -59,6 +59,8 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
         qDebug() << "当前分区名：" << s;
         qDebug() << "创建新的名为 " << s << " 的partionDevice类";
         currentDevice = new PartionDevice(s);
+
+        connect(currentDevice,&PartionDevice::failAndReturn,this,&PreRepair::failAndReturn);
         currentDevice->readFstabInfo();                         //读取fstab文件中linux分区信息
         if(currentDevice->isRootPartion)                        //只有是根目录的时候才进行处理
         {
@@ -201,6 +203,11 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
     }
 
     qDebug() << "主线程中： 所有分区遍历完毕共有" << systemNumOnDisk << "个系统安装在该硬盘";
+    if(!systemNumOnDisk)
+    {
+        emit failAndReturn();
+        return;
+    }
 
     for(uint i = 0 ; i < systemNumOnDisk; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
     {
@@ -208,6 +215,6 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
         currentSystem->repairGrubFile();            //grub引导文件修复
     }
 
-    emit mainWindowChangePage();                    //发送信号，使主线程翻页
+    emit changeToFinishPage();                    //发送信号，使主线程翻页
 
 }

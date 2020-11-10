@@ -33,6 +33,7 @@ void qtMessagePutIntoLog(QtMsgType type, const QMessageLogContext &context, cons
     outputLog.open(QIODevice::WriteOnly | QIODevice::Append);
     QTextStream os(&outputLog);
     os << logTxt << "\r\n";
+    os.flush();              //保证文本实时刷新
     outputLog.flush();
     outputLog.close();
 }

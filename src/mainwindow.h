@@ -69,6 +69,8 @@ public slots://提供给各线程的槽函数
     void makeStart();                                     //开始修复槽函数
     void closeMainWin();                                  //供子线程调用的关闭主程序窗口的函数接口
     void failAndReturn();
+    void changeToMainPage();
+    void changeToFinishPage();
 
 private slots:
     void changeToNextPage();                              //翻页槽函数

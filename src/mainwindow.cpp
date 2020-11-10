@@ -152,7 +152,7 @@ void MainWindow::prepareAction()
     connect(this,&MainWindow::startFdisk,mycmdFdiskBash,&FdiskThread::startFdisk);
     //第一次输入命令后，发现无效，获取管理员密码
     connect(mycmdFdiskBash,&FdiskThread::passwordNoInput,this,&MainWindow::passwordNoInput);
-    connect(mycmdFdiskBash,&FdiskThread::mainWindowChangePage,this,&MainWindow::changeToNextPage);
+    connect(mycmdFdiskBash,&FdiskThread::changeToMainPage,this,&MainWindow::changeToMainPage);
 
     connect(mycmdFdiskBash,&FdiskThread::failAndReturn,this,&MainWindow::failAndReturn);
 
@@ -161,8 +161,8 @@ void MainWindow::prepareAction()
     mycmdPreRepairBash->moveToThread(pPreRepair);//将pRepairthread移动到子线程mycmdRepairBash中
     connect(pPreRepair, &QThread::finished, mycmdPreRepairBash, &QObject::deleteLater);//挂载
     connect(this,&MainWindow::start_pushButton_clicked,mycmdPreRepairBash,&PreRepair::start_pushButton_clicked);
-    connect(mycmdPreRepairBash,&PreRepair::mainWindowChangePage,this,&MainWindow::changeToNextPage);
-
+    connect(mycmdPreRepairBash,&PreRepair::changeToFinishPage,this,&MainWindow::changeToFinishPage);
+    connect(mycmdPreRepairBash,&PreRepair::failAndReturn,this,&MainWindow::failAndReturn);
 
     pFdiskthread->start();                //启动fdisk线程
     pPreRepair->start();                //启动repair线程
@@ -173,7 +173,7 @@ void MainWindow::prepareAction()
     emit startFdisk(fdiskCmd);
     styleWidget->widgetClose->setEnabled(false);
     styleWidget->widgetMin->setEnabled(false);
-    styleWidget->widgetMenu->setEnabled(false);
+    styleWidget->widgetMenuBtn->setEnabled(false);
 }
 
 /************************************************
@@ -189,7 +189,7 @@ int MainWindow::changePage()
 {
     styleWidget->widgetClose->setEnabled(true);
     styleWidget->widgetMin->setEnabled(true);
-    styleWidget->widgetMenu->setEnabled(true);
+    styleWidget->widgetMenuBtn->setEnabled(true);
 
     int count = stackedWidget->count();
 
@@ -375,7 +375,23 @@ void MainWindow::failAndReturn()
     qDebug() << "主线程收到支线程错误信号！";
     stackedWidget->setCurrentIndex(stackedWidget->count()-1);
     styleWidget->widgetClose->setEnabled(true);
-    styleWidget->widgetMenu->setEnabled(true);
+    styleWidget->widgetMenuBtn->setEnabled(true);
     styleWidget->widgetMin->setEnabled(true);
 }
 
+void MainWindow::changeToMainPage()
+{
+    stackedWidget->setCurrentIndex(1);
+    styleWidget->widgetClose->setEnabled(true);
+    styleWidget->widgetMenuBtn->setEnabled(true);
+    styleWidget->widgetMin->setEnabled(true);
+}
+
+void MainWindow::changeToFinishPage()
+{
+    qDebug() << "主线程收到修复完成信号！";
+    stackedWidget->setCurrentIndex(stackedWidget->count()-2);
+    styleWidget->widgetClose->setEnabled(true);
+    styleWidget->widgetMenuBtn->setEnabled(true);
+    styleWidget->widgetMin->setEnabled(true);
+}

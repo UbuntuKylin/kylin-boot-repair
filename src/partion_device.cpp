@@ -44,7 +44,7 @@ PartionDevice::PartionDevice(QString partionDeviceName, QObject *parent) : QObje
     realBootMountStr = "";
     realEfiMountStr  = "";
 
-
+//    connect(this,&PartionDevice::cmdInfo,cmdUmountBash,&CmdBash::cmdInfo,);
 }
 
 /************************************************
@@ -89,6 +89,46 @@ void PartionDevice::prepareOfFirstMount()
     connect(cmdMkdirBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
     cmdMkdirBash->cmdExecute();
 
+    qDebug() << "~~~~~~~~~~~~~~~~~~";
+    qDebug() << "创建文件夹指令结果检查";
+    qDebug() << "~~~~~~~~~~~~~~~~~~";
+
+    QString filePathCmdString = DeviceName;
+    QString temp1 = filePathCmdString;
+    QString temp2 = filePathCmdString;
+    temp2 = "/media/" + temp1.remove(0,5);
+
+    qDebug() << "检查" << temp2 << "是否存在";
+    QDir *dir = new QDir(temp2);
+
+    int tempNum = 0;
+    do
+    {
+        tempNum++;
+        if(!dir->exists())
+        {
+            qDebug() << temp2 << "文件夹不存在";
+            //创建对应的文件夹
+            qDebug() << "执行创建文件夹指令：" << cmdMkdirStr;
+            cmdMkdirBash = new CmdBash(cmdMkdirStr,this);
+            connect(cmdMkdirBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
+            cmdMkdirBash->cmdExecute();
+            fileCreatSuccess = false;
+        }
+        else
+        {
+            fileCreatSuccess = true;
+            break;
+        }
+    }
+    while((false == fileCreatSuccess) && (tempNum < 5));
+
+    if((false == fileCreatSuccess))
+    {
+        emit failAndReturn();
+        return;
+    }
+
     //此处不能去除，否则会导致创建文件夹失败，无法挂载
     qDebug() << "cmdExecute()" ;
     qDebug() << cmdMkdirBash->currentBash->readAll();
@@ -96,12 +136,24 @@ void PartionDevice::prepareOfFirstMount()
     qDebug() << "获取线程end!";
     //应增加文件夹创建失效的判断，延时循环
 
-
-    //挂载对应的硬盘
     qDebug() << "执行挂载硬盘指令：" << cmdMountStr;
     cmdMountBash = new CmdBash(cmdMountStr,this);
     connect(cmdMountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
     cmdMountBash->cmdExecute();
+
+//    qDebug() << "等待2s，等候文件夹创建完成";
+//    QTimer::singleShot(2000, [=](){
+//        //挂载对应的硬盘
+//        qDebug() << "执行挂载硬盘指令：" << cmdMountStr;
+//        cmdMountBash = new CmdBash(cmdMountStr,this);
+//        connect(cmdMountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
+//        cmdMountBash->cmdExecute();
+//    });
+//    //挂载对应的硬盘
+//    qDebug() << "执行挂载硬盘指令：" << cmdMountStr;
+//    cmdMountBash = new CmdBash(cmdMountStr,this);
+//    connect(cmdMountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
+//    cmdMountBash->cmdExecute();
 
 }
 

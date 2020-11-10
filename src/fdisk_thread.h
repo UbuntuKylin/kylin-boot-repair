@@ -29,7 +29,7 @@ public:
     bool fdiskHandled;
 
 signals://发送信号给主窗体
-    void mainWindowChangePage();
+    void changeToMainPage();
     void startpBootRepairThread(QStringList inputListOfDevice);//开启修复线程
     void passwordNoInput();                                    //密码输入对话框弹窗没有输入就被关闭
     void failAndReturn();                                      //出现错误，失败返回主线程信号

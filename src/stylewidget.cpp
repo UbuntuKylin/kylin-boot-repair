@@ -28,9 +28,44 @@ StyleWidget::StyleWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool
     text->setText(dialogTitleText);
 
     StyleWidgetAttribute tabWin(TABWINDOWWIDETH,TABWINDOWHEIGHT,0,TABWIDGETRADIUS,TABSHADOWWIDTH,TABSHADOWALPHA,TABTITLEHEIGHT);
-    tabWinWidget=new TabWidget(tabWin,tr("麒麟引导修复日志"));
 
-    tabWinWidget->showOrHide();
+    //tabWinWidgetshadow = new TabMenuShadow(tabWin,this);
+    //tabWinWidgetshadow->setParent(this);
+    //tabWinWidgetshadow->show();
+
+    tabWinWidget=new TabWidget(tabWin,tr("麒麟引导修复"),false,this);
+
+    //tabWinWidget->setFixedSize(tabWin.w-tabWin.radius*2,tabWin.h-tabWin.radius*2);
+//    tabWinWidget->setFixedSize(tabWin.w,tabWin.h);
+//    tabWinWidget->setObjectName("widgetMenu");
+    tabWinWidget->setStyleSheet("StyleWidget #widgetMenu{background-color:rgba(255, 20, 20, 1);border-radius:6px;}");
+
+
+
+
+//    //设置阴影
+//    QHBoxLayout *hblayout_menu=new QHBoxLayout();
+//    hblayout_menu->setMargin(0);//控件间距
+//    hblayout_menu->setSpacing(0);//控件间距
+//    hblayout_menu->addSpacing(tabWin.radius);
+//    hblayout_menu->addWidget(tabWinWidget);
+//    hblayout_menu->addSpacing(tabWin.radius);
+
+//    QVBoxLayout *vblayout_menu=new QVBoxLayout();
+//    vblayout_menu->setMargin(0);//控件间距
+//    vblayout_menu->setSpacing(0);//控件间距
+//    vblayout_menu->addSpacing(tabWin.radius);
+//    vblayout_menu->addLayout(hblayout_menu);
+//    vblayout_menu->addSpacing(tabWin.radius);
+
+    //tabWinWidgetshadow->hide();
+    //tabWinWidget->hide();
+
+    tabWinWidget->move(260 , 45);
+    tabWinWidget->raise();
+
+
+
 }
 
 /************************************************
@@ -109,12 +144,13 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
 
     QSize smallWidgetSize(30,30);//小按钮大小
 
-    widgetMenu =new QPushButton;//最小化按钮
-    widgetMenu->setObjectName("widgetMenu");
-    widgetMenu->setIconSize(smallWidgetSize);
-    widgetMenu->setFixedSize(smallWidgetSize);
-    connect(widgetMenu,&QPushButton::clicked,this,[=]{
-        tabWinWidget->showOrHide();
+    widgetMenuBtn =new QPushButton;//最小化按钮
+    widgetMenuBtn->setObjectName("widgetMenuBtn");
+    widgetMenuBtn->setIconSize(smallWidgetSize);
+    widgetMenuBtn->setFixedSize(smallWidgetSize);
+
+    connect(widgetMenuBtn,&QPushButton::clicked,this,[=]{
+        widgetMenuPopUp();
     });
 
     widgetMin =new QPushButton;//最小化按钮
@@ -133,18 +169,11 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
     QHBoxLayout *hlt0=new QHBoxLayout;//右上角按钮内部，水平布局
     hlt0->setMargin(0);
     hlt0->setSpacing(0);
-    hlt0->addWidget(widgetMenu, 1);
-    hlt0->addSpacing(4);
+    //hlt0->addWidget(widgetMenuBtn, 1);
+    //hlt0->addSpacing(4);
     hlt0->addWidget(widgetMin, 1);
     hlt0->addSpacing(4);
     hlt0->addWidget(widgetClose, 1);
-
-//    QVBoxLayout *vlt0=new QVBoxLayout;//右上角按钮外部，垂直布局
-//    vlt0->setMargin(0);
-//    vlt0->setSpacing(0);
-//    vlt0->addSpacing(6);
-//    vlt0->addLayout(hlt0);
-//    vlt0->addSpacing(14);
 
     QHBoxLayout *hlt=new QHBoxLayout;//标题栏内部，水平布局
     hlt->setMargin(0);
@@ -173,6 +202,7 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
     hlt2->addWidget(title);
     hlt2->addSpacing(swa.shadow);
 
+
     QHBoxLayout *hlt3=new QHBoxLayout;//窗体
     hlt3->setMargin(0);
     hlt3->setSpacing(0);
@@ -189,6 +219,7 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
     vl->addStretch(99);
     vl->addSpacing(swa.shadow);
     this->setLayout(vl);
+
 
 }
 
@@ -250,6 +281,8 @@ void StyleWidget::showOrHide()
 void StyleWidget::ThemeChooseForWidget(QString str)
 {
 
+    tabWinWidget->ThemeChooseForWidget(str);
+
     if("ukui-dark" == str || "ukui-black" == str)
     {
         text->setStyleSheet("rgba(255, 255, 255, 0.85);");
@@ -262,9 +295,9 @@ void StyleWidget::ThemeChooseForWidget(QString str)
         body->setStyleSheet(bodyStyleSheet);
 
 
-        widgetMenu->setStyleSheet("StyleWidget #widgetMenu{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_h.png);border-radius:4px;}"
-                                 "StyleWidget #widgetMenu:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/menu_h.png);border-radius:4px;}"
-                                 "StyleWidget #widgetMenu:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/menu_h.png);border-radius:4px;}");
+        widgetMenuBtn->setStyleSheet("StyleWidget #widgetMenuBtn{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_h.png);border-radius:4px;}"
+                                 "StyleWidget #widgetMenuBtn:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/menu_h.png);border-radius:4px;}"
+                                 "StyleWidget #widgetMenuBtn:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/menu_h.png);border-radius:4px;}");
         widgetMin->setStyleSheet("StyleWidget #widgetMin{background-color:rgba(255,255,255,0);border-image:url(:/data/min_h.png);border-radius:4px;}"
                                  "StyleWidget #widgetMin:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;}"
                                  "StyleWidget #widgetMin:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;}");
@@ -285,9 +318,9 @@ void StyleWidget::ThemeChooseForWidget(QString str)
        body->setStyleSheet(bodyStyleSheet);
 
 
-       widgetMenu->setStyleSheet("StyleWidget #widgetMenu{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_d.png);border-radius:4px;}"
-                                "StyleWidget #widgetMenu:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/menu_d.png);border-radius:4px;}"
-                                "StyleWidget #widgetMenu:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/menu_d.png);border-radius:4px;}");
+       widgetMenuBtn->setStyleSheet("StyleWidget #widgetMenuBtn{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_d.png);border-radius:4px;}"
+                                "StyleWidget #widgetMenuBtn:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/menu_d.png);border-radius:4px;}"
+                                "StyleWidget #widgetMenuBtn:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/menu_d.png);border-radius:4px;}");
        widgetMin->setStyleSheet("StyleWidget #widgetMin{background-color:rgba(255,255,255,0);border-image:url(:/data/min_d.png);border-radius:4px;}"
                                 "StyleWidget #widgetMin:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;}"
                                 "StyleWidget #widgetMin:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;}");
@@ -298,3 +331,8 @@ void StyleWidget::ThemeChooseForWidget(QString str)
     }
 
 }
+void StyleWidget::widgetMenuPopUp()
+{
+    tabWinWidget->showOrHide();
+}
+

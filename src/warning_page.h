@@ -16,6 +16,7 @@
 #include <QWidget>
 #include <QLabel>
 #include <QPushButton>
+
 //布局
 #include <QBoxLayout>
 //打开文件

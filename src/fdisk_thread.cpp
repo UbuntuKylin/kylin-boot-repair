@@ -128,8 +128,8 @@ void FdiskThread::readcmdFdiskBashInfo()
 *************************************************/
 void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
 {
-    emit failAndReturn();
-    return;
+//    emit failAndReturn();
+//    return;
     qDebug() << "开始处理fdisk返回信息";
     //入参检查
     if(cmdOutFromFdisk.isEmpty())
@@ -194,7 +194,7 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
 
         //结束准备界面，进入修复开始界面，命令执行过程很快，增加4秒延时，防止页面一闪而过，给用户造成疑惑。
         QTimer::singleShot(4000, [=](){
-            emit mainWindowChangePage();//向主窗口发送信号，执行下一流程
+            emit changeToMainPage();//向主窗口发送信号，执行下一流程
         });
 
         qDebug() << "从fdisk命令回显中提取硬盘信息流程结束！";

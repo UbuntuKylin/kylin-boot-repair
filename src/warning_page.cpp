@@ -135,7 +135,7 @@ void WarningPage::pageChangeForTheme(QString str)
     logWinWidget->ThemeChooseForWidget(str);
     if("ukui-dark" == str || "ukui-black" == str)
     {
-        warningText->setStyleSheet("color:rgba(0, 0, 0, 0.85);font-size:14px;");
+        warningText->setStyleSheet("color:rgba(255, 255, 255, 0.85);font-size:14px;");
         logButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.65);background-color:rgba(62, 108, 229, 1);border-radius:6px;}"
                                    ".QPushButton:hover{color:rgba(255, 255, 255, 0.65);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
                                    ".QPushButton:pressed{color:rgba(255, 255, 255, 0.65);background-color:rgba(151, 151, 151, 1);border-radius:6px;}");
@@ -146,7 +146,7 @@ void WarningPage::pageChangeForTheme(QString str)
     }
     else
     {
-        warningText->setStyleSheet("color:rgba(255, 255, 255, 0.85);font-size:14px;");
+        warningText->setStyleSheet("color:rgba(0, 0, 0, 0.85);font-size:14px;");
         logButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(62, 108, 229, 1);border-radius:6px;}"
                                    ".QPushButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
                                    ".QPushButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(151, 151, 151, 1);border-radius:6px;}");

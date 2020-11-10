@@ -1,3 +1,15 @@
+kylin-boot-repair (1.0.8kord) v101; urgency=medium
+
+  * 解决无法实时刷新LOG日志bug。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 10 Nov 2020 17:27:40 +0800
+
+kylin-boot-repair (1.0.7kord) v101; urgency=medium
+
+  * 增加报错页面，日志查看导出功能，修改ARM架构上页面乱跳转BUG。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 10 Nov 2020 16:27:40 +0800
+
 kylin-boot-repair (1.0.6kord) v101; urgency=medium
 
   * 增加边框阴影，修复图标错误。

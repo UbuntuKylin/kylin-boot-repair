@@ -117,6 +117,12 @@ void LogWidget::myStyle(StyleWidgetAttribute swa)
     widgetClose->setFixedSize(smallWidgetSize);
     connect(widgetClose,&QPushButton::clicked,this,&LogWidget::WidgetStyleClose);
 
+    widgetSave =new QPushButton;//导出
+    widgetSave->setText(tr("导出"));
+    widgetSave->setObjectName("widgetClose");
+    widgetSave->setFixedSize(120,36);
+    connect(widgetSave,&QPushButton::clicked,this,&LogWidget::WidgetStyleSave);
+
     //布局
     QHBoxLayout *hlt0=new QHBoxLayout;//右上角按钮内部，水平布局
     hlt0->setMargin(0);
@@ -158,6 +164,54 @@ void LogWidget::myStyle(StyleWidgetAttribute swa)
     hlt2->addSpacing(swa.shadow);
     hlt2->addWidget(title);
     hlt2->addSpacing(swa.shadow);
+
+    logText = new QTextEdit;
+    logText->setReadOnly(true);
+    logText->setObjectName("logText");
+    logText->setFixedSize(395,390);
+
+    QString logString;
+    QFile logfile("/tmp/BootRepairLog.txt");
+
+    if(!logfile.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug()<<"无法打开日志!";
+    }
+    while(!logfile.atEnd())
+    {
+        QByteArray line = logfile.readLine();
+        QString str(line);
+        logString.append(str);
+    }
+
+    logText->clear();
+    logText->setPlainText(logString);
+
+    QHBoxLayout *hlt_logText=new QHBoxLayout;
+    hlt_logText->setMargin(0);
+    hlt_logText->setSpacing(0);
+    hlt_logText->addSpacing(32);
+    hlt_logText->addWidget(logText,1);
+    hlt_logText->addStretch(99);
+
+    QHBoxLayout *hlt_widgetSave=new QHBoxLayout;
+    hlt_widgetSave->setMargin(0);
+    hlt_widgetSave->setSpacing(0);
+    hlt_widgetSave->addSpacing(308);
+    hlt_widgetSave->addWidget(widgetSave,1);
+    hlt_widgetSave->addStretch(99);
+
+
+    QVBoxLayout *vlt_logText=new QVBoxLayout;
+    vlt_logText->setMargin(0);
+    vlt_logText->setSpacing(0);
+    vlt_logText->addSpacing(3);
+    vlt_logText->addLayout(hlt_logText);
+    vlt_logText->addSpacing(24);
+    vlt_logText->addLayout(hlt_widgetSave);
+    vlt_logText->addStretch(99);
+
+    body->setLayout(vlt_logText);
 
     QHBoxLayout *hlt3=new QHBoxLayout;//窗体
     hlt3->setMargin(0);
@@ -254,7 +308,7 @@ void LogWidget::ThemeChooseForWidget(QString str)
         widgetClose->setStyleSheet("QPushButton{background-color:rgba(255,255,255,0);border-image:url(:/data/close_h.png);border-radius:4px;}"
                                    "QPushButton:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;}"
                                    "QPushButton:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;}");
-
+        logText->setStyleSheet("QTextEdit{background-color:rgba(20, 20, 20, 1);color:rgba(255, 255, 255, 0.85);}");
     }
     else
     {
@@ -274,7 +328,33 @@ void LogWidget::ThemeChooseForWidget(QString str)
        widgetClose->setStyleSheet("QPushButton{background-color:rgba(255,255,255,0);border-image:url(:/data/close_d.png);border-radius:4px;}"
                                   "QPushButton:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;}"
                                   "QPushButton:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;}");
-
+        logText->setStyleSheet("QTextEdit{background-color:rgba(255,255,255,1);color:rgba(0, 0, 0, 0.85);}");
     }
 
+}
+
+void LogWidget::WidgetStyleSave()
+{
+    qDebug() << "文件另存为";
+    QFileDialog saveDialog;
+        QString fileName = saveDialog.getSaveFileName(this,tr("Open File"),"/home",tr("Text File(*.txt)"));
+        if(fileName == "")
+        {
+            return;
+        }
+        QFile file(fileName);
+        if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        {
+            QMessageBox::warning(this,tr("错误"),tr("打开文件失败"));
+            return;
+        }
+        else
+        {
+            QTextStream textStream(&file);
+            QString str = logText->toPlainText();
+            textStream<<str;
+            QMessageBox::warning(this,tr("提示"),tr("保存文件成功"));
+
+            file.close();
+        }
 }

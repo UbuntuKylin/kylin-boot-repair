@@ -12,10 +12,10 @@
 #define VALUE_DIS 2000
 
 #define TABWINDOWWIDETH 80                   //窗口宽度
-#define TABWINDOWHEIGHT 100                  //窗口高度
-#define TABTITLEHEIGHT 50                    //标题栏高度
-#define TABSHADOWWIDTH 10                    //阴影宽度
-#define TABWIDGETRADIUS 12                   //窗口圆角
+#define TABWINDOWHEIGHT 84                  //窗口高度
+#define TABTITLEHEIGHT 42                    //标题栏高度
+#define TABSHADOWWIDTH 6                    //阴影宽度
+#define TABWIDGETRADIUS 6                   //窗口圆角
 #define TABBUTTONRADIUS 6                    //按钮圆角
 #define TABSHADOWALPHA 0.08                  //阴影透明度
 
@@ -28,6 +28,8 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QMenu>
+#include <QAction>
 //布局
 #include <QBoxLayout>
 //读取本地字体
@@ -51,7 +53,9 @@ public:
 
     void ThemeChooseForWidget(QString str);
 
-    QPushButton *widgetMenu = nullptr;//菜单按钮
+    void widgetMenuPopUp();
+
+    QPushButton *widgetMenuBtn = nullptr;//菜单按钮
     QPushButton *widgetClose = nullptr;//关闭窗口
     QPushButton *widgetMin = nullptr;//最小化窗口
 
@@ -63,7 +67,11 @@ private:
     StyleWidgetAttribute local_swa;
 
     StyleWidgetShadow *swshadow = nullptr;//阴影
+    TabMenuShadow *tabWinWidgetshadow = nullptr;
     TabWidget *tabWinWidget = nullptr;
+
+    QWidget *widgetMenu = nullptr;//下拉菜单
+
     QWidget *title = nullptr;//标题栏
     QLabel *text = nullptr;//标题
     QLabel *icon = nullptr;//图标

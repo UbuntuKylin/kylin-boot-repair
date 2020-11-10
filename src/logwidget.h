@@ -19,6 +19,9 @@
 #include <QComboBox>
 #include <QLineEdit>
 #include <QPushButton>
+#include <QTextEdit>
+#include <QFileDialog>
+#include <QMessageBox>
 //布局
 #include <QBoxLayout>
 //读取本地字体
@@ -39,12 +42,14 @@ public:
     QWidget *body  = nullptr;//窗体
     void showOrHide();//切换显示和隐藏状态
     void WidgetStyleClose();//点击关闭事件
+    void WidgetStyleSave();
 
     void ThemeChooseForWidget(QString str);
 
     QPushButton *widgetMenu = nullptr;//菜单按钮
     QPushButton *widgetClose = nullptr;//关闭窗口
     QPushButton *widgetMin = nullptr;//最小化窗口
+    QPushButton *widgetSave = nullptr;//日志另存为
 
 private:
     virtual void paintEvent(QPaintEvent *ev);//重绘窗口
@@ -59,6 +64,7 @@ private:
     QLabel *icon = nullptr;//图标
     QPixmap titleImage;   //标题栏图片
 
+    QTextEdit *logText = nullptr;
     bool m_isDialog =false;//如果是窗口
     bool paintOnce=false;//只绘制一次
     bool m_isLeftButtonPressed = false;

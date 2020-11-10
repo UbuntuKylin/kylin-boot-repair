@@ -6,7 +6,7 @@
 * 修改内容：
 *   创建  HZH
 *************************************************/
-#include "stylewidgetshadow.h"
+#include "tabmenushadow.h"
 
 /************************************************
 * 函数名称：
@@ -17,15 +17,15 @@
 *   创建  HZH
 *
 *************************************************/
-StyleWidgetShadow::StyleWidgetShadow(StyleWidgetAttribute s)
+TabMenuShadow::TabMenuShadow(StyleWidgetAttribute s,QWidget *parent) : QWidget(parent)
 {
     swa=s;
     //窗口设置
     this->setWindowFlags(Qt::FramelessWindowHint);//无边框
-    this->setAttribute(Qt::WA_TranslucentBackground, true);//窗体透明
-    this->setWindowTitle("麒麟引导修复");
+    //this->setAttribute(Qt::WA_TranslucentBackground, true);//窗体透明
+//    this->setWindowTitle("麒麟引导修复");
     this->setFixedSize(swa.w,swa.h);
-    if(swa.middle)handleIconClickedSub();//在屏幕中央显示
+//    if(swa.middle)handleIconClickedSub();//在屏幕中央显示
 }
 
 /************************************************
@@ -37,7 +37,7 @@ StyleWidgetShadow::StyleWidgetShadow(StyleWidgetAttribute s)
 *   创建  HZH
 *
 *************************************************/
-void StyleWidgetShadow::handleIconClickedSub()//在屏幕中央显示
+void TabMenuShadow::handleIconClickedSub()//在屏幕中央显示
 {
     QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
     this->move((availableGeometry.width() - this->width())/2, (availableGeometry.height() - this->height())/2);
@@ -52,7 +52,7 @@ void StyleWidgetShadow::handleIconClickedSub()//在屏幕中央显示
 *   创建  HZH
 *
 *************************************************/
-void StyleWidgetShadow::paintEvent(QPaintEvent *event)//重绘窗口
+void TabMenuShadow::paintEvent(QPaintEvent *event)//重绘窗口
 {
     //if(paintOnce>swa.radius*2)return;
     //上半部分阴影
@@ -85,3 +85,4 @@ void StyleWidgetShadow::paintEvent(QPaintEvent *event)//重绘窗口
     }
     paintOnce++;
 }
+

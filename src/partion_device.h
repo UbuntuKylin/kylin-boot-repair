@@ -46,6 +46,8 @@ public:
     bool homeIsSeparate = false;
     bool isUEFIBoot = false;
 
+    bool fileCreatSuccess = false;
+
     QString selfBootDeviceName;
     QString selfEfiDeviceName;
     QString selfHomeDeviceName;
@@ -70,6 +72,7 @@ public slots://提供给各线程的槽函数
 
 signals://发送信号给主窗体
     //void setInfo(QString inputInfo);//写入状态栏信息
+    void failAndReturn();
 
 private:
     CmdBash* cmdUmountBash;           //拆卸硬盘线程类

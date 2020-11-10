@@ -10,7 +10,7 @@
 #define TABWIDGET_H
 #define VALUE_DIS 2000
 
-#include "stylewidgetshadow.h"
+#include "tabmenushadow.h"
 
 
 //控件
@@ -33,9 +33,13 @@ class TabWidget : public QWidget
 signals:
     void allClose();
     void doSomethig();
+protected:
+    void enterEvent(QEvent *event);
+    void leaveEvent(QEvent *event);
+    void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
 public:
-    TabWidget(StyleWidgetAttribute swa, QString dialogTitleText,bool isDialog=false);
+    TabWidget(StyleWidgetAttribute swa, QString dialogTitleText,bool isDialog=false,QWidget *parent = nullptr);
     ~TabWidget();
     QWidget *body  = nullptr;//窗体
     void showOrHide();//切换显示和隐藏状态
@@ -54,7 +58,7 @@ private:
 
     StyleWidgetAttribute local_swa;
 
-    StyleWidgetShadow *swshadow = nullptr;//阴影
+    TabMenuShadow *swshadow = nullptr;//阴影
     QWidget *title = nullptr;//标题栏
     QLabel *text = nullptr;//标题
     QLabel *icon = nullptr;//图标
@@ -64,6 +68,7 @@ private:
     bool paintOnce=false;//只绘制一次
     bool m_isLeftButtonPressed = false;
     QPoint m_last;
+    bool moveInFlag = false;
 };
 
 #endif // TABWIDGET_H

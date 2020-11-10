@@ -34,6 +34,7 @@ SOURCES += \
     src/stylewidget.cpp \
     src/stylewidgetattribute.cpp \
     src/stylewidgetshadow.cpp \
+    src/tabmenushadow.cpp \
     src/tabwidget.cpp \
     src/warning_page.cpp
 
@@ -54,6 +55,7 @@ HEADERS += \
     src/stylewidget.h \
     src/stylewidgetattribute.h \
     src/stylewidgetshadow.h \
+    src/tabmenushadow.h \
     src/tabwidget.h \
     src/warning_page.h
 
