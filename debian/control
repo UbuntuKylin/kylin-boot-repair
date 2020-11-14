@@ -5,6 +5,7 @@ Maintainer: hanzehui <hanzehui@kylinos.com>
 Build-Depends: debhelper (>=9.0.0),
                pkgconf,
 			   libgsettings-qt-dev,
+               libpolkit-qt5-1-dev,
                qtbase5-dev,
                qt5-qmake,
                qtchooser,

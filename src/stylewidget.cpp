@@ -37,7 +37,7 @@ StyleWidget::StyleWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool
 
     //tabWinWidget->setFixedSize(tabWin.w-tabWin.radius*2,tabWin.h-tabWin.radius*2);
 //    tabWinWidget->setFixedSize(tabWin.w,tabWin.h);
-//    tabWinWidget->setObjectName("widgetMenu");
+    tabWinWidget->setObjectName("widgetMenu");
     tabWinWidget->setStyleSheet("StyleWidget #widgetMenu{background-color:rgba(255, 20, 20, 1);border-radius:6px;}");
 
 

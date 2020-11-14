@@ -1,3 +1,10 @@
+kylin-boot-repair (1.0.12kord) v101; urgency=medium
+
+  * 添加polkit依赖，以便后续调用dbus提升软件权限
+  * 修改完成页按钮字体颜色
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 11 Nov 2020 18:27:40 +0800
+
 kylin-boot-repair (1.0.11kord) v101; urgency=medium
 
   * Bug 25032 跟随系统字体时不完全跟随
