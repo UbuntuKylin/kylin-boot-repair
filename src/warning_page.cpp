@@ -28,7 +28,19 @@ WarningPage::WarningPage(StyleWidgetAttribute page_swa)
     //logWinWidget->hide();
     logWinWidget->showOrHide();
 }
-
+/************************************************
+* 函数名称：
+* 功能描述：
+* 输出参数：
+* 修改日期：2020.10.12
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+WarningPage::~WarningPage()
+{
+    delete logWinWidget;
+}
 /************************************************
 * 函数名称：
 * 功能描述：
@@ -136,23 +148,23 @@ void WarningPage::pageChangeForTheme(QString str)
     if("ukui-dark" == str || "ukui-black" == str)
     {
         warningText->setStyleSheet("color:rgba(255, 255, 255, 0.85);font-size:14px;");
-        logButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.65);background-color:rgba(62, 108, 229, 1);border-radius:6px;}"
-                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.65);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
-                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.65);background-color:rgba(151, 151, 151, 1);border-radius:6px;}");
-        exitButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.65);background-color:rgba(151, 151, 151, 1);border-radius:6px;}"
-                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.65);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
-                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.65);background-color:rgba(151, 151, 151, 1);border-radius:6px;}");
+        logButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.65);background-color:rgba(62, 108, 229, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.65);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.65);background-color:rgba(151, 151, 151, 1);border-radius:6px;font-size:14px;}");
+        exitButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.65);background-color:rgba(151, 151, 151, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.65);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.65);background-color:rgba(151, 151, 151, 1);border-radius:6px;font-size:14px;}");
 
     }
     else
     {
         warningText->setStyleSheet("color:rgba(0, 0, 0, 0.85);font-size:14px;");
-        logButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(62, 108, 229, 1);border-radius:6px;}"
-                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
-                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(151, 151, 151, 1);border-radius:6px;}");
-        exitButton->setStyleSheet(".QPushButton{color:rgba(0, 0, 0, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;}"
-                                   ".QPushButton:hover{color:rgba(0, 0, 0, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
-                                   ".QPushButton:pressed{color:rgba(0, 0, 0, 0.85);background-color:rgba(151, 151, 151, 1);border-radius:6px;}");
+        logButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(62, 108, 229, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(151, 151, 151, 1);border-radius:6px;font-size:14px;}");
+        exitButton->setStyleSheet(".QPushButton{color:rgba(0, 0, 0, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:hover{color:rgba(0, 0, 0, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:pressed{color:rgba(0, 0, 0, 0.85);background-color:rgba(151, 151, 151, 1);border-radius:6px;font-size:14px;}");
 
     }
 }

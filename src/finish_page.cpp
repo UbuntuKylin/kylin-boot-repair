@@ -57,8 +57,17 @@ void FinishPage::initControlQss()
     nowButton->setEnabled(true);
 
     connect(nowButton,&QPushButton::clicked,this,[=](){
-        QProcess::execute("sudo -S shutdown -r now");
-        QApplication::exit();
+        shutDownBash = new QProcess();   //创建QProcess对象并连接信号与槽
+
+        shutDownBash->start("sudo -S shutdown -r now");
+
+//        shutDownBash->write("sudo -S shutdown -r now" + '\n');
+
+        shutDownBash->waitForStarted();
+
+
+//        QProcess::execute("sudo -S shutdown -r now");
+//        QApplication::exit();
         qDebug() << "用户点击现在重启按钮！程序关闭";
         qDebug() << "*******************************************************";
     });
@@ -127,22 +136,22 @@ void FinishPage::pageChangeForTheme(QString str)
     if("ukui-dark" == str || "ukui-black" == str)
     {
         finishText->setStyleSheet("color:rgba(255, 255, 255, 0.85);font-size:14px;");
-        laterButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;}"
-                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
-                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;}");
-        nowButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;}"
-                                              ".QPushButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
-                                              ".QPushButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;}");
+        laterButton->setStyleSheet(".QPushButton{color:rgba(0, 0, 0, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:hover{color:rgba(0, 0, 0, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:pressed{color:rgba(0, 0, 0, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;font-size:14px;}");
+        nowButton->setStyleSheet(".QPushButton{color:rgba(0, 0, 0, 0.855);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
+                                              ".QPushButton:hover{color:rgba(0, 0, 0, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
+                                              ".QPushButton:pressed{color:rgba(0, 0, 0, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;font-size:14px;}");
 
     }
     else
     {
         finishText->setStyleSheet("color:rgba(0, 0, 0, 0.85);font-size:14px;");
-        laterButton->setStyleSheet(".QPushButton{color:rgba(0, 0, 0, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;}"
-                                   ".QPushButton:hover{color:rgba(0, 0, 0, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
-                                   ".QPushButton:pressed{color:rgba(0, 0, 0, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;}");
-        nowButton->setStyleSheet(".QPushButton{color:rgba(0, 0, 0, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;}"
-                                 ".QPushButton:hover{color:rgba(0, 0, 0, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;}"
-                                 ".QPushButton:pressed{color:rgba(0, 0, 0, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;}");
+        laterButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
+                                   ".QPushButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;font-size:14px;}");
+        nowButton->setStyleSheet(".QPushButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
+                                 ".QPushButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
+                                 ".QPushButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;font-size:14px;}");
     }
 }

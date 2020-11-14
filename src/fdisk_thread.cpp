@@ -168,9 +168,9 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
                 {
                     //TODO此处可以增加限定，已有的分区不要再加入
                     allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
-                    QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
-                    QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
-                    qDebug() << deviceLocation << "为" << deviceType << "类型分区";
+//                    QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
+//                    QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
+//                    qDebug() << deviceLocation << "为" << deviceType << "类型分区";
                 }
                 //2004
                 else if(((("filesystem" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data()))\
@@ -180,9 +180,9 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
                 {
                     //TODO此处可以增加限定，已有的分区不要再加入
                     allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
-                    QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
-                    QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
-                    qDebug() << deviceLocation << "为" << deviceType << "类型分区";
+//                    QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
+//                    QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
+//                    qDebug() << deviceLocation << "为" << deviceType << "类型分区";
                 }
             }
         }

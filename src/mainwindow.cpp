@@ -173,7 +173,7 @@ void MainWindow::prepareAction()
     emit startFdisk(fdiskCmd);
     styleWidget->widgetClose->setEnabled(false);
     styleWidget->widgetMin->setEnabled(false);
-    styleWidget->widgetMenuBtn->setEnabled(false);
+    //styleWidget->widgetMenuBtn->setEnabled(false);
 }
 
 /************************************************
@@ -189,7 +189,7 @@ int MainWindow::changePage()
 {
     styleWidget->widgetClose->setEnabled(true);
     styleWidget->widgetMin->setEnabled(true);
-    styleWidget->widgetMenuBtn->setEnabled(true);
+    //styleWidget->widgetMenuBtn->setEnabled(true);
 
     int count = stackedWidget->count();
 
@@ -377,6 +377,7 @@ void MainWindow::failAndReturn()
     styleWidget->widgetClose->setEnabled(true);
     styleWidget->widgetMenuBtn->setEnabled(true);
     styleWidget->widgetMin->setEnabled(true);
+    qInstallMessageHandler(nullptr);
 }
 
 void MainWindow::changeToMainPage()

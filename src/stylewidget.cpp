@@ -295,15 +295,15 @@ void StyleWidget::ThemeChooseForWidget(QString str)
         body->setStyleSheet(bodyStyleSheet);
 
 
-        widgetMenuBtn->setStyleSheet("StyleWidget #widgetMenuBtn{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_h.png);border-radius:4px;}"
-                                 "StyleWidget #widgetMenuBtn:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/menu_h.png);border-radius:4px;}"
-                                 "StyleWidget #widgetMenuBtn:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/menu_h.png);border-radius:4px;}");
-        widgetMin->setStyleSheet("StyleWidget #widgetMin{background-color:rgba(255,255,255,0);border-image:url(:/data/min_h.png);border-radius:4px;}"
-                                 "StyleWidget #widgetMin:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;}"
-                                 "StyleWidget #widgetMin:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;}");
-        widgetClose->setStyleSheet("StyleWidget #widgetClose{background-color:rgba(255,255,255,0);border-image:url(:/data/close_h.png);border-radius:4px;}"
-                                   "StyleWidget #widgetClose:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;}"
-                                   "StyleWidget #widgetClose:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;}");
+        widgetMenuBtn->setStyleSheet("StyleWidget #widgetMenuBtn{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_h.png);border-radius:4px;font-size:14px;}"
+                                 "StyleWidget #widgetMenuBtn:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/menu_h.png);border-radius:4px;font-size:14px;}"
+                                 "StyleWidget #widgetMenuBtn:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/menu_h.png);border-radius:4px;font-size:14px;}");
+        widgetMin->setStyleSheet("StyleWidget #widgetMin{background-color:rgba(255,255,255,0);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}"
+                                 "StyleWidget #widgetMin:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}"
+                                 "StyleWidget #widgetMin:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}");
+        widgetClose->setStyleSheet("StyleWidget #widgetClose{background-color:rgba(255,255,255,0);border-image:url(:/data/close_h.png);border-radius:4px;font-size:14px;}"
+                                   "StyleWidget #widgetClose:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;font-size:14px;}"
+                                   "StyleWidget #widgetClose:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;font-size:14px;}");
 
     }
     else
@@ -318,15 +318,15 @@ void StyleWidget::ThemeChooseForWidget(QString str)
        body->setStyleSheet(bodyStyleSheet);
 
 
-       widgetMenuBtn->setStyleSheet("StyleWidget #widgetMenuBtn{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_d.png);border-radius:4px;}"
-                                "StyleWidget #widgetMenuBtn:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/menu_d.png);border-radius:4px;}"
-                                "StyleWidget #widgetMenuBtn:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/menu_d.png);border-radius:4px;}");
-       widgetMin->setStyleSheet("StyleWidget #widgetMin{background-color:rgba(255,255,255,0);border-image:url(:/data/min_d.png);border-radius:4px;}"
-                                "StyleWidget #widgetMin:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;}"
-                                "StyleWidget #widgetMin:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;}");
-       widgetClose->setStyleSheet("StyleWidget #widgetClose{background-color:rgba(255,255,255,0);border-image:url(:/data/close_d.png);border-radius:4px;}"
-                                  "StyleWidget #widgetClose:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;}"
-                                  "StyleWidget #widgetClose:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;}");
+       widgetMenuBtn->setStyleSheet("StyleWidget #widgetMenuBtn{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_d.png);border-radius:4px;font-size:14px;}"
+                                "StyleWidget #widgetMenuBtn:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/menu_d.png);border-radius:4px;font-size:14px;}"
+                                "StyleWidget #widgetMenuBtn:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/menu_d.png);border-radius:4px;font-size:14px;}");
+       widgetMin->setStyleSheet("StyleWidget #widgetMin{background-color:rgba(255,255,255,0);border-image:url(:/data/min_d.png);border-radius:4px;font-size:14px;}"
+                                "StyleWidget #widgetMin:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}"
+                                "StyleWidget #widgetMin:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}");
+       widgetClose->setStyleSheet("StyleWidget #widgetClose{background-color:rgba(255,255,255,0);border-image:url(:/data/close_d.png);border-radius:4px;font-size:14px;}"
+                                  "StyleWidget #widgetClose:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;font-size:14px;}"
+                                  "StyleWidget #widgetClose:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;font-size:14px;}");
 
     }
 

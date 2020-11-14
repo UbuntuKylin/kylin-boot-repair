@@ -40,6 +40,8 @@ signals:
 private:
     QProcess *cmdFinishBash;
 
+    QProcess *shutDownBash;
+
     QPushButton *laterButton = nullptr;
     QPushButton *nowButton = nullptr;
 

@@ -45,6 +45,9 @@ PartionDevice::PartionDevice(QString partionDeviceName, QObject *parent) : QObje
     realEfiMountStr  = "";
 
 //    connect(this,&PartionDevice::cmdInfo,cmdUmountBash,&CmdBash::cmdInfo,);
+//    cmdMount = new QProcess();   //创建QProcess对象并连接信号与槽
+//    cmdMount->start("bash");
+//    cmdMount->waitForStarted();
 }
 
 /************************************************
@@ -87,60 +90,169 @@ void PartionDevice::prepareOfFirstMount()
     qDebug() << "执行创建文件夹指令：" << cmdMkdirStr;
     cmdMkdirBash = new CmdBash(cmdMkdirStr,this);
     connect(cmdMkdirBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
+    qDebug() << "new cmdBash" ;
     cmdMkdirBash->cmdExecute();
 
-    qDebug() << "~~~~~~~~~~~~~~~~~~";
-    qDebug() << "创建文件夹指令结果检查";
-    qDebug() << "~~~~~~~~~~~~~~~~~~";
-
-    QString filePathCmdString = DeviceName;
-    QString temp1 = filePathCmdString;
-    QString temp2 = filePathCmdString;
-    temp2 = "/media/" + temp1.remove(0,5);
-
-    qDebug() << "检查" << temp2 << "是否存在";
-    QDir *dir = new QDir(temp2);
-
-    int tempNum = 0;
-    do
-    {
-        tempNum++;
-        if(!dir->exists())
-        {
-            qDebug() << temp2 << "文件夹不存在";
-            //创建对应的文件夹
-            qDebug() << "执行创建文件夹指令：" << cmdMkdirStr;
-            cmdMkdirBash = new CmdBash(cmdMkdirStr,this);
-            connect(cmdMkdirBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
-            cmdMkdirBash->cmdExecute();
-            fileCreatSuccess = false;
-        }
-        else
-        {
-            fileCreatSuccess = true;
-            break;
-        }
-    }
-    while((false == fileCreatSuccess) && (tempNum < 5));
-
-    if((false == fileCreatSuccess))
-    {
-        emit failAndReturn();
-        return;
-    }
-
-    //此处不能去除，否则会导致创建文件夹失败，无法挂载
     qDebug() << "cmdExecute()" ;
     qDebug() << cmdMkdirBash->currentBash->readAll();
 
     qDebug() << "获取线程end!";
-    //应增加文件夹创建失效的判断，延时循环
 
+    //挂载对应的硬盘
     qDebug() << "执行挂载硬盘指令：" << cmdMountStr;
     cmdMountBash = new CmdBash(cmdMountStr,this);
     connect(cmdMountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
     cmdMountBash->cmdExecute();
 
+
+
+//    cmdMount->write(cmdMountStr.toLocal8Bit() + '\n');
+
+//    cmdMount->waitForFinished();
+//    qDebug() << cmdMountStr;
+
+
+//    qDebug() << "等待5s再进行检查！" ;
+//    QEventLoop eventloop;
+//    QTimer::singleShot(1000, &eventloop,SLOT(quit()));
+//    eventloop.exec();
+
+
+//    qDebug() << "~~~~~~~~~~~~~~~~~~";
+//    qDebug() << "创建文件夹指令结果检查";
+//    qDebug() << "~~~~~~~~~~~~~~~~~~";
+
+//    QString filePathCmdString = DeviceName;
+//    QString temp1 = filePathCmdString;
+//    QString temp2 = filePathCmdString;
+//    temp2 = "/tmp/" + temp1.remove(0,5);
+
+//    qDebug() << "检查" << temp2 << "是否存在";
+//    QDir *dir = new QDir(temp2);
+
+//    int mkdirNum = 0;
+//    do
+//    {
+//        mkdirNum++;
+//        if(!dir->exists())
+//        {
+//            qDebug() << temp2 << "文件夹不存在";
+//            //创建对应的文件夹
+//            QEventLoop eventloop2;
+//            QTimer::singleShot(1000, &eventloop2,SLOT(quit()));
+//            eventloop2.exec();
+//            qDebug() << "等待2s再进行创建！" ;
+//            qDebug() << "执行创建文件夹指令：" << cmdMkdirStr;
+//            QDir dir2("/");
+//            if(dir2.exists())
+//            {
+//                dir2.cd("./tmp");
+//                qDebug() << "当前路径" << dir2.dirName();
+//                qDebug() << "使用QDir创建" << temp2;
+//                if(dir2.mkdir(temp2))
+//                {
+//                    qDebug() << "QDir创建！" << temp2 << "成功" ;
+//                    qDebug() << "执行挂载硬盘指令：" << cmdMountStr;
+//                    cmdMount->write(cmdMountStr.toLocal8Bit() + '\n');
+
+//                    cmdMount->waitForFinished();
+//                }
+//                else
+//                {
+//                   qDebug() << "等待2s再进行创建！" << temp2 << "失败"  ;
+//                }
+
+//            }
+//            fileCreatSuccess = false;
+//        }
+//        else
+//        {
+//            qDebug() << "文件夹" << temp2 << "存在";
+//            qDebug() << "继续执行下一步";
+//            fileCreatSuccess = true;
+//            break;
+//        }
+//    }
+//    while((false == fileCreatSuccess) && (mkdirNum < 5));
+
+//    int mountNum = 0;
+//    do
+//    {
+//        mountNum++;
+//        if(dir->isEmpty())
+//        {
+//            qDebug() << temp1 << "挂载失败！";
+//            //创建对应的文件夹
+//            QEventLoop eventloop4;
+//            QTimer::singleShot(1000, &eventloop4,SLOT(quit()));
+//            eventloop4.exec();
+//            qDebug() << "等待2s再进行挂载！" ;
+//            qDebug() << "执行挂载硬盘指令：" << cmdMountStr;
+//            cmdMountBash = new CmdBash(cmdMountStr,this);
+//            connect(cmdMountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
+//            cmdMountBash->cmdExecute();
+//            devMountSuccess = false;
+//        }
+//        else
+//        {
+//            qDebug() << "分区" << temp2 << "挂载成功";
+//            qDebug() << "继续执行下一步";
+//            devMountSuccess = true;
+//            break;
+//        }
+//    }
+//    while((false == devMountSuccess) && (mountNum < 5));
+//    if((false == devMountSuccess))
+//    {
+//        qDebug() << "！！！！！！！！！！！";
+//        qDebug() << temp2 << "挂载失败！回主线程";
+//        qDebug() << "！！！！！！！！！！！";
+//        emit failAndReturn();
+//        return;
+//    }
+
+
+
+//    QEventLoop eventloop3;
+//    QTimer::singleShot(2000, &eventloop3,SLOT(quit()));
+//    eventloop3.exec();
+//    qDebug() << "挂载后等待2s再进行检查！" ;
+//    int mountNum = 0;
+//    do
+//    {
+//        mountNum++;
+//        if(dir->isEmpty())
+//        {
+//            qDebug() << temp2 << "挂载失败！";
+//            //创建对应的文件夹
+//            QEventLoop eventloop4;
+//            QTimer::singleShot(2000, &eventloop4,SLOT(quit()));
+//            eventloop4.exec();
+//            qDebug() << "等待2s再进行挂载！" ;
+//            qDebug() << "执行挂载硬盘指令：" << cmdMountStr;
+//            cmdMountBash = new CmdBash(cmdMountStr,this);
+//            connect(cmdMountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
+//            cmdMountBash->cmdExecute();
+//            devMountSuccess = false;
+//        }
+//        else
+//        {
+//            qDebug() << "分区" << temp2 << "挂载成功";
+//            qDebug() << "继续执行下一步";
+//            devMountSuccess = true;
+//            break;
+//        }
+//    }
+//    while((false == devMountSuccess) && (mountNum < 5));
+
+//    if((false == devMountSuccess))
+//    {
+//        qDebug() << "！！！！！！！！！！！";
+//        qDebug() << temp2 << "挂载失败！回主线程";
+//        qDebug() << "！！！！！！！！！！！";
+//        emit failAndReturn();
+//        return;
+//    }
 //    qDebug() << "等待2s，等候文件夹创建完成";
 //    QTimer::singleShot(2000, [=](){
 //        //挂载对应的硬盘

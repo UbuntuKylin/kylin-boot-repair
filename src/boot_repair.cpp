@@ -142,31 +142,40 @@ void BootRepair::repairGrubFile()
     //这几条命令需要在chroot命令之后的模式下使用，所以需要是在一个cmdbash里运行
     qDebug() << currentSystem.chrootCmd;
     QString temp = currentSystem.chrootCmd + "\n";
-    temp += currentSystem.grubMkconfigCmd;
-    temp += "\n";
-    temp += currentSystem.grubInstallCmd;
-    temp += "\n";
-    temp += currentSystem.updateGrubCmd;
-    temp += "\n";
+
 
     chrootCmd = new CmdBash( temp,this);
     connect(chrootCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
     chrootCmd->cmdExecute();
 
-    /*qDebug() << currentSystem.grubMkconfigCmd;
-    grubMkconfigCmd = new CmdBash(currentSystem.grubMkconfigCmd,this);
+
+    qDebug() << currentSystem.grubMkconfigCmd;
+    QString temp1 = currentSystem.chrootCmd + "\n";
+    temp1 += currentSystem.grubMkconfigCmd;
+    temp1 += "\n";
+
+    grubMkconfigCmd = new CmdBash(temp1,this);
     connect(grubMkconfigCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
     grubMkconfigCmd->cmdExecute();
 
     qDebug() << currentSystem.grubInstallCmd;
-    grubInstallCmd = new CmdBash(currentSystem.grubInstallCmd,this);
+    QString temp2 = currentSystem.chrootCmd + "\n";
+    temp2 += currentSystem.grubInstallCmd;
+    temp2 += "\n";
+
+    grubInstallCmd = new CmdBash(temp2,this);
     connect(grubInstallCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
     grubInstallCmd->cmdExecute();
 
     qDebug() << currentSystem.updateGrubCmd;
-    updateGrubCmd = new CmdBash(currentSystem.updateGrubCmd,this);
+    QString temp3 = currentSystem.chrootCmd + "\n";
+    temp3 += currentSystem.updateGrubCmd;
+    temp3 += "\n";
+
+    updateGrubCmd = new CmdBash(temp3,this);
     connect(updateGrubCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-    updateGrubCmd->cmdExecute();*/
+    updateGrubCmd->cmdExecute();
+
     qDebug() << "拆卸已装载的分区" << currentSystem.umountAllCmd;
     umountAllCmd = new CmdBash( currentSystem.umountAllCmd,this);
     connect(umountAllCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);

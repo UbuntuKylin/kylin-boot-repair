@@ -1,7 +1,9 @@
 [Desktop Entry]
 Name=kylin-boot-repair
-Name[zh_CN]= 引导修复工具
+Name[zh_CN]= 麒麟引导修复工具
 Icon=kylin-boot-repair
 Exec=/usr/bin/kylin-boot-repair %u
+NoDisplay=true
 Type=Application
-Categories=GNOME;Utility;
+Categories=Utility;
+Comment= 提供麒麟系统的引导修复工具

@@ -5,9 +5,7 @@
         <file>data/close_p.png</file>
         <file>data/loading.png</file>
         <file>data/main.png</file>
-        <file>data/finish.gif</file>
         <file>data/loading.gif</file>
-        <file>data/finish.png</file>
         <file>data/close_d.png</file>
         <file>data/close_h.png</file>
         <file>data/min_d.png</file>
@@ -16,5 +14,6 @@
         <file>data/fail.png</file>
         <file>data/menu_d.png</file>
         <file>data/menu_h.png</file>
+        <file>data/finish.png</file>
     </qresource>
 </RCC>

@@ -1,3 +1,58 @@
+kylin-boot-repair (1.0.11kord) v101; urgency=medium
+
+  * Bug 25032 跟随系统字体时不完全跟随
+  * 修复流程更改，便于定位问题。
+  * 更改desktop文件，使软件无法在任意文件的打开方式应用列表中可见。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 11 Nov 2020 18:27:40 +0800
+
+kylin-boot-repair (1.0.10kord) v101; urgency=medium
+
+  * 解决无法实时刷新LOG日志bug。
+  * 解决无法创建文件夹挂载硬盘bug。
+  * 消除修复成功图标锯齿。
+  * 解决延时等待失败问题。
+  * 使用QDir辅助创建文件夹。
+  * 解决修复完毕后选择现在重启，卡死问题。
+  * 回退部分代码。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 11 Nov 2020 18:27:40 +0800
+
+kylin-boot-repair (1.0.9kord~rc1) v101; urgency=medium
+
+  * 解决无法实时刷新LOG日志bug。
+  * 解决无法创建文件夹挂载硬盘bug。
+  * 消除修复成功图标锯齿。
+  * 解决延时等待失败问题。
+  * 使用QDir辅助创建文件夹。
+  * 回退部分代码。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 11 Nov 2020 18:27:40 +0800
+
+kylin-boot-repair (1.0.8kord~rc3) v101; urgency=medium
+
+  * 解决无法实时刷新LOG日志bug。
+  * 解决无法创建文件夹挂载硬盘bug。
+  * 消除修复成功图标锯齿。
+  * 解决延时等待失败问题。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 11 Nov 2020 10:27:40 +0800
+
+kylin-boot-repair (1.0.8kord~rc2) v101; urgency=medium
+
+  * 解决无法实时刷新LOG日志bug。
+  * 解决无法创建文件夹挂载硬盘bug。
+  * 消除修复成功图标锯齿。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 11 Nov 2020 09:27:40 +0800
+
+kylin-boot-repair (1.0.8kord~rc1) v101; urgency=medium
+
+  * 解决无法实时刷新LOG日志bug。
+  * 解决无法创建文件夹挂载硬盘bug。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 10 Nov 2020 17:27:40 +0800
+
 kylin-boot-repair (1.0.8kord) v101; urgency=medium
 
   * 解决无法实时刷新LOG日志bug。

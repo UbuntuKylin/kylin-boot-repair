@@ -15,6 +15,7 @@
 #include <QProcess>
 #include <QDebug>
 #include <QFileDialog>
+#include <QEventLoop>
 #include <QFile>
 #include <QDir>
 #include "cmd_bash.h"
@@ -47,6 +48,7 @@ public:
     bool isUEFIBoot = false;
 
     bool fileCreatSuccess = false;
+    bool devMountSuccess = false;
 
     QString selfBootDeviceName;
     QString selfEfiDeviceName;
@@ -78,6 +80,7 @@ private:
     CmdBash* cmdUmountBash;           //拆卸硬盘线程类
     CmdBash* cmdMkdirBash;            //创建文件夹线程类
     CmdBash* cmdMountBash;            //挂载硬盘线程类
+    QProcess* cmdMount;               //挂载硬盘QProcess
 
 };
 

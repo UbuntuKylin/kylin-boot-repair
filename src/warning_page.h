@@ -40,6 +40,7 @@ class WarningPage : public QWidget
     Q_OBJECT
 public:
     explicit WarningPage( StyleWidgetAttribute);
+    ~WarningPage();
     void pageChangeForTheme(QString str);
 signals:
     void closeMainWin();

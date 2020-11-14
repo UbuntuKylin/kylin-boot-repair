@@ -170,22 +170,7 @@ void LogWidget::myStyle(StyleWidgetAttribute swa)
     logText->setObjectName("logText");
     logText->setFixedSize(395,390);
 
-    QString logString;
-    QFile logfile("/tmp/BootRepairLog.txt");
 
-    if(!logfile.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        qDebug()<<"无法打开日志!";
-    }
-    while(!logfile.atEnd())
-    {
-        QByteArray line = logfile.readLine();
-        QString str(line);
-        logString.append(str);
-    }
-
-    logText->clear();
-    logText->setPlainText(logString);
 
     QHBoxLayout *hlt_logText=new QHBoxLayout;
     hlt_logText->setMargin(0);
@@ -268,6 +253,22 @@ void LogWidget::showOrHide()
 {
     if(this->isHidden())
     {
+        QString logString;
+        QFile logfile("/tmp/BootRepairLog.txt");
+
+        if(!logfile.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            qDebug()<<"无法打开日志!";
+        }
+        while(!logfile.atEnd())
+        {
+            QByteArray line = logfile.readLine();
+            QString str(line);
+            logString.append(str);
+        }
+
+        logText->clear();
+        logText->setPlainText(logString);
         swshadow->show();
         this->show();
     }
@@ -302,13 +303,13 @@ void LogWidget::ThemeChooseForWidget(QString str)
         body->setStyleSheet(bodyStyleSheet);
 
 
-        widgetMin->setStyleSheet("QPushButton{background-color:rgba(255,255,255,0);border-image:url(:/data/min_h.png);border-radius:4px;}"
-                                 "QPushButton:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;}"
-                                 "QPushButton:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;}");
-        widgetClose->setStyleSheet("QPushButton{background-color:rgba(255,255,255,0);border-image:url(:/data/close_h.png);border-radius:4px;}"
-                                   "QPushButton:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;}"
-                                   "QPushButton:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;}");
-        logText->setStyleSheet("QTextEdit{background-color:rgba(20, 20, 20, 1);color:rgba(255, 255, 255, 0.85);}");
+        widgetMin->setStyleSheet("QPushButton{background-color:rgba(255,255,255,0);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}"
+                                 "QPushButton:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}"
+                                 "QPushButton:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}");
+        widgetClose->setStyleSheet("QPushButton{background-color:rgba(255,255,255,0);border-image:url(:/data/close_h.png);border-radius:4px;font-size:14px;}"
+                                   "QPushButton:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;font-size:14px;}"
+                                   "QPushButton:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;font-size:14px;}");
+        logText->setStyleSheet("QTextEdit{background-color:rgba(20, 20, 20, 1);color:rgba(255, 255, 255, 0.85);font-size:14px;}");
     }
     else
     {
@@ -322,13 +323,13 @@ void LogWidget::ThemeChooseForWidget(QString str)
        body->setStyleSheet(bodyStyleSheet);
 
 
-       widgetMin->setStyleSheet("QPushButton{background-color:rgba(255,255,255,0);border-image:url(:/data/min_d.png);border-radius:4px;}"
-                                "QPushButton:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;}"
-                                "QPushButton:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;}");
-       widgetClose->setStyleSheet("QPushButton{background-color:rgba(255,255,255,0);border-image:url(:/data/close_d.png);border-radius:4px;}"
-                                  "QPushButton:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;}"
-                                  "QPushButton:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;}");
-        logText->setStyleSheet("QTextEdit{background-color:rgba(255,255,255,1);color:rgba(0, 0, 0, 0.85);}");
+       widgetMin->setStyleSheet("QPushButton{background-color:rgba(255,255,255,0);border-image:url(:/data/min_d.png);border-radius:4px;font-size:14px;}"
+                                "QPushButton:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}"
+                                "QPushButton:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}");
+       widgetClose->setStyleSheet("QPushButton{background-color:rgba(255,255,255,0);border-image:url(:/data/close_d.png);border-radius:4px;font-size:14px;}"
+                                  "QPushButton:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;font-size:14px;}"
+                                  "QPushButton:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;font-size:14px;}");
+        logText->setStyleSheet("QTextEdit{background-color:rgba(255,255,255,1);color:rgba(0, 0, 0, 0.85);font-size:14px;}");
     }
 
 }
