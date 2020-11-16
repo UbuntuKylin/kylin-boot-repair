@@ -40,7 +40,7 @@ private:
 
 
     void readCmdBashInfo();
-
+    void readCmdBashErrorInfo();
 };
 
 #endif // CMDBASH_H

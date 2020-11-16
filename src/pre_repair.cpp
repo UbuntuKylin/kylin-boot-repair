@@ -187,7 +187,7 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
 
             currentSystem.chrootCmd += currentDevice->DeviceName;
 
-            currentSystem.grubInstallCmd += currentDevice->systemClassEfi;
+            //currentSystem.grubInstallCmd += currentDevice->systemClassEfi;
 
             readyToRepairList.append(currentSystem);              //将当前处理的根目录所属的系统信息添加至string list
         }

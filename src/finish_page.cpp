@@ -53,6 +53,7 @@ void FinishPage::initControlQss()
     nowButton = new QPushButton(this);
     QFont nowButton_continueButton;
     nowButton_continueButton.setFamily(QFontDatabase::applicationFontFamilies(QFontDatabase::addApplicationFont(":/data/PingFang-Jian-ChangGuiTi-2.ttf")).at(0));//读取字体
+    nowButton->setObjectName("nowButton");
     nowButton->setFixedSize(140,40);
     nowButton->setText(tr("现在"));
     nowButton->setEnabled(true);
@@ -140,9 +141,9 @@ void FinishPage::pageChangeForTheme(QString str)
         laterButton->setStyleSheet("QPushButton#laterButton{color:rgba(0, 0, 0, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
                                    "QPushButton#laterButton:hover{color:rgba(0, 0, 0, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
                                    "QPushButton#laterButton:pressed{color:rgba(0, 0, 0, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;font-size:14px;}");
-        nowButton->setStyleSheet("QPushButton#laterButton{color:rgba(0, 0, 0, 0.855);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
-                                              "QPushButton#laterButton:hover{color:rgba(0, 0, 0, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
-                                              "QPushButton#laterButton:pressed{color:rgba(0, 0, 0, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;font-size:14px;}");
+        nowButton->setStyleSheet("QPushButton#nowButton{color:rgba(0, 0, 0, 0.855);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
+                                              "QPushButton#nowButton:hover{color:rgba(0, 0, 0, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
+                                              "QPushButton#nowButton:pressed{color:rgba(0, 0, 0, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;font-size:14px;}");
 
     }
     else
@@ -151,8 +152,8 @@ void FinishPage::pageChangeForTheme(QString str)
         laterButton->setStyleSheet("QPushButton#laterButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
                                    "QPushButton#laterButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
                                    "QPushButton#laterButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;font-size:14px;}");
-        nowButton->setStyleSheet("QPushButton#laterButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
-                                 "QPushButton#laterButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
-                                 "QPushButton#laterButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;font-size:14px;}");
+        nowButton->setStyleSheet("QPushButton#nowButton{color:rgba(255, 255, 255, 0.85);background-color:rgba(231, 231, 231, 1);border-radius:6px;font-size:14px;}"
+                                 "QPushButton#nowButton:hover{color:rgba(255, 255, 255, 0.85);background-color:rgba(108, 142, 235, 1);border-radius:6px;font-size:14px;}"
+                                 "QPushButton#nowButton:pressed{color:rgba(255, 255, 255, 0.85);background-color:rgba(50, 88, 202, 1);border-radius:6px;font-size:14px;}");
     }
 }

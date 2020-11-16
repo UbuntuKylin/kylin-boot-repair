@@ -32,7 +32,7 @@ typedef struct linuxSystemInfo
     QString homeMountCmd    = "sudo -S mount ";
 
     QString chrootCmd       = "sudo -S chroot /media/kylin";
-    QString grubInstallCmd  = "sudo -S grub-install --target=";
+    QString grubInstallCmd  = "sudo -S grub-install --target";
     QString grubMkconfigCmd = "sudo -S grub-mkconfig -o /boot/grub/grub.cfg";
     QString updateGrubCmd   = "sudo -S update-grub";
 

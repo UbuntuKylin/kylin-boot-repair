@@ -63,6 +63,7 @@ void CmdBash::cmdExecute()
     currentBash->waitForStarted();
 
     connect(currentBash,&QProcess::readyReadStandardOutput,this,&CmdBash::readCmdBashInfo);
+    connect(currentBash,&QProcess::readyReadStandardError,this,&CmdBash::readCmdBashErrorInfo);
 
     qDebug() << "执行命令： " << cmd;
     currentBash->write(cmd.toLocal8Bit() + '\n');
@@ -100,4 +101,28 @@ void CmdBash::readCmdBashInfo()
         qDebug() << "命令" << cmd<< "无返回信息";
         emit cmdInfo(cmd + "无返回信息");
     }
+}
+/************************************************
+* 函数名称：readCmdBashErrorInfo
+* 功能描述：读取标准错误输出，若有错误输出，向主线程发送信
+*         号，要求关闭程序。
+* 输入参数：
+* 输出参数：
+* 修改日期：2020.10.12
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void CmdBash::readCmdBashErrorInfo()
+{
+    QByteArray cmdStdOut = currentBash->readAllStandardError();
+
+    if(!cmdStdOut.isEmpty()){
+
+        qDebug() << "命令" << cmd<< "报错";
+        qDebug() << "cmdbash类有返回信息";
+        qDebug() << cmdStdOut;
+        //emit cmdInfo(cmdStdOut);
+    }
+
 }
