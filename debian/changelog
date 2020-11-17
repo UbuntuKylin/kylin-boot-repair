@@ -1,4 +1,10 @@
-kylin-boot-repair (1.0.12kord~rc1) v101; urgency=medium
+kylin-boot-repair (1.0.13kord~rc2) v101; urgency=medium
+
+  * 修改desktop文件
+
+ -- hanzehui <hanzehui@kylinos.cn>  Mon, 16 Nov 2020 18:27:40 +0800
+
+kylin-boot-repair (1.0.13kord~rc1) v101; urgency=medium
 
   * 因arm机型无法获取架构类型而修复失败
 
