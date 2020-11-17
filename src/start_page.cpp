@@ -59,8 +59,8 @@ void StartPage::initControlQss()
         int tempCheck = 0;
 
         tempCheck = system("mate-terminal --title='手动修复' -x  \
-                            bash -c 'echo 手动修复优麒麟系统方法，请勿贸然尝试：; \
-                                     echo 本方法仅适用于优麒麟系统，对于双系统等复杂情况，需视情况自行调整。; \
+                            bash -c 'echo 手动修复麒麟系统方法，请勿贸然尝试：; \
+                                     echo 本方法仅适用于麒麟系统，对于双系统等复杂情况，需视情况自行调整。; \
                                      echo ; \
                                      echo ① 输入sudo fdisk -l命令查看所有硬盘情况。; \
                                      echo ; \

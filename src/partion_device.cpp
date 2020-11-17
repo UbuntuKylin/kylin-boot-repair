@@ -40,6 +40,8 @@ PartionDevice::PartionDevice(QString partionDeviceName, QObject *parent) : QObje
     cmdMountStr  = "sudo -S mount /dev"   + tempStr + " /media" + tempStr;
     fstabPath    = "/media"               + tempStr + "/etc/fstab";
 
+    archDetectCmd   = "archdetect";
+
     realRootMountStr = "";
     realBootMountStr = "";
     realEfiMountStr  = "";
@@ -341,7 +343,16 @@ void PartionDevice::partionTypeOfDevice(QString partionDeviceName)
                                 if(grubDirName != "fonts")
                                 {
                                     systemClassEfi = grubDirName;
+                                    needGrubInstall = true;
                                     qDebug() << "grub文件夹中，系统架构文件夹的名字是！ " << systemClassEfi;
+                                }
+                                else
+                                {
+                                    //查看系统架构
+                                    qDebug() << "查看系统架构指令：" << archDetectCmd;
+                                    cmdArchBash = new CmdBash(archDetectCmd,this);
+                                    connect(cmdArchBash,&CmdBash::cmdInfo,this,&PartionDevice::archdetectCmdInfo);
+                                    cmdArchBash->cmdExecute();
                                 }
                             }
                         }
@@ -358,6 +369,7 @@ void PartionDevice::partionTypeOfDevice(QString partionDeviceName)
                     grubDir->setSorting(QDir::DirsFirst);
                     QFileInfoList grubDdirList = grubDir->entryInfoList();
 
+                    systemClassEfi.clear();
                     for(int i = 0; i < grubDdirList.size(); i++)
                     {
                         QFileInfo grubFileInfo = grubDdirList.at(i);
@@ -368,9 +380,23 @@ void PartionDevice::partionTypeOfDevice(QString partionDeviceName)
                             if(grubDirName != "fonts")
                             {
                                 systemClassEfi = grubDirName;
+                                needGrubInstall = true;
                                 qDebug() << "grub文件夹中，系统架构文件夹的名字是！ " << systemClassEfi;
                             }
                         }
+                        else
+                        {
+                            //查看系统架构
+                            qDebug() << "查看系统架构指令：" << archDetectCmd;
+                            cmdArchBash = new CmdBash(archDetectCmd,this);
+                            connect(cmdArchBash,&CmdBash::cmdInfo,this,&PartionDevice::archdetectCmdInfo);
+                            cmdArchBash->cmdExecute();
+                        }
+                    }
+
+                    if(systemClassEfi.isEmpty())
+                    {
+
                     }
 
                     break;
@@ -551,4 +577,37 @@ void PartionDevice::readFstabInfo()
 void PartionDevice::cmdInfo(QString inputInfo)
 {
     //emit setInfo(inputInfo);
+}
+
+void PartionDevice::archdetectCmdInfo(QString outputInfo)
+{
+    if(outputInfo.contains("generic"))
+    {
+        needGrubInstall = false;
+    }
+    else if(outputInfo.contains("arm64/efi"))
+    {
+        needGrubInstall = true;
+        systemClassEfi = "arm64-efi";
+    }
+    else if(outputInfo.contains("arm/efi"))
+    {
+        needGrubInstall = true;
+        systemClassEfi = "arm-efi";
+    }
+    else if(outputInfo.contains("amd64"))
+    {
+        needGrubInstall = true;
+        systemClassEfi = "x86_64-efi";
+    }
+    else if(outputInfo.contains("mipsel"))
+    {
+        needGrubInstall = true;
+        systemClassEfi = "mipsel-loongson";
+    }
+    else
+    {
+        needGrubInstall = true;
+        systemClassEfi = "i386-pc";
+    }
 }

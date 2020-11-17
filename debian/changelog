@@ -1,6 +1,6 @@
 kylin-boot-repair (1.0.13kord~rc3) v101; urgency=medium
 
-  * 修复因修改desktop中Categories=GNOME;Utility;字段导致菜单中无图标。
+  * 修改arm系统无法正常修复的问题
 
  -- hanzehui <hanzehui@kylinos.cn>  Mon, 16 Nov 2020 18:27:40 +0800
 
