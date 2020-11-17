@@ -33,7 +33,7 @@ public:
     void partionTypeOfDevice(QString partionDeviceName);      //对挂载的硬盘进行分析，判断硬盘分区类型
 
     void readFstabInfo();                                     //如果是root分区，读取其/etc/目录下的fstab文件
-
+    void archdetectCmdInfo(QString outputInfo);
     QString DeviceName;
     QString rootPath = "";
     QString bootPath = "";
@@ -53,7 +53,8 @@ public:
     QString selfBootDeviceName;
     QString selfEfiDeviceName;
     QString selfHomeDeviceName;
-    QString systemClassEfi;
+    QString systemClassEfi  = "";
+    bool    needGrubInstall = false;
 
     QString cmdUmountStr;
     QString cmdMkdirStr;
@@ -68,6 +69,7 @@ public:
     QString realBootMountStr;
     QString realEfiMountStr ;
     QString realHomeMountStr;
+    QString archDetectCmd;
 
 public slots://提供给各线程的槽函数
     void cmdInfo(QString inputInfo);
@@ -80,6 +82,7 @@ private:
     CmdBash* cmdUmountBash;           //拆卸硬盘线程类
     CmdBash* cmdMkdirBash;            //创建文件夹线程类
     CmdBash* cmdMountBash;            //挂载硬盘线程类
+    CmdBash* cmdArchBash;            //挂载硬盘线程类
     QProcess* cmdMount;               //挂载硬盘QProcess
 
 };

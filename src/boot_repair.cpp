@@ -158,14 +158,17 @@ void BootRepair::repairGrubFile()
     connect(grubMkconfigCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
     grubMkconfigCmd->cmdExecute();
 
-    qDebug() << currentSystem.grubInstallCmd;
-    QString temp2 = currentSystem.chrootCmd + "\n";
-    temp2 += currentSystem.grubInstallCmd;
-    temp2 += "\n";
+    if(currentSystem.needGrubInstall)
+    {
+        qDebug() << currentSystem.grubInstallCmd;
+        QString temp2 = currentSystem.chrootCmd + "\n";
+        temp2 += currentSystem.grubInstallCmd;
+        temp2 += "\n";
 
-    grubInstallCmd = new CmdBash(temp2,this);
-    connect(grubInstallCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-    grubInstallCmd->cmdExecute();
+        grubInstallCmd = new CmdBash(temp2,this);
+        connect(grubInstallCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+        grubInstallCmd->cmdExecute();
+    }
 
     qDebug() << currentSystem.updateGrubCmd;
     QString temp3 = currentSystem.chrootCmd + "\n";

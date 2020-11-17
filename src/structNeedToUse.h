@@ -32,7 +32,8 @@ typedef struct linuxSystemInfo
     QString homeMountCmd    = "sudo -S mount ";
 
     QString chrootCmd       = "sudo -S chroot /media/kylin";
-    QString grubInstallCmd  = "sudo -S grub-install --target";
+    QString grubInstallCmd  = "sudo -S grub-install --target=";
+    bool    needGrubInstall = false;
     QString grubMkconfigCmd = "sudo -S grub-mkconfig -o /boot/grub/grub.cfg";
     QString updateGrubCmd   = "sudo -S update-grub";
 
@@ -42,6 +43,7 @@ typedef struct linuxSystemInfo
 
     QString umountAllCmd    = "sudo -S umount -l ";
 
+    QString archDetectCmd   = "archdetect";
 }linuxSystemInfo;
 
 #endif // STRUCTNEEDTOUSE_H
