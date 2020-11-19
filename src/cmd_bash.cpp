@@ -18,8 +18,10 @@
 *   创建  HZH
 *
 *************************************************/
-CmdBash::CmdBash(QString inputCmd, QObject *parent) : QObject(parent)
+CmdBash::CmdBash(bool hasPwd,QString userPwd,QString inputCmd, QObject *parent) : QObject(parent)
 {
+    hasPassWord = hasPwd;
+    userPassWord = userPwd;
     cmd = inputCmd;
     bashFinished = false;
     qDebug() << "创建名为 " << cmd << "的线程";
@@ -67,11 +69,16 @@ void CmdBash::cmdExecute()
 
     qDebug() << "执行命令： " << cmd;
     currentBash->write(cmd.toLocal8Bit() + '\n');
+    if(hasPassWord)
+    {
+        qDebug() << "有密码！";
+        currentBash->write(userPassWord.toLocal8Bit() + '\n');
+    }
 
     currentBash->closeWriteChannel();
 
 
-    bashFinished = currentBash->waitForFinished(10000);
+    bashFinished = currentBash->waitForFinished(10000);//为检测命令是否成功保留的flag，暂未用到。
 }
 
 /************************************************
@@ -91,10 +98,11 @@ void CmdBash::readCmdBashInfo()
     QByteArray cmdStdOut = currentBash->readAllStandardOutput();
 
     if(!cmdStdOut.isEmpty()){
-        qDebug() << cmdStdOut;
+        qDebug() << QString::fromLocal8Bit(cmdStdOut);
         qDebug() << "命令" << cmd<< "获取数据信息成功";
         qDebug() << "cmdbash类有返回信息";
-        emit cmdInfo(cmdStdOut);
+        emit cmdInfo(QString::fromLocal8Bit(cmdStdOut));
+        currentBash->close();
     }
     else
     {
@@ -117,12 +125,13 @@ void CmdBash::readCmdBashErrorInfo()
 {
     QByteArray cmdStdOut = currentBash->readAllStandardError();
 
-    if(!cmdStdOut.isEmpty()){
+    if(!cmdStdOut.isEmpty()&& !(cmdStdOut.contains("[sudo]")))
+    {
 
         qDebug() << "命令" << cmd<< "报错";
         qDebug() << "cmdbash类有返回信息";
-        qDebug() << cmdStdOut;
-        //emit cmdInfo(cmdStdOut);
+        qDebug() << QString::fromLocal8Bit(cmdStdOut);
+        //emit cmdInfo(QString::fromLocal8Bit(cmdStdOut));
     }
 
 }

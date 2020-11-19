@@ -1,6 +1,10 @@
 [Desktop Entry]
 Name=kylin-boot-repair
 Name[zh_CN]=麒麟引导修复工具
+Name[bo_CN]=ཆི་ལིན་གྱིས་ཞིག་གསོ་བྱེད་པར་སྣེ་ཁྲིད་བྱས།
+GenericName=kylin-boot-repair
+GenericName[zh_CN]=麒麟引导修复工具
+GenericName[bo_CN]=ཆི་ལིན་གྱིས་ཞིག་གསོ་བྱེད་པར་སྣེ་ཁྲིད་བྱས།
 Icon=kylin-boot-repair
 Exec=/usr/bin/kylin-boot-repair
 Type=Application
@@ -8,3 +12,4 @@ Categories=Utility;
 Keywords=System,Manage
 Comment=Tool for repairing grub of KylinOS
 Comment[zh_CN]=提供麒麟系统的引导修复的工具
+Comment[bo_CN]=ཆི་ལིན་མ་ལག་གི་ཁྲིད་སྟོན་དང་ཉམས་གསོའི་ཡོ་བྱད་མཁོ་འདོན་བྱེད་དགོས།

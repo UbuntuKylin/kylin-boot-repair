@@ -18,9 +18,10 @@
 *   创建  HZH
 *
 *************************************************/
-PreRepair::PreRepair(QObject *parent) : QObject(parent)
+PreRepair::PreRepair(bool hasPwd, QString userPwd, QObject *parent) : QObject(parent)
 {
-
+    hasPassWord  = hasPwd;
+    userPassWord = userPwd;
 }
 
 /************************************************
@@ -58,7 +59,7 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
     {
         qDebug() << "当前分区名：" << s;
         qDebug() << "创建新的名为 " << s << " 的partionDevice类";
-        currentDevice = new PartionDevice(s);
+        currentDevice = new PartionDevice(hasPassWord,userPassWord,s);
 
         connect(currentDevice,&PartionDevice::failAndReturn,this,&PreRepair::failAndReturn);
         currentDevice->readFstabInfo();                         //读取fstab文件中linux分区信息
@@ -187,9 +188,19 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
 
             currentSystem.chrootCmd += currentDevice->DeviceName;
 
-            currentSystem.grubInstallCmd += currentDevice->systemClassEfi;
-
             currentSystem.needGrubInstall = currentDevice->needGrubInstall;
+
+            if(currentSystem.needGrubInstall && !(currentDevice->systemClassEfi.isEmpty()))
+            {
+                currentSystem.grubInstallCmd += currentDevice->systemClassEfi;
+            }
+            else
+            {
+                currentSystem.needGrubInstall = false;
+                currentSystem.grubInstallCmd.clear();
+            }
+
+
 
             readyToRepairList.append(currentSystem);              //将当前处理的根目录所属的系统信息添加至string list
         }
@@ -213,10 +224,32 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
 
     for(uint i = 0 ; i < systemNumOnDisk; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
     {
-        currentSystem = new BootRepair(readyToRepairList.at(i));
-        currentSystem->repairGrubFile();            //grub引导文件修复
+        currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
+        if(currentSystem->repairGrubFile())            //grub引导文件修复
+        {
+            repairSuccess = true;
+            break;
+        }
+        else
+        {
+            if(i == systemNumOnDisk)
+            {
+                repairSuccess = false;
+                break;
+            }
+            repairSuccess = false;
+        }
     }
 
-    emit changeToFinishPage();                    //发送信号，使主线程翻页
+    if(repairSuccess)
+    {
+        qDebug() << "修复成功！！！";
+        emit changeToFinishPage();                    //发送信号，使主线程翻页
+    }
+    else
+    {
+        qDebug() << "boot_repair过程中修复失败！！！";
+        emit failAndReturn();
+    }
 
 }

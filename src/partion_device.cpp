@@ -20,8 +20,11 @@
 *   创建  HZH
 *
 *************************************************/
-PartionDevice::PartionDevice(QString partionDeviceName, QObject *parent) : QObject(parent)
+PartionDevice::PartionDevice(bool hasPwd, QString userPwd,QString partionDeviceName, QObject *parent) : QObject(parent)
 {
+    hasPassWord = hasPwd;
+    userPassWord = userPwd;
+
     DeviceName = partionDeviceName;
     qDebug() << "当前分区硬盘名称为：" << DeviceName;
 
@@ -40,16 +43,11 @@ PartionDevice::PartionDevice(QString partionDeviceName, QObject *parent) : QObje
     cmdMountStr  = "sudo -S mount /dev"   + tempStr + " /media" + tempStr;
     fstabPath    = "/media"               + tempStr + "/etc/fstab";
 
-    archDetectCmd   = "archdetect";
+    archDetectCmd   = "sudo -S archdetect";
 
     realRootMountStr = "";
     realBootMountStr = "";
     realEfiMountStr  = "";
-
-//    connect(this,&PartionDevice::cmdInfo,cmdUmountBash,&CmdBash::cmdInfo,);
-//    cmdMount = new QProcess();   //创建QProcess对象并连接信号与槽
-//    cmdMount->start("bash");
-//    cmdMount->waitForStarted();
 }
 
 /************************************************
@@ -76,22 +74,24 @@ PartionDevice::~PartionDevice()
 * 输入参数：QString partionDeviceName, QObject *parent
 * 输出参数：无
 * 修改日期：2020.10.12
+*         2020.11.19
 * 修改内容：
 *   创建  HZH
+*   修改  HZH  增加命令执行判断流程，暂注释
 *
 *************************************************/
 void PartionDevice::prepareOfFirstMount()
 {
     //先卸载硬盘，以防被加载
     qDebug() << "执行拆卸硬盘指令：" << cmdUmountStr;
-    cmdUmountBash = new CmdBash(cmdUmountStr,this);
-    connect(cmdUmountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
+    cmdUmountBash = new CmdBash(hasPassWord,userPassWord,cmdUmountStr,this);
+    //connect(cmdUmountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
     cmdUmountBash->cmdExecute();
 
     //创建对应的文件夹
     qDebug() << "执行创建文件夹指令：" << cmdMkdirStr;
-    cmdMkdirBash = new CmdBash(cmdMkdirStr,this);
-    connect(cmdMkdirBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
+    cmdMkdirBash = new CmdBash(hasPassWord,userPassWord,cmdMkdirStr,this);
+    //connect(cmdMkdirBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
     qDebug() << "new cmdBash" ;
     cmdMkdirBash->cmdExecute();
 
@@ -102,8 +102,8 @@ void PartionDevice::prepareOfFirstMount()
 
     //挂载对应的硬盘
     qDebug() << "执行挂载硬盘指令：" << cmdMountStr;
-    cmdMountBash = new CmdBash(cmdMountStr,this);
-    connect(cmdMountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
+    cmdMountBash = new CmdBash(hasPassWord,userPassWord,cmdMountStr,this);
+    //connect(cmdMountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
     cmdMountBash->cmdExecute();
 
 
@@ -278,8 +278,10 @@ void PartionDevice::prepareOfFirstMount()
 * 输入参数：QString partionDeviceName
 * 输出参数：无
 * 修改日期：2020.10.12
+*         2020.11.19
 * 修改内容：
 *   创建  HZH
+*   修改  HZH  去除通过efi下文件夹读取架构类型流程
 *
 *************************************************/
 void PartionDevice::partionTypeOfDevice(QString partionDeviceName)
@@ -288,6 +290,12 @@ void PartionDevice::partionTypeOfDevice(QString partionDeviceName)
     QString filePathCmdString = partionDeviceName;
     QString temp = filePathCmdString;
     filePathCmdString = "/media/" + temp.remove(0,5);
+
+    //查看系统架构
+    qDebug() << "查看系统架构指令：" << archDetectCmd;
+    cmdArchBash = new CmdBash(hasPassWord,userPassWord,archDetectCmd,this);
+    connect(cmdArchBash,&CmdBash::cmdInfo,this,&PartionDevice::archdetectCmdInfo);
+    cmdArchBash->cmdExecute();
 
     qDebug() << "开始遍历目录下文件夹" << filePathCmdString;
     QDir *dir = new QDir(filePathCmdString);
@@ -323,40 +331,12 @@ void PartionDevice::partionTypeOfDevice(QString partionDeviceName)
                         qDebug() << "目录下的boot文件夹为空，boot单独分区了！ ";
                         bootIsSeparate = true;
                     }
-                    else//boot目录不为空，则boot未被单独分区，读取其中的grub文件夹下的系统架构文件夹，查看架构类型。
+                    else
                     {
                         qDebug() << "目录下的boot文件夹不为空，boot未单独分区！ ";
                         bootIsSeparate = false;
-                        qDebug() << "查看boot文件夹下的grub文件夹中文件内容，判断是什么类型架构的系统！ ";
-                        QDir *grubDir = new QDir(filePathCmdString + "/boot/grub/");
-                        grubDir->setFilter(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot);
-                        grubDir->setSorting(QDir::DirsFirst);
-                        QFileInfoList grubDdirList = grubDir->entryInfoList();
-
-                        for(int i = 0; i < grubDdirList.size(); i++)
-                        {
-                            QFileInfo grubFileInfo = grubDdirList.at(i);
-                            if(grubFileInfo.isDir())
-                            {
-                                QString grubDirName = QDir(grubFileInfo.absoluteFilePath()).dirName();
-                                qDebug() << "当前文件为grub目录下的：" << grubDirName;
-                                if(grubDirName != "fonts")
-                                {
-                                    systemClassEfi = grubDirName;
-                                    needGrubInstall = true;
-                                    qDebug() << "grub文件夹中，系统架构文件夹的名字是！ " << systemClassEfi;
-                                }
-                                else
-                                {
-                                    //查看系统架构
-                                    qDebug() << "查看系统架构指令：" << archDetectCmd;
-                                    cmdArchBash = new CmdBash(archDetectCmd,this);
-                                    connect(cmdArchBash,&CmdBash::cmdInfo,this,&PartionDevice::archdetectCmdInfo);
-                                    cmdArchBash->cmdExecute();
-                                }
-                            }
-                        }
                     }
+
                     break;
                 }
                 if(dirName == "grub")//如果分区根目录下有grub目录，则该分区为boot分区，读取其中架构类型文件夹
@@ -364,40 +344,6 @@ void PartionDevice::partionTypeOfDevice(QString partionDeviceName)
                     qDebug() << "目录下存在grub文件夹，boot单独分区了！ ";
                     isBootPartion = true;
                     bootIsSeparate = true;
-                    QDir *grubDir = new QDir(filePathCmdString + "/grub/");
-                    grubDir->setFilter(QDir::Dirs|QDir::Files|QDir::NoDotAndDotDot);
-                    grubDir->setSorting(QDir::DirsFirst);
-                    QFileInfoList grubDdirList = grubDir->entryInfoList();
-
-                    systemClassEfi.clear();
-                    for(int i = 0; i < grubDdirList.size(); i++)
-                    {
-                        QFileInfo grubFileInfo = grubDdirList.at(i);
-                        if(grubFileInfo.isDir())
-                        {
-                            QString grubDirName = QDir(grubFileInfo.absoluteFilePath()).dirName();
-                            qDebug() << "当前文件为grub目录下的：" << grubDirName;
-                            if(grubDirName != "fonts")
-                            {
-                                systemClassEfi = grubDirName;
-                                needGrubInstall = true;
-                                qDebug() << "grub文件夹中，系统架构文件夹的名字是！ " << systemClassEfi;
-                            }
-                        }
-                        else
-                        {
-                            //查看系统架构
-                            qDebug() << "查看系统架构指令：" << archDetectCmd;
-                            cmdArchBash = new CmdBash(archDetectCmd,this);
-                            connect(cmdArchBash,&CmdBash::cmdInfo,this,&PartionDevice::archdetectCmdInfo);
-                            cmdArchBash->cmdExecute();
-                        }
-                    }
-
-                    if(systemClassEfi.isEmpty())
-                    {
-
-                    }
 
                     break;
                 }
@@ -559,8 +505,8 @@ void PartionDevice::readFstabInfo()
     }
     //再卸载硬盘，以便通过对应关系重新的，正确的挂载各分区
     qDebug() << "执行拆卸硬盘指令：" << cmdUmountStr;
-    cmdUmountBash = new CmdBash(cmdUmountStr,this);
-    connect(cmdUmountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
+    cmdUmountBash = new CmdBash(hasPassWord,userPassWord,cmdUmountStr,this);
+    //connect(cmdUmountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
     cmdUmountBash->cmdExecute();
 }
 
@@ -574,40 +520,58 @@ void PartionDevice::readFstabInfo()
 *   创建  HZH
 *
 *************************************************/
-void PartionDevice::cmdInfo(QString inputInfo)
-{
-    //emit setInfo(inputInfo);
-}
+//void PartionDevice::cmdInfo(QString inputInfo)
+//{
+//    //emit setInfo(inputInfo);
+//}
 
 void PartionDevice::archdetectCmdInfo(QString outputInfo)
 {
     if(outputInfo.contains("generic"))
     {
+        qDebug() << "不需要进行grub-install！";
         needGrubInstall = false;
+    }
+    else if(outputInfo.contains("amd64/efi"))
+    {
+        needGrubInstall = true;
+        systemClassEfi = "x86_64-efi";
+        qDebug() << "需要进行grub-install！" ;
+        qDebug() << "系统架构类型为" << systemClassEfi;
     }
     else if(outputInfo.contains("arm64/efi"))
     {
         needGrubInstall = true;
         systemClassEfi = "arm64-efi";
+        qDebug() << "需要进行grub-install！" ;
+        qDebug() << "系统架构类型为" << systemClassEfi;
     }
     else if(outputInfo.contains("arm/efi"))
     {
         needGrubInstall = true;
         systemClassEfi = "arm-efi";
+        qDebug() << "需要进行grub-install！" ;
+        qDebug() << "系统架构类型为" << systemClassEfi;
     }
     else if(outputInfo.contains("amd64"))
     {
         needGrubInstall = true;
         systemClassEfi = "x86_64-efi";
+        qDebug() << "需要进行grub-install！" ;
+        qDebug() << "系统架构类型为" << systemClassEfi;
     }
     else if(outputInfo.contains("mipsel"))
     {
         needGrubInstall = true;
         systemClassEfi = "mipsel-loongson";
+        qDebug() << "需要进行grub-install！" ;
+        qDebug() << "系统架构类型为" << systemClassEfi;
     }
     else
     {
         needGrubInstall = true;
         systemClassEfi = "i386-pc";
+        qDebug() << "需要进行grub-install！" ;
+        qDebug() << "系统架构类型为" << systemClassEfi;
     }
 }

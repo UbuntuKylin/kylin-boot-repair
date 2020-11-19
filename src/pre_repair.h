@@ -19,7 +19,7 @@ class PreRepair : public QObject
 {
     Q_OBJECT
 public:
-    explicit PreRepair(QObject *parent = nullptr);
+    explicit PreRepair(bool hasPwd, QString userPwd, QObject *parent = nullptr);
     ~PreRepair();
 
 public slots://提供给各线程的槽函数
@@ -30,6 +30,8 @@ signals://发送信号给主窗体
     void failAndReturn();
 
 private:
+    bool hasPassWord = false;
+    QString userPassWord = "";
 
     PartionDevice *currentDevice = nullptr;
 
@@ -42,6 +44,8 @@ private:
 
 
     BootRepair *currentSystem;
+
+    bool repairSuccess = false;
 
 };
 

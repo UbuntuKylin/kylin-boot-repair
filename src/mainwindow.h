@@ -51,6 +51,7 @@
 #include "repair_page2.h"
 #include "finish_page.h"
 #include "pre_repair.h"
+#include "sudoauthoritydialog.h"
 
 #define FITTHEMEWINDOW "org.ukui.style"
 
@@ -59,60 +60,84 @@ class MainWindow : public QWidget
     Q_OBJECT
 
 public:
+
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
     QString outputTime = nullptr;                         //用于获取本次程序启动时间
 
 public slots://提供给各线程的槽函数
+
     void passwordNoInput();                               //密码输入对话框弹窗没有输入就被关闭
     void makeStart();                                     //开始修复槽函数
     void closeMainWin();                                  //供子线程调用的关闭主程序窗口的函数接口
-    void failAndReturn();
-    void changeToMainPage();
-    void changeToFinishPage();
+    void failAndReturn();                                 //失败跳转槽函数
+    void changeToMainPage();                              //跳转至主页
+    void changeToFinishPage();                            //跳转至完成页
+    void getPassword(QString str);                        //获取密码
+    void shutdownNow();                                   //立即关机
 
 private slots:
-    void changeToNextPage();                              //翻页槽函数
+
+    void readcmdWhoamiBashInfo();                         //管理员权限验证
 
 signals:
+
     void startFdisk(QString fdiskCmd);                            //向Fdisk线程发送调用信号
     void startRepair(QStringList inputListOfDevice);              //向bootrepair线程发送调用信号
     void start_pushButton_clicked(QStringList list, uint Num);    //按键事件函数
+
 private:
 
-    void myStyle();
+    void myStyle();                                               //组件初始化
 
-    void prepareAction();
+    void prepareAction();                                         //fdisk提取硬盘信息
 
-    int changePage();
+    void checkSingle();                                           //单例检查
 
-    void checkSingle();
-
-    StyleWidget *styleWidget = nullptr;
+    StyleWidget *styleWidget      = nullptr;
 
     QStackedWidget *stackedWidget = nullptr;
 
-    PrePage *prePage         = nullptr;
-    StartPage *startPage     = nullptr;
-    RepairPage *repairPage   = nullptr;
-    WarningPage *warningPage = nullptr;
-    RepairPage2 *repairPage2 = nullptr;
-    FinishPage *finishPage   = nullptr ;
+    PrePage *prePage              = nullptr;
+    StartPage *startPage          = nullptr;
+    RepairPage *repairPage        = nullptr;
+    WarningPage *warningPage      = nullptr;
+    RepairPage2 *repairPage2      = nullptr;
+    FinishPage *finishPage        = nullptr;
 
-    PreRepair* mycmdPreRepairBash;                                   //PreRepair线程
-    QThread *pPreRepair;
+    enum PageIndex
+    {
+        prePageIndex = 0,
+        startPageIndex,
+        repairPage2Index,
+        finishPageIndex,
+        warningPageIndex
+    };
 
-    FdiskThread* mycmdFdiskBash;                                     //fdisk线程
-    QThread *pFdiskthread;
+    PreRepair* mycmdPreRepairBash = nullptr ;                        //PreRepair线程
+    QThread *pPreRepair           = nullptr ;
 
-    QStringList hardDisklist;                                        //硬盘分区列表
-    uint hardDiskNum;                                                //硬盘分区个数
+    FdiskThread* mycmdFdiskBash   = nullptr ;                        //fdisk线程
+    QThread *pFdiskthread         = nullptr ;
+
+    QStringList hardDisklist      = {} ;                        //硬盘分区列表
+    uint hardDiskNum              = 0 ;                        //硬盘分区个数
 
     // getstting初始化、值获取、 设置getsetting值
     void initGsetting();
     void setThemeStyle();
 
-    QGSettings  *m_pThemeStyle= nullptr;
+    QGSettings  *m_pThemeStyle        = nullptr;
+
+    SudoAuthorityDialog *authorityBox = nullptr;
+    QString userPassword = "";
+
+    QProcess *cmdWhoamiBash           = nullptr;
+    QProcess *shutDownBash            = nullptr;
+
+
+    bool    hasPassword = true;
+    QString rootCmd = "sudo -S -l";
 };
 #endif // MAINWINDOW_H

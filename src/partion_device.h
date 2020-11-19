@@ -24,7 +24,7 @@ class PartionDevice : public QObject
 {
     Q_OBJECT
 public:
-    PartionDevice(QString partionDeviceName, QObject *parent = nullptr);
+    PartionDevice(bool hasPassWord,QString userPassWord,QString partionDeviceName, QObject *parent = nullptr);
 
     ~PartionDevice();
 
@@ -72,13 +72,15 @@ public:
     QString archDetectCmd;
 
 public slots://提供给各线程的槽函数
-    void cmdInfo(QString inputInfo);
+    //void cmdInfo(QString inputInfo);
 
 signals://发送信号给主窗体
     //void setInfo(QString inputInfo);//写入状态栏信息
     void failAndReturn();
 
 private:
+    bool hasPassWord = false;
+    QString userPassWord = "";
     CmdBash* cmdUmountBash;           //拆卸硬盘线程类
     CmdBash* cmdMkdirBash;            //创建文件夹线程类
     CmdBash* cmdMountBash;            //挂载硬盘线程类

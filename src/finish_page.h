@@ -36,7 +36,7 @@ public:
 public slots:
 
 signals:
-
+    void shutdownNow();     //发送给主线程关机信号
 private:
     QProcess *cmdFinishBash;
 

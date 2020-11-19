@@ -59,17 +59,9 @@ void FinishPage::initControlQss()
     nowButton->setEnabled(true);
 
     connect(nowButton,&QPushButton::clicked,this,[=](){
-        shutDownBash = new QProcess();   //创建QProcess对象并连接信号与槽
 
-        shutDownBash->start("sudo -S shutdown -r now");
+        emit shutdownNow();
 
-//        shutDownBash->write("sudo -S shutdown -r now" + '\n');
-
-        shutDownBash->waitForStarted();
-
-
-//        QProcess::execute("sudo -S shutdown -r now");
-//        QApplication::exit();
         qDebug() << "用户点击现在重启按钮！程序关闭";
         qDebug() << "*******************************************************";
     });

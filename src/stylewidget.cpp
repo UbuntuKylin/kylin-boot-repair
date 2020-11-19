@@ -29,37 +29,10 @@ StyleWidget::StyleWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool
 
     StyleWidgetAttribute tabWin(TABWINDOWWIDETH,TABWINDOWHEIGHT,0,TABWIDGETRADIUS,TABSHADOWWIDTH,TABSHADOWALPHA,TABTITLEHEIGHT);
 
-    //tabWinWidgetshadow = new TabMenuShadow(tabWin,this);
-    //tabWinWidgetshadow->setParent(this);
-    //tabWinWidgetshadow->show();
-
     tabWinWidget=new TabWidget(tabWin,tr("麒麟引导修复"),false,this);
 
-    //tabWinWidget->setFixedSize(tabWin.w-tabWin.radius*2,tabWin.h-tabWin.radius*2);
-//    tabWinWidget->setFixedSize(tabWin.w,tabWin.h);
     tabWinWidget->setObjectName("widgetMenu");
     tabWinWidget->setStyleSheet("StyleWidget #widgetMenu{background-color:rgba(255, 20, 20, 1);border-radius:6px;}");
-
-
-
-
-//    //设置阴影
-//    QHBoxLayout *hblayout_menu=new QHBoxLayout();
-//    hblayout_menu->setMargin(0);//控件间距
-//    hblayout_menu->setSpacing(0);//控件间距
-//    hblayout_menu->addSpacing(tabWin.radius);
-//    hblayout_menu->addWidget(tabWinWidget);
-//    hblayout_menu->addSpacing(tabWin.radius);
-
-//    QVBoxLayout *vblayout_menu=new QVBoxLayout();
-//    vblayout_menu->setMargin(0);//控件间距
-//    vblayout_menu->setSpacing(0);//控件间距
-//    vblayout_menu->addSpacing(tabWin.radius);
-//    vblayout_menu->addLayout(hblayout_menu);
-//    vblayout_menu->addSpacing(tabWin.radius);
-
-    //tabWinWidgetshadow->hide();
-    //tabWinWidget->hide();
 
     tabWinWidget->move(260 , 45);
     tabWinWidget->raise();
@@ -219,7 +192,6 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
     vl->addStretch(99);
     vl->addSpacing(swa.shadow);
     this->setLayout(vl);
-
 
 }
 

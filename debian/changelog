@@ -1,3 +1,41 @@
+kylin-boot-repair (1.0.14kord) v101; urgency=medium
+
+  * 增加密码框，解决不能修复问题
+  * 更改架构获取方式，解决arm机型无法修复问题
+  * 修改desktop无藏文问题
+
+ -- hanzehui <hanzehui@kylinos.cn>  Thu, 19 Nov 2020 14:17:40 +0800
+
+kylin-boot-repair (1.0.13kord~rc7) v101; urgency=medium
+
+  * 添加密码输入框。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Thu, 19 Nov 2020 11:17:40 +0800
+
+kylin-boot-repair (1.0.13kord~rc6) v101; urgency=medium
+
+  * 添加运行依赖。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Wed, 18 Nov 2020 11:27:40 +0800
+
+kylin-boot-repair (1.0.13kord~rc5) v101; urgency=medium
+
+  * 修改依赖，解决v101没有archdetect工具问题。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Wed, 18 Nov 2020 08:27:40 +0800
+
+kylin-boot-repair (1.0.13kord~rc5) v101; urgency=medium
+
+  * 修cmdbash类返回内容编码格式，否则乱码，无法正常执行后续步骤。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Wed, 18 Nov 2020 08:27:40 +0800
+
+kylin-boot-repair (1.0.13kord~rc4) v101; urgency=medium
+
+  * 修改架构检测流程
+
+ -- hanzehui <hanzehui@kylinos.cn>  Wed, 18 Nov 2020 08:27:40 +0800
+
 kylin-boot-repair (1.0.13kord~rc3) v101; urgency=medium
 
   * 修改arm系统无法正常修复的问题

@@ -59,6 +59,7 @@ public:
     QPushButton *widgetClose = nullptr;//关闭窗口
     QPushButton *widgetMin = nullptr;//最小化窗口
 
+    StyleWidgetShadow *swshadow = nullptr;//阴影
 private:
     virtual void paintEvent(QPaintEvent *ev);//重绘窗口
 
@@ -66,7 +67,7 @@ private:
 
     StyleWidgetAttribute local_swa;
 
-    StyleWidgetShadow *swshadow = nullptr;//阴影
+
     TabMenuShadow *tabWinWidgetshadow = nullptr;
     TabWidget *tabWinWidget = nullptr;
 

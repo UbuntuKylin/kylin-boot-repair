@@ -19,9 +19,10 @@
 *   创建  HZH
 *
 *************************************************/
-FdiskThread::FdiskThread(QObject *parent) : QObject(parent)
+FdiskThread::FdiskThread(bool hasPwd, QString userPwd,QObject *parent) : QObject(parent)
 {
-
+    hasPassWord = hasPwd;
+    userPassWord = userPwd;
 }
 
 /************************************************
@@ -67,7 +68,11 @@ void FdiskThread::startFdisk(QString fdiskCmd)
     cmdFdiskBash->start("bash");
 
     cmdFdiskBash->write(fdiskCmd.toLocal8Bit() + '\n');
-
+    if(hasPassWord)
+    {
+        qDebug() << "有密码！";
+        cmdFdiskBash->write(userPassWord.toLocal8Bit() + '\n');
+    }
     cmdFdiskBash->waitForStarted();
 }
 
@@ -85,14 +90,16 @@ void FdiskThread::startFdisk(QString fdiskCmd)
 void FdiskThread::readcmdFdiskBashErrorInfo()
 {
     QByteArray cmdStdOut = cmdFdiskBash->readAllStandardError();
-
-    qDebug() << "授权窗口被用户关闭";
-    if(cmdStdOut.count("Error"))
+    if(!cmdStdOut.isEmpty() && (cmdStdOut.contains("[sudo]")))
     {
-        qDebug() << "向主线程发送信号，关闭本程序";
-        emit passwordNoInput();
+        qDebug() << QString::fromLocal8Bit(cmdStdOut);
     }
-
+    else
+    {
+        qDebug() << "读取硬盘过程出现问题！";
+        qDebug() << QString::fromLocal8Bit(cmdStdOut);
+        emit failAndReturn();
+    }
 }
 
 /************************************************
@@ -109,10 +116,11 @@ void FdiskThread::readcmdFdiskBashErrorInfo()
 void FdiskThread::readcmdFdiskBashInfo()
 {
     QByteArray cmdStdOut = cmdFdiskBash->readAllStandardOutput();
-    if(!cmdStdOut.isEmpty() ){
+    if(!cmdStdOut.isEmpty() && !(cmdStdOut.contains("[sudo]")))
+    {
         qDebug() << QString::fromLocal8Bit(cmdStdOut);
-        //emit setInfo(QString::fromLocal8Bit(cmdStdOut));   //向主线程发送信息，暂无处显示，注释掉。
         startPreHandle(cmdStdOut);
+        cmdFdiskBash->kill();
     }
 }
 
@@ -128,8 +136,7 @@ void FdiskThread::readcmdFdiskBashInfo()
 *************************************************/
 void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
 {
-//    emit failAndReturn();
-//    return;
+
     qDebug() << "开始处理fdisk返回信息";
     //入参检查
     if(cmdOutFromFdisk.isEmpty())
@@ -168,9 +175,9 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
                 {
                     //TODO此处可以增加限定，已有的分区不要再加入
                     allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
-//                    QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
-//                    QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
-//                    qDebug() << deviceLocation << "为" << deviceType << "类型分区";
+                    //QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
+                    //QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
+                    //qDebug() << deviceLocation << "为" << deviceType << "类型分区";
                 }
                 //2004
                 else if(((("filesystem" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data()))\
@@ -180,9 +187,9 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
                 {
                     //TODO此处可以增加限定，已有的分区不要再加入
                     allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
-//                    QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
-//                    QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
-//                    qDebug() << deviceLocation << "为" << deviceType << "类型分区";
+                    //QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
+                    //QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
+                    //qDebug() << deviceLocation << "为" << deviceType << "类型分区";
                 }
             }
         }

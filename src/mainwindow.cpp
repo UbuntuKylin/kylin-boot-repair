@@ -25,11 +25,18 @@ MainWindow::MainWindow(QWidget *parent)
     //单例运行检查
     checkSingle();
 
-    myStyle();
+    //用户权限检查
+    cmdWhoamiBash = new QProcess();   //创建QProcess对象并连接信号与槽
 
-    initGsetting();
+    connect(cmdWhoamiBash,&QProcess::readyReadStandardOutput,this,&MainWindow::readcmdWhoamiBashInfo);
+    connect(cmdWhoamiBash,&QProcess::readyReadStandardError,this,&MainWindow::readcmdWhoamiBashInfo);
 
-    prepareAction();
+    cmdWhoamiBash->start("bash");
+
+    cmdWhoamiBash->write(rootCmd.toLocal8Bit()  + '\n');
+
+    cmdWhoamiBash->waitForStarted();
+
 }
 
 /************************************************
@@ -74,18 +81,54 @@ MainWindow::~MainWindow()
     {
         styleWidget->deleteLater();
     }
-
-//    delete stackedWidget;
-//    delete styleWidget;
+    authorityBox->close();
+    delete authorityBox;
+    cmdWhoamiBash->deleteLater();
 }
-
 /************************************************
-* 函数名称：
+* 函数名称：readcmdWhoamiBashInfo
+* 功能描述：主线程查看root权限！函数
+* 输入参数：无
+* 输出参数：
+* 修改日期：2020.11.19
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void MainWindow::readcmdWhoamiBashInfo()
+{
+    qDebug() << "主线程查看root权限！";
+    QString cmdStdOut = QString::fromLocal8Bit(cmdWhoamiBash->readAllStandardOutput());
+    QString cmdStdOut_err = QString::fromLocal8Bit(cmdWhoamiBash->readAllStandardError());
+
+    if(cmdStdOut.contains("secure_path"))
+    {
+        qDebug() << "无管理员密码！";
+        hasPassword = false;
+    }
+
+    else if(cmdStdOut_err.contains("Sorry") || cmdStdOut_err.contains("对不起"))
+    {
+        qDebug() << "错误输出！";
+        qDebug() << cmdStdOut_err;
+
+        hasPassword = true;
+    }
+
+    myStyle();
+
+    initGsetting();
+    cmdWhoamiBash->kill();
+}
+/************************************************
+* 函数名称：myStyle
 * 功能描述：
 * 输出参数：
 * 修改日期：2020.10.12
+*         2020.11.19
 * 修改内容：
 *   创建  HZH
+*   修改  HZH 加入页数enum定义，增加密码框检查密码流程
 *
 *************************************************/
 void MainWindow::myStyle()
@@ -94,7 +137,8 @@ void MainWindow::myStyle()
     //double style_shadowAlpha=0.00, int style_titleHeight=0, int style_itemHeight=0, bool style_middle=true
     StyleWidgetAttribute swa(WINDOWWIDETH,WINDOWHEIGHT,0,WIDGETRADIUS,SHADOWWIDTH,SHADOWALPHA,TITLEHEIGHT);
     styleWidget=new StyleWidget(swa,tr("麒麟引导修复"));
-    
+    connect(styleWidget,&StyleWidget::allClose,this,&MainWindow::closeMainWin);
+
     prePage = new PrePage(swa);
 
     startPage = new StartPage(swa);
@@ -109,6 +153,7 @@ void MainWindow::myStyle()
     repairPage2 = new RepairPage2(swa);
 
     finishPage = new FinishPage(swa);
+    connect(finishPage,&FinishPage::shutdownNow,this,&MainWindow::shutdownNow);
 
     QHBoxLayout *hblayout=new QHBoxLayout(styleWidget->body);
     hblayout->setMargin(0);//控件间距
@@ -116,24 +161,53 @@ void MainWindow::myStyle()
 
     //内部样式
     stackedWidget =new QStackedWidget;
-    stackedWidget->addWidget(prePage);
-    stackedWidget->addWidget(startPage);
-
-    //stackedWidget->addWidget(repairPage);
-    stackedWidget->addWidget(repairPage2);
-    stackedWidget->addWidget(finishPage);
-    stackedWidget->addWidget(warningPage);
-
+    stackedWidget->addWidget(prePage);         //prePage为第0页
+    stackedWidget->addWidget(startPage);       //startPage为第1页
+    stackedWidget->addWidget(repairPage2);     //repairPage2为第2页
+    stackedWidget->addWidget(finishPage);      //finishPage为第3页
+    stackedWidget->addWidget(warningPage);     //warningPage为第4页
+/*
+    enum PageIndex
+    {
+        prePageIndex = 0,
+        startPageIndex,
+        repairPage2Index,
+        finishPageIndex,
+        warningPageIndex
+    };
+*/
     //布局
     //QHBoxLayout *hlt =new QHBoxLayout;
 
     hblayout->addWidget(stackedWidget);
 
+    authorityBox = new SudoAuthorityDialog();
+    connect(authorityBox,&SudoAuthorityDialog::nopassword,this,&MainWindow::passwordNoInput);
+    connect(authorityBox,&SudoAuthorityDialog::getPassword,this,&MainWindow::getPassword);
+
+    authorityBox->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog );//无边框
+    //authorityBox->setAttribute(Qt::WA_TranslucentBackground, true);//窗体透明
+    authorityBox->setWindowTitle("麒麟引导修复授权");
+    //authorityBox->setFixedSize(420,270);
+
+    QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
+    authorityBox->move((availableGeometry.width() - this->width())/2, (availableGeometry.height() - this->height())/2);
+    authorityBox->hide();
+
+    if(true == hasPassword)      //如果检查需要密码，则显示密码弹框，否则直接执行。
+    { 
+        authorityBox->show();
+    }
+    else
+    {
+        getPassword("");
+    }
+
 }
 
 /************************************************
-* 函数名称：
-* 功能描述：
+* 函数名称：prepareAction
+* 功能描述：通过fdisk命令查看电脑硬件信息
 * 输出参数：
 * 修改日期：2020.10.12
 * 修改内容：
@@ -144,19 +218,17 @@ void MainWindow::prepareAction()
 {
     //硬盘信息获取线程
     qDebug() << "创建fdisk线程";
-    mycmdFdiskBash = new FdiskThread();   //创建fdisk线程
+    mycmdFdiskBash = new FdiskThread(hasPassword,userPassword);   //创建fdisk线程
     pFdiskthread = new QThread();
     mycmdFdiskBash->moveToThread(pFdiskthread);//将pFdiskthread移动到子线程mycmdFdiskBash中
     connect(pFdiskthread, &QThread::finished, mycmdFdiskBash, &QObject::deleteLater);//挂载
     //将主窗口线程的startFdisk信号和mycmdFdiskBash线程中的startFdisk槽函数连接
     connect(this,&MainWindow::startFdisk,mycmdFdiskBash,&FdiskThread::startFdisk);
-    //第一次输入命令后，发现无效，获取管理员密码
-    connect(mycmdFdiskBash,&FdiskThread::passwordNoInput,this,&MainWindow::passwordNoInput);
     connect(mycmdFdiskBash,&FdiskThread::changeToMainPage,this,&MainWindow::changeToMainPage);
 
     connect(mycmdFdiskBash,&FdiskThread::failAndReturn,this,&MainWindow::failAndReturn);
 
-    mycmdPreRepairBash = new PreRepair();   //创建repair线程
+    mycmdPreRepairBash = new PreRepair(hasPassword,userPassword);   //创建repair线程
     pPreRepair = new QThread();
     mycmdPreRepairBash->moveToThread(pPreRepair);//将pRepairthread移动到子线程mycmdRepairBash中
     connect(pPreRepair, &QThread::finished, mycmdPreRepairBash, &QObject::deleteLater);//挂载
@@ -168,42 +240,16 @@ void MainWindow::prepareAction()
     pPreRepair->start();                //启动repair线程
 
     QString fdiskCmd;
-    fdiskCmd = "pkexec sudo -S fdisk -l";    //通过pkexec提权
+    fdiskCmd = "sudo -S fdisk -l";
 
     emit startFdisk(fdiskCmd);
     styleWidget->widgetClose->setEnabled(false);
     styleWidget->widgetMin->setEnabled(false);
-    //styleWidget->widgetMenuBtn->setEnabled(false);
 }
 
 /************************************************
-* 函数名称：
-* 功能描述：
-* 输出参数：
-* 修改日期：2020.10.12
-* 修改内容：
-*   创建  HZH
-*
-*************************************************/
-int MainWindow::changePage()
-{
-    styleWidget->widgetClose->setEnabled(true);
-    styleWidget->widgetMin->setEnabled(true);
-    //styleWidget->widgetMenuBtn->setEnabled(true);
-
-    int count = stackedWidget->count();
-
-    int index = stackedWidget->currentIndex();
-
-    ++index;
-    if (index >= count)index = 0;
-    qDebug() << "当前页面数值为" << index;
-    return index;
-}
-
-/************************************************
-* 函数名称：
-* 功能描述：
+* 函数名称：makeStart
+* 功能描述：开始修复函数
 * 输出参数：
 * 修改日期：2020.10.12
 * 修改内容：
@@ -220,7 +266,10 @@ void MainWindow::makeStart()
 
     qDebug() << "Linux系统硬盘分区个数为：" << hardDiskNum;
     qDebug() << "主线程的makeStart!";
-    stackedWidget->setCurrentIndex(changePage());
+
+    stackedWidget->setCurrentIndex(repairPage2Index);
+    styleWidget->widgetClose->setEnabled(true);
+    styleWidget->widgetMin->setEnabled(true);
 
     emit start_pushButton_clicked(hardDisklist, hardDiskNum);
     styleWidget->widgetClose->setEnabled(false);
@@ -228,36 +277,46 @@ void MainWindow::makeStart()
 }
 
 /************************************************
-* 函数名称：
-* 功能描述：
+* 函数名称：passwordNoInput
+* 功能描述：密码输入对话框弹窗没有输入就被关闭
 * 输出参数：
 * 修改日期：2020.11.07
 * 修改内容：
 *   创建  HZH
-*   修改  日志输出内容完善  HZH
-*
-*************************************************/
-void MainWindow::changeToNextPage()
-{
-    qDebug() << "上一流程结束，进入下一流程";
-    stackedWidget->setCurrentIndex(changePage());
-}
-
-/************************************************
-* 函数名称：
-* 功能描述：
-* 输出参数：
-* 修改日期：2020.11.07
-* 修改内容：
-*   创建  HZH
-*   修改  日志输出内容完善  HZH
+*   修改  HZH 日志输出内容完善
 *
 *************************************************/
 void MainWindow::passwordNoInput()
 {
-    qDebug() << "授权窗口被关闭，未能获得授权，程序退出！";
+    qDebug() << "fdisk命令出错，程序退出！";
     styleWidget->WidgetStyleClose();
-    this->close();
+    this->closeMainWin();
+}
+
+/************************************************
+* 函数名称：getPassword
+* 功能描述：从密码框获取到密码
+* 输出参数：
+* 修改日期：2020.11.19
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void MainWindow::getPassword(QString str)
+{
+    if(str.isEmpty())
+    {
+        qDebug() << "密码为空";
+        hasPassword = false;
+    }
+    else
+    {
+        hasPassword = true;
+        qDebug() << "password:" << str;
+        userPassword = str;
+        authorityBox->hide();
+        prepareAction();
+    }
 }
 
 /************************************************
@@ -268,7 +327,7 @@ void MainWindow::passwordNoInput()
 * 修改日期：2020.11.07
 * 修改内容：
 *   创建  HZH
-*   修改  日志输出内容完善  HZH
+*   修改  HZH 日志输出内容完善
 *
 *************************************************/
 void MainWindow::checkSingle()
@@ -325,8 +384,10 @@ void MainWindow::initGsetting()
 * 输入参数：
 * 输出参数：
 * 修改日期：2020.10.12
+*         2020.11.19
 * 修改内容：
 *   创建  HZH
+*   修改  HZH 增加密码框的主题适配
 *
 *************************************************/
 void MainWindow::setThemeStyle()
@@ -340,6 +401,8 @@ void MainWindow::setThemeStyle()
     finishPage->pageChangeForTheme(nowThemeStyle);
     warningPage->pageChangeForTheme(nowThemeStyle);
 
+    authorityBox->pageChangeForTheme(nowThemeStyle);
+
 }
 /************************************************
 * 函数名称：closeMainWin
@@ -347,19 +410,47 @@ void MainWindow::setThemeStyle()
 * 输入参数：
 * 输出参数：
 * 修改日期：2020.11.07
+*         2020.11.19
 * 修改内容：
 *   创建  HZH
+*   修改  HZH  调整关闭策略
 *
 *************************************************/
 void MainWindow::closeMainWin()
 {
     qDebug() << "主线程收到关闭信号！";
-    this->~MainWindow();//关闭主窗口
-//    QTimer::singleShot(2000, [=](){
-//        this->~MainWindow();//延迟两秒，关闭主窗口
-//    });
+    //关闭主窗口
+    QTimer::singleShot(200, [=](){
+        this->~MainWindow();//延迟0.2秒，关闭主窗口
+    });
 }
+/************************************************
+* 函数名称：shutdownNow
+* 功能描述：关机槽函数
+* 输入参数：
+* 输出参数：
+* 修改日期：2020.11.19
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void MainWindow::shutdownNow()
+{
+    qDebug() << "主线程收到关机！";
+    shutDownBash = new QProcess();   //创建QProcess对象并连接信号与槽
 
+    shutDownBash->start("bash");
+
+    shutDownBash->write("sudo -S shutdown -r now\n");
+    if(hasPassword)
+    {
+        qDebug() << "有密码！";
+        shutDownBash->write(userPassword.toLocal8Bit() + '\n');
+    }
+
+    shutDownBash->waitForStarted();
+    QApplication::exit();
+}
 /************************************************
 * 函数名称：failAndReturn
 * 功能描述：修复报错，主线程槽函数
@@ -373,26 +464,49 @@ void MainWindow::closeMainWin()
 void MainWindow::failAndReturn()
 {
     qDebug() << "主线程收到支线程错误信号！";
-    stackedWidget->setCurrentIndex(stackedWidget->count()-1);
+    stackedWidget->setCurrentIndex(warningPageIndex);
     styleWidget->widgetClose->setEnabled(true);
     styleWidget->widgetMenuBtn->setEnabled(true);
     styleWidget->widgetMin->setEnabled(true);
     qInstallMessageHandler(nullptr);
 }
-
+/************************************************
+* 函数名称：changeToMainPage
+* 功能描述：翻转至主页槽函数
+* 输入参数：无
+* 输出参数：
+* 修改日期：2020.11.07
+*         2020.11.19
+* 修改内容：
+*   创建  HZH
+*   修改  HZH  改用enum代替翻页数字
+*
+*************************************************/
 void MainWindow::changeToMainPage()
 {
-    stackedWidget->setCurrentIndex(1);
+    stackedWidget->setCurrentIndex(startPageIndex);//翻到开始主页
     styleWidget->widgetClose->setEnabled(true);
     styleWidget->widgetMenuBtn->setEnabled(true);
     styleWidget->widgetMin->setEnabled(true);
 }
-
+/************************************************
+* 函数名称：changeToFinishPage
+* 功能描述：翻转至完成页槽函数
+* 输入参数：无
+* 输出参数：
+* 修改日期：2020.11.07
+*         2020.11.19
+* 修改内容：
+*   创建  HZH
+*   修改  HZH  改用enum代替翻页数字
+*
+*************************************************/
 void MainWindow::changeToFinishPage()
 {
     qDebug() << "主线程收到修复完成信号！";
-    stackedWidget->setCurrentIndex(stackedWidget->count()-2);
+    stackedWidget->setCurrentIndex(finishPageIndex);
     styleWidget->widgetClose->setEnabled(true);
     styleWidget->widgetMenuBtn->setEnabled(true);
     styleWidget->widgetMin->setEnabled(true);
 }
+

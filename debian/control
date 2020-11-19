@@ -6,6 +6,7 @@ Build-Depends: debhelper (>=9.0.0),
                pkgconf,
 			   libgsettings-qt-dev,
                libpolkit-qt5-1-dev,
+               archdetect-deb,
                qtbase5-dev,
                qt5-qmake,
                qtchooser,
@@ -19,5 +20,5 @@ Homepage: https://github.com/ubuntukylin/kylin-boot-repair
 
 Package: kylin-boot-repair
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: archdetect-deb, ${shlibs:Depends}, ${misc:Depends}
 Description:kylin-boot-repair

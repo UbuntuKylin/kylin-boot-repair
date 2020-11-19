@@ -17,33 +17,35 @@ class BootRepair : public QObject
 {
     Q_OBJECT
 public:
-    explicit BootRepair(linuxSystemInfo systemStruct, QObject *parent = nullptr);
+    explicit BootRepair(bool hasPwd, QString userPwd,linuxSystemInfo systemStruct, QObject *parent = nullptr);
     ~BootRepair();
-    void repairGrubFile();
+    bool repairGrubFile();
 
 public slots://提供给各线程的槽函数
-    void cmdInfo(QString inputInfo);
+    //void cmdInfo(QString inputInfo);
 
 signals://发送信号给主窗体
     //void setInfo(QString inputInfo);//写入状态栏信息
 
 private:
+    bool hasPassWord  = false;
+    QString userPassWord = "";
 
     linuxSystemInfo currentSystem;
-    CmdBash* chrootCmd;
-    CmdBash* bootMountCmd;
-    CmdBash* treeMkdirCmd;
-    CmdBash* rootMkdirCmd;
-    CmdBash* rootMountCmd;
-    CmdBash* efiMountCmd;
-    CmdBash* devMountCmd;
-    CmdBash* procMountCmd;
-    CmdBash* sysMountCmd;
-    CmdBash* grubInstallCmd;
-    CmdBash* grubMkconfigCmd;
-    CmdBash* updateGrubCmd;
-    CmdBash* homeMountCmd;
-    CmdBash* umountAllCmd;
+    QProcess* chrootCmd       = nullptr;
+    CmdBash*  bootMountCmd    = nullptr;
+    CmdBash*  treeMkdirCmd    = nullptr;
+    CmdBash*  rootMkdirCmd    = nullptr;
+    CmdBash*  rootMountCmd    = nullptr;
+    CmdBash*  efiMountCmd     = nullptr;
+    CmdBash*  devMountCmd     = nullptr;
+    CmdBash*  procMountCmd    = nullptr;
+    CmdBash*  sysMountCmd     = nullptr;
+    CmdBash*  grubInstallCmd  = nullptr;
+    CmdBash*  grubMkconfigCmd = nullptr;
+    CmdBash*  updateGrubCmd   = nullptr;
+    CmdBash*  homeMountCmd    = nullptr;
+    CmdBash*  umountAllCmd    = nullptr;
 
 };
 
