@@ -437,18 +437,19 @@ void MainWindow::closeMainWin()
 void MainWindow::shutdownNow()
 {
     qDebug() << "主线程收到关机！";
-    shutDownBash = new QProcess();   //创建QProcess对象并连接信号与槽
+//    shutDownBash = new QProcess();   //创建QProcess对象并连接信号与槽
 
-    shutDownBash->start("bash");
+//    shutDownBash->start("bash");
 
-    shutDownBash->write("sudo -S shutdown -r now\n");
-    if(hasPassword)
-    {
-        qDebug() << "有密码！";
-        shutDownBash->write(userPassword.toLocal8Bit() + '\n');
-    }
+//    shutDownBash->write("sudo -S shutdown -r now\n");
+//    if(hasPassword)
+//    {
+//        qDebug() << "有密码！";
+//        shutDownBash->write(userPassword.toLocal8Bit() + '\n');
+//    }
 
-    shutDownBash->waitForStarted();
+//    shutDownBash->waitForStarted();
+    QProcess::execute("shutdown -r now");
     QApplication::exit();
 }
 /************************************************

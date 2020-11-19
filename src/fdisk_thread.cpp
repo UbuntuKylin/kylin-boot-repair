@@ -136,7 +136,6 @@ void FdiskThread::readcmdFdiskBashInfo()
 *************************************************/
 void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
 {
-
     qDebug() << "开始处理fdisk返回信息";
     //入参检查
     if(cmdOutFromFdisk.isEmpty())

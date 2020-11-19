@@ -3,6 +3,8 @@ kylin-boot-repair (1.0.14kord) v101; urgency=medium
   * 增加密码框，解决不能修复问题
   * 更改架构获取方式，解决arm机型无法修复问题
   * 修改desktop无藏文问题
+  * 修改手动修复步骤中错误内容
+  * 解决无法重启问题
 
  -- hanzehui <hanzehui@kylinos.cn>  Thu, 19 Nov 2020 14:17:40 +0800
 

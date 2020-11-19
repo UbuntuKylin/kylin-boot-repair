@@ -72,7 +72,7 @@ void StartPage::initControlQss()
                                      echo ; \
                                      echo ⑤ 输入sudo -S chroot +根目录所在分区，进行根目录切换。; \
                                      echo ; \
-                                     echo ⑥ 输入sudo -S grub-install --target= +boot分区下grub目录中的系统架构型号文件夹名称，如：x86_64-efi。; \
+                                     echo ⑥ 输入sudo -S grub-install --target= +系统架构类型，如：x86_64-efi。; \
                                      echo ; \
                                      echo ⑦ 输入sudo -S grub-mkconfig -o /boot/grub/grub.cfg，生成grub.cfg文件。; \
                                      echo ; \
