@@ -1,3 +1,10 @@
+kylin-boot-repair (1.0.15kord) v101; urgency=medium
+
+  * 修复无法在应急启动模式下进入修复流程问题
+  * 更改修复流程，去除mkconfig流程
+
+ -- hanzehui <hanzehui@kylinos.cn>  Fri, 20 Nov 2020 10:17:40 +0800
+
 kylin-boot-repair (1.0.14kord) v101; urgency=medium
 
   * 增加密码框，解决不能修复问题
