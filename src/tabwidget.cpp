@@ -22,6 +22,8 @@ TabWidget::TabWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool isD
 {
     local_swa = swa;
     m_isDialog=isDialog;
+    titletext = dialogTitleText;
+
     swshadow = new TabMenuShadow(swa,this);
     //swshadow->setParent(this);
     swshadow->show();

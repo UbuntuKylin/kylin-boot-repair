@@ -201,6 +201,7 @@ void SudoAuthorityDialog::btnOk_Clicked()
     if(userPassword.isEmpty())
     {
         qDebug() << "请输入密码！！！";
+        result->setText(tr("请输入密码！"));
         return;
     }
 

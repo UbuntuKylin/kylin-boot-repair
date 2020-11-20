@@ -151,13 +151,13 @@ bool BootRepair::repairGrubFile()
 
     chrootCmd->write(currentSystem.chrootCmd.toLocal8Bit() + '\n');
 
-
-    qDebug() << currentSystem.grubMkconfigCmd;
-    chrootCmd->write(currentSystem.grubMkconfigCmd.toLocal8Bit()+ "\n");
-    if(hasPassWord)
-    {
-        chrootCmd->write(userPassWord.toLocal8Bit() + '\n');
-    }
+    //此条不需要，暂时保留
+//    qDebug() << currentSystem.grubMkconfigCmd;
+//    chrootCmd->write(currentSystem.grubMkconfigCmd.toLocal8Bit()+ "\n");
+//    if(hasPassWord)
+//    {
+//        chrootCmd->write(userPassWord.toLocal8Bit() + '\n');
+//    }
 
     //这里要检查是否需要进行grubinstall
     if(currentSystem.needGrubInstall && !(currentSystem.grubInstallCmd.isEmpty()))

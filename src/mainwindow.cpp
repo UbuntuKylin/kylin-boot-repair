@@ -315,8 +315,8 @@ void MainWindow::getPassword(QString str)
         qDebug() << "password:" << str;
         userPassword = str;
         authorityBox->hide();
-        prepareAction();
     }
+    prepareAction();
 }
 
 /************************************************

@@ -57,7 +57,7 @@ private:
     void myStyle(StyleWidgetAttribute swa);//设定样式
 
     StyleWidgetAttribute local_swa;
-
+    QString titletext = "";
     TabMenuShadow *swshadow = nullptr;//阴影
     QWidget *title = nullptr;//标题栏
     QLabel *text = nullptr;//标题
