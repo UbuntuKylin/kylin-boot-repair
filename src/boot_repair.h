@@ -19,13 +19,14 @@ class BootRepair : public QObject
 public:
     explicit BootRepair(bool hasPwd, QString userPwd,linuxSystemInfo systemStruct, QObject *parent = nullptr);
     ~BootRepair();
-    bool repairGrubFile();
+    void repairGrubFile();
 
 public slots://提供给各线程的槽函数
-    //void cmdInfo(QString inputInfo);
+    void readcmdRepairBashInfo();
 
 signals://发送信号给主窗体
     //void setInfo(QString inputInfo);//写入状态栏信息
+    void repairResult(bool result);
 
 private:
     bool hasPassWord  = false;
@@ -33,6 +34,8 @@ private:
 
     linuxSystemInfo currentSystem;
     QProcess* chrootCmd       = nullptr;
+    QProcess* grubMkconfigCmd = nullptr;
+    QProcess* updateGrubCmd   = nullptr;
     CmdBash*  bootMountCmd    = nullptr;
     CmdBash*  treeMkdirCmd    = nullptr;
     CmdBash*  rootMkdirCmd    = nullptr;
@@ -42,11 +45,12 @@ private:
     CmdBash*  procMountCmd    = nullptr;
     CmdBash*  sysMountCmd     = nullptr;
     CmdBash*  grubInstallCmd  = nullptr;
-    CmdBash*  grubMkconfigCmd = nullptr;
-    CmdBash*  updateGrubCmd   = nullptr;
+
+
     CmdBash*  homeMountCmd    = nullptr;
     CmdBash*  umountAllCmd    = nullptr;
 
+    bool      finalResult     = false;
 };
 
 #endif // BOOTREPAIR_H

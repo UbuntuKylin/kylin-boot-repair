@@ -49,7 +49,7 @@ void RepairPage2::initControlQss()
     lableMovie->setMovie(movieLoading);
 
     repairingText=new QLabel;
-    repairingText->setText(tr("正在进行修复……"));
+    repairingText->setText(tr("Recovering..."));//正在进行修复……
 
 
     QHBoxLayout *hl0=new QHBoxLayout;

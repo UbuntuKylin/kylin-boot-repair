@@ -46,7 +46,7 @@ SudoAuthorityDialog::SudoAuthorityDialog(QWidget *parent) : QWidget(parent)
 void SudoAuthorityDialog::uiInit()
 {
     this->setWindowIcon(QIcon(":/data/guide_repair24.png"));
-    this->setWindowTitle(tr("麒麟引导修复工具"));
+    this->setWindowTitle(tr("KylinBootRepair"));//麒麟引导修复工具
 
     body = new QWidget(this);
     body->setFixedSize(420,270);
@@ -54,12 +54,12 @@ void SudoAuthorityDialog::uiInit()
 
     title = new QLabel;
     title->setFixedSize(288,25);
-    title->setText(tr("执行此次操作需要验证管理员权限。"));
+    title->setText(tr("This action needs admin authorization"));//执行此次操作需要验证管理员权限。
     title->setObjectName("title");
 
     tip = new QLabel;
     tip->setFixedSize(210,20);
-    tip->setText(tr("输入管理员密码以允许此次操作。"));
+    tip->setText(tr("Please input the admin's password"));//输入管理员密码以允许此次操作。
     tip->setObjectName("tip");
 
     result = new QLabel;
@@ -83,14 +83,14 @@ void SudoAuthorityDialog::uiInit()
     dialogKey = new QLineEdit;
     dialogKey->setFixedSize(356,36);
     dialogKey->setObjectName("dialogKey");
-    dialogKey->setPlaceholderText(tr("请输入密码"));
+    dialogKey->setPlaceholderText(tr("Please in put password"));//请输入密码
     dialogKey->setEchoMode(QLineEdit::Password);
     connect(dialogKey,&QLineEdit::textChanged,this,[=]{
         result->setText(tr(""));
     });
 
     btnCancel = new QPushButton;
-    btnCancel->setText(tr("取消"));
+    btnCancel->setText(tr("Cancel"));//取消
     btnCancel->setFixedSize(120,36);
     btnCancel->setObjectName("btnCancel");
     connect(btnCancel,&QPushButton::clicked,this,[=]{
@@ -98,7 +98,7 @@ void SudoAuthorityDialog::uiInit()
     });
 
     btnOk = new QPushButton;
-    btnOk->setText(tr("授权"));
+    btnOk->setText(tr("Permit"));//授权
     btnOk->setFixedSize(120,36);
     btnOk->setObjectName("btnOk");
     connect(btnOk,&QPushButton::clicked,this,[=]{
@@ -201,7 +201,7 @@ void SudoAuthorityDialog::btnOk_Clicked()
     if(userPassword.isEmpty())
     {
         qDebug() << "请输入密码！！！";
-        result->setText(tr("请输入密码！"));
+        result->setText(tr("Please input password"));//请输入密码！
         return;
     }
 
@@ -263,7 +263,7 @@ void SudoAuthorityDialog::readcmdPwdCheckBashInfo()
         if(output.contains("root"))
         {
             qDebug() << "密码输入正确";
-            result->setText(tr("密码正确！"));
+            result->setText(tr("Correct"));//密码正确！
             emit getPassword(userPassword);
         }
     }
@@ -277,34 +277,34 @@ void SudoAuthorityDialog::readcmdPwdCheckBashInfo()
             if(incorrectTimes == 3)
             {
                 qDebug() << "密码输入错误3次";
-                result->setText(tr("密码错误！30s后再试！"));
+                result->setText(tr("Incorrect,please try again after 30s"));//密码错误！30s后再试！
                 //输入错误密码后，等待几秒，防止用户一直点。
                 QTimer::singleShot(30000, [=](){
                     btnOk->setEnabled(true);
                     dialogKey->setEnabled(true);
-                    result->setText(tr("请输入密码！"));
+                    result->setText(tr("Please input password"));//请输入密码！
                 });
                 incorrectTimes = 0;
             }
             else
             {
                 qDebug() << "密码输入错误";
-                result->setText(tr("密码错误！"));
+                result->setText(tr("Incorrect"));//密码错误！
                 btnOk->setEnabled(true);
                 dialogKey->setEnabled(true);
                 QTimer::singleShot(2000, [=](){
-                    result->setText(tr("请输入密码！"));
+                    result->setText(tr("Please input password"));//请输入密码！
                 });
             }
         }
         else if(err_output.contains("sudoers"))
         {
             qDebug() << "用户无权限";
-            result->setText(tr("该用户无管理员权限！"));
+            result->setText(tr("Unauthorized user"));//该用户无管理员权限！
             btnOk->setEnabled(true);
             dialogKey->setEnabled(true);
             QTimer::singleShot(2000, [=](){
-                result->setText(tr("请切换管理员用户！"));
+                result->setText(tr("Please change user"));//请切换管理员用户！
             });
         }
 

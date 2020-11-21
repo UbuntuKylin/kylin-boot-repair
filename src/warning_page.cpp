@@ -23,7 +23,7 @@ WarningPage::WarningPage(StyleWidgetAttribute page_swa)
     initControlQss();//初始化样式
 
     StyleWidgetAttribute logWin(LOGWINDOWWIDETH,LOGWINDOWHEIGHT,0,LOGWIDGETRADIUS,LOGSHADOWWIDTH,LOGSHADOWALPHA,LOGTITLEHEIGHT);
-    logWinWidget=new LogWidget(logWin,tr("麒麟引导修复日志"));
+    logWinWidget=new LogWidget(logWin,tr("KylinBootRepairLog"));//麒麟引导修复日志
 
     //logWinWidget->hide();
     logWinWidget->showOrHide();
@@ -56,7 +56,7 @@ void WarningPage::initControlQss()
     QFont pushButton_cancelButton;
     pushButton_cancelButton.setFamily(QFontDatabase::applicationFontFamilies(QFontDatabase::addApplicationFont(":/data/PingFang-Jian-ChangGuiTi-2.ttf")).at(0));//读取字体
     logButton->setFixedSize(240,40);
-    logButton->setText(tr("查看修复日志"));
+    logButton->setText(tr("Check Log"));//查看修复日志
     logButton->setObjectName("logButton");
     logButton->setEnabled(true);
     connect(logButton,&QPushButton::clicked,this,[=](){
@@ -67,7 +67,7 @@ void WarningPage::initControlQss()
     QFont pushButton_continueButton;
     pushButton_continueButton.setFamily(QFontDatabase::applicationFontFamilies(QFontDatabase::addApplicationFont(":/data/PingFang-Jian-ChangGuiTi-2.ttf")).at(0));//读取字体
     exitButton->setFixedSize(240,40);
-    exitButton->setText(tr("退出程序"));
+    exitButton->setText(tr("Exit"));//退出程序
     exitButton->setObjectName("exitButton");
     exitButton->setEnabled(true);
     exitButton->setStyleSheet("color:rgba(0, 0, 0, 0.85);");
@@ -80,7 +80,7 @@ void WarningPage::initControlQss()
     warningIcon->setFixedSize(118,118);
 
     warningText=new QLabel;
-    warningText->setText(tr("过程出现问题，修复失败！"));
+    warningText->setText(tr("Error occurred,failed"));//过程出现问题，修复失败！
     warningText->setAlignment(Qt::AlignHCenter);
     warningText->setStyleSheet("color:rgba(0, 0, 0, 0.85);font-size:14px;");
 

@@ -221,26 +221,35 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
         emit failAndReturn();
         return;
     }
+//grub支持多系统直接修复，共有一个grub文件
+//    for(uint i = 0 ; i < systemNumOnDisk; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
+//    {
+//        currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
+//        if(currentSystem->repairGrubFile())            //grub引导文件修复
+//        {
+//            repairSuccess = true;
+//            break;
+//        }
+//        else
+//        {
+//            if(i == systemNumOnDisk)
+//            {
+//                repairSuccess = false;
+//                break;
+//            }
+//            repairSuccess = false;
+//        }
+//    }
 
-    for(uint i = 0 ; i < systemNumOnDisk; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
-    {
-        currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
-        if(currentSystem->repairGrubFile())            //grub引导文件修复
-        {
-            repairSuccess = true;
-            break;
-        }
-        else
-        {
-            if(i == systemNumOnDisk)
-            {
-                repairSuccess = false;
-                break;
-            }
-            repairSuccess = false;
-        }
-    }
+    currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(0));
+    connect(currentSystem,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
+    currentSystem->repairGrubFile();           //grub引导文件修复
 
+}
+
+void PreRepair::getRepairResult(bool res)
+{
+    repairSuccess = res;
     if(repairSuccess)
     {
         qDebug() << "修复成功！！！";
@@ -251,5 +260,4 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
         qDebug() << "boot_repair过程中修复失败！！！";
         emit failAndReturn();
     }
-
 }

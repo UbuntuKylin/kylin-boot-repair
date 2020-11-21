@@ -118,7 +118,7 @@ void LogWidget::myStyle(StyleWidgetAttribute swa)
     connect(widgetClose,&QPushButton::clicked,this,&LogWidget::WidgetStyleClose);
 
     widgetSave =new QPushButton;//导出
-    widgetSave->setText(tr("导出"));
+    widgetSave->setText(tr("Save"));//导出
     widgetSave->setObjectName("widgetClose");
     widgetSave->setFixedSize(120,36);
     connect(widgetSave,&QPushButton::clicked,this,&LogWidget::WidgetStyleSave);
@@ -346,7 +346,7 @@ void LogWidget::WidgetStyleSave()
         QFile file(fileName);
         if(!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            QMessageBox::warning(this,tr("错误"),tr("打开文件失败"));
+            QMessageBox::warning(this,tr("Err"),tr("Open Failed"));//错误 打开文件失败
             return;
         }
         else
@@ -354,7 +354,7 @@ void LogWidget::WidgetStyleSave()
             QTextStream textStream(&file);
             QString str = logText->toPlainText();
             textStream<<str;
-            QMessageBox::warning(this,tr("提示"),tr("保存文件成功"));
+            QMessageBox::warning(this,tr("Tips"),tr("Save Success"));//提示  保存文件成功
 
             file.close();
         }

@@ -50,7 +50,7 @@ void PrePage::initControlQss()
     lableMovie->setMovie(movieLoading);
 
     loadingText=new QLabel;
-    loadingText->setText(tr("正在扫描系统"));
+    loadingText->setText(tr("Detecting"));//正在扫描系统
 
     QHBoxLayout *hl0=new QHBoxLayout;
     hl0->setMargin(0);

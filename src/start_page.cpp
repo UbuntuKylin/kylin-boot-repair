@@ -40,7 +40,7 @@ void StartPage::initControlQss()
     QFont pushButton_repairStart;
     pushButton_repairStart.setFamily(QFontDatabase::applicationFontFamilies(QFontDatabase::addApplicationFont(":/data/PingFang-Jian-ChangGuiTi-2.ttf")).at(0));//读取字体
     repairStart->setFixedSize(240,40);
-    repairStart->setText(tr("开始修复"));
+    repairStart->setText(tr("Start Repair"));//开始修复
     repairStart->setEnabled(true);
 
 
@@ -52,7 +52,7 @@ void StartPage::initControlQss()
     QFont pushButton_advanceChoice;
     pushButton_advanceChoice.setFamily(QFontDatabase::applicationFontFamilies(QFontDatabase::addApplicationFont(":/data/PingFang-Jian-ChangGuiTi-2.ttf")).at(0));//读取字体
     advanceChoice->setFixedSize(240,40);
-    advanceChoice->setText(tr("手动修改GRUB"));
+    advanceChoice->setText(tr("Repair by hand"));//手动修改GRUB
     advanceChoice->setEnabled(true);
 
     connect(advanceChoice,&QPushButton::clicked,this,[=](){
@@ -98,7 +98,7 @@ void StartPage::initControlQss()
     startIcon->setFixedSize(144,144);
 
     startText = new QLabel;
-    startText->setText(tr("修复计算机引导程序的常见问题"));
+    startText->setText(tr("Repair Normal Grub Errors"));//修复计算机引导程序的常见问题
 
     QHBoxLayout *hl0=new QHBoxLayout;
     hl0->addSpacing(0);

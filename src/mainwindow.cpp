@@ -136,9 +136,10 @@ void MainWindow::myStyle()
     //设置外观(有参构造)int style_w, int style_h, bool style_allRadius=1, int style_radius=0, int style_shadow =0,
     //double style_shadowAlpha=0.00, int style_titleHeight=0, int style_itemHeight=0, bool style_middle=true
     StyleWidgetAttribute swa(WINDOWWIDETH,WINDOWHEIGHT,0,WIDGETRADIUS,SHADOWWIDTH,SHADOWALPHA,TITLEHEIGHT);
-    styleWidget=new StyleWidget(swa,tr("麒麟引导修复"));
+    styleWidget=new StyleWidget(swa,tr("KylinBootRepair"));//麒麟引导修复
     connect(styleWidget,&StyleWidget::allClose,this,&MainWindow::closeMainWin);
 
+    styleWidget->showOrHide();
     prePage = new PrePage(swa);
 
     startPage = new StartPage(swa);
@@ -187,7 +188,7 @@ void MainWindow::myStyle()
 
     authorityBox->setWindowFlags(Qt::FramelessWindowHint | Qt::Dialog );//无边框
     //authorityBox->setAttribute(Qt::WA_TranslucentBackground, true);//窗体透明
-    authorityBox->setWindowTitle("麒麟引导修复授权");
+    authorityBox->setWindowTitle(tr("KylinBootRepairAuthorization"));//麒麟引导修复授权
     //authorityBox->setFixedSize(420,270);
 
     QRect availableGeometry = qApp->primaryScreen()->availableGeometry();
@@ -244,7 +245,6 @@ void MainWindow::prepareAction()
 
     emit startFdisk(fdiskCmd);
     styleWidget->widgetClose->setEnabled(false);
-    styleWidget->widgetMin->setEnabled(false);
 }
 
 /************************************************
@@ -268,8 +268,6 @@ void MainWindow::makeStart()
     qDebug() << "主线程的makeStart!";
 
     stackedWidget->setCurrentIndex(repairPage2Index);
-    styleWidget->widgetClose->setEnabled(true);
-    styleWidget->widgetMin->setEnabled(true);
 
     emit start_pushButton_clicked(hardDisklist, hardDiskNum);
     styleWidget->widgetClose->setEnabled(false);
@@ -316,6 +314,7 @@ void MainWindow::getPassword(QString str)
         userPassword = str;
         authorityBox->hide();
     }
+    styleWidget->showOrHide();
     prepareAction();
 }
 
@@ -467,8 +466,7 @@ void MainWindow::failAndReturn()
     qDebug() << "主线程收到支线程错误信号！";
     stackedWidget->setCurrentIndex(warningPageIndex);
     styleWidget->widgetClose->setEnabled(true);
-    styleWidget->widgetMenuBtn->setEnabled(true);
-    styleWidget->widgetMin->setEnabled(true);
+//    styleWidget->widgetMin->setEnabled(true);
     qInstallMessageHandler(nullptr);
 }
 /************************************************
@@ -487,8 +485,7 @@ void MainWindow::changeToMainPage()
 {
     stackedWidget->setCurrentIndex(startPageIndex);//翻到开始主页
     styleWidget->widgetClose->setEnabled(true);
-    styleWidget->widgetMenuBtn->setEnabled(true);
-    styleWidget->widgetMin->setEnabled(true);
+//    styleWidget->widgetMin->setEnabled(true);
 }
 /************************************************
 * 函数名称：changeToFinishPage
@@ -508,6 +505,6 @@ void MainWindow::changeToFinishPage()
     stackedWidget->setCurrentIndex(finishPageIndex);
     styleWidget->widgetClose->setEnabled(true);
     styleWidget->widgetMenuBtn->setEnabled(true);
-    styleWidget->widgetMin->setEnabled(true);
+//    styleWidget->widgetMin->setEnabled(true);
 }
 

@@ -1,3 +1,40 @@
+kylin-boot-repair (1.0.17kord) v101; urgency=medium
+
+  * 添加国际化翻译文件
+
+ -- hanzehui <hanzehui@kylinos.cn>  Sat, 21 Nov 2020 17:17:40 +0800
+
+kylin-boot-repair (1.0.16kord~rc3) v101; urgency=medium
+
+  * Bug 25926 【麒麟引导修复】修复完成界面按钮默认状态颜色不对
+  * Bug 25925 【麒麟引导修复】修复过程中最小化按钮点击异常
+
+ -- hanzehui <hanzehui@kylinos.cn>  Fri, 20 Nov 2020 17:17:40 +0800
+
+kylin-boot-repair (1.0.16kord~rc2) v101; urgency=medium
+
+  * 修改错误检查文字从标准输出为标准输出，解决正常修复后无法显示修复完成的问题
+
+ -- hanzehui <hanzehui@kylinos.cn>  Fri, 20 Nov 2020 15:17:40 +0800
+
+kylin-boot-repair (1.0.16kord~rc1) v101; urgency=medium
+
+  * 更改修复流程，增加完成检查
+
+ -- hanzehui <hanzehui@kylinos.cn>  Fri, 20 Nov 2020 13:17:40 +0800
+
+kylin-boot-repair (1.0.15kord~rc2) v101; urgency=medium
+
+  * 更改修复流程，分步执行，保证修复成功
+
+ -- hanzehui <hanzehui@kylinos.cn>  Fri, 20 Nov 2020 11:17:40 +0800
+
+kylin-boot-repair (1.0.15kord~rc1) v101; urgency=medium
+
+  * 更改修复流程，保留mkconfig流程
+
+ -- hanzehui <hanzehui@kylinos.cn>  Fri, 20 Nov 2020 10:17:40 +0800
+
 kylin-boot-repair (1.0.15kord) v101; urgency=medium
 
   * 修复无法在应急启动模式下进入修复流程问题

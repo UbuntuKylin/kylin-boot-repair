@@ -63,7 +63,10 @@ HEADERS += \
 
 FORMS +=
 
-TRANSLATIONS += \
+TRANSLATIONS += translations/kylin-boot-repair_zh_CN.ts \
+                translations/kylin-boot-repair_bo.ts
+
+
 
 TARGET = kylin-boot-repair
 
@@ -73,13 +76,16 @@ icon.path = /usr/share/pixmaps
 icon.files = data/bootrepair_icon.png
 desktop.path = /usr/share/applications/
 desktop.files = kylin-boot-repair.desktop
+qm_files.files = translations/*.qm
+qm_files.path = /usr/share/kylin-boot-repair/translations/
 
 INSTALLS += target \
             icon \
-            desktop
+            desktop \
+            qm_files
 
 DISTFILES += \
-    data/bootrepair_icon.png
+    data/bootrepair_icon.png \
 
 RESOURCES += \
     data.qrc

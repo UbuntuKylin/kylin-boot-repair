@@ -23,13 +23,13 @@ StyleWidget::StyleWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool
     m_isDialog=isDialog;
     swshadow = new StyleWidgetShadow(swa);
     this->setWindowIcon(QIcon(":/data/guide_repair24.png"));
-    this->setWindowTitle(tr("麒麟引导修复工具"));
+    this->setWindowTitle(tr("KylinBootRepair"));//麒麟引导修复工具
     myStyle(swa);
     text->setText(dialogTitleText);
 
     StyleWidgetAttribute tabWin(TABWINDOWWIDETH,TABWINDOWHEIGHT,0,TABWIDGETRADIUS,TABSHADOWWIDTH,TABSHADOWALPHA,TABTITLEHEIGHT);
 
-    tabWinWidget=new TabWidget(tabWin,tr("麒麟引导修复"),false,this);
+    tabWinWidget=new TabWidget(tabWin,tr("KylinBootRepair"),false,this);//麒麟引导修复
 
     tabWinWidget->setObjectName("widgetMenu");
     tabWinWidget->setStyleSheet("StyleWidget #widgetMenu{background-color:rgba(255, 20, 20, 1);border-radius:6px;}");
@@ -130,7 +130,9 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
     widgetMin->setObjectName("widgetMin");
     widgetMin->setIconSize(smallWidgetSize);
     widgetMin->setFixedSize(smallWidgetSize);
-    connect(widgetMin,&QPushButton::clicked,this,[=]{this->setWindowState(Qt::WindowMinimized);});
+    connect(widgetMin,&QPushButton::clicked,this,[=]{
+        swshadow->setWindowState(Qt::WindowMinimized);
+    });
 
     widgetClose =new QPushButton;//关闭按钮
     widgetClose->setObjectName("widgetClose");

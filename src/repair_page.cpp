@@ -41,7 +41,7 @@ void RepairPage::initControlQss()
     repairingIcon->setFixedSize(64,64);
 
     repairingText=new QLabel;
-    repairingText->setText(tr("正在修复，可能需要几分钟……"));
+    repairingText->setText(tr("Recovering, it may take several minutes..."));//正在修复，可能需要几分钟……
     //repairingText->setStyleSheet("color:rgba(0, 0, 0, 0.85);font-size:14px;");
 
     QHBoxLayout *hl0=new QHBoxLayout;
