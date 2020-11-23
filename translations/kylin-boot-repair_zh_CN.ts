@@ -26,9 +26,9 @@
     <name>LogWidget</name>
     <message>
         <location filename="../src/logwidget.cpp" line="26"/>
-        <source>麒麟引导修复日志</source>
-        <translatorcomment>KylinBootRepairLog</translatorcomment>
-        <translation>KylinBootRepairLog</translation>
+        <source>KylinBootRepairLog</source>
+        <translatorcomment>麒麟引导修复日志</translatorcomment>
+        <translation>麒麟引导修复日志</translation>
     </message>
     <message>
         <location filename="../src/logwidget.cpp" line="121"/>

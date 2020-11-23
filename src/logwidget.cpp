@@ -23,7 +23,7 @@ LogWidget::LogWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool isD
     m_isDialog=isDialog;
     swshadow = new StyleWidgetShadow(swa);
     this->setWindowIcon(QIcon(":/data/guide_repair24.png"));
-    this->setWindowTitle(tr("麒麟引导修复日志"));
+    this->setWindowTitle(tr("KylinBootRepairLog"));
     myStyle(swa);
     text->setText(dialogTitleText);
 }
