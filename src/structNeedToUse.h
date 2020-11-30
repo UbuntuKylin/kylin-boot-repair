@@ -24,22 +24,22 @@ typedef struct linuxSystemInfo
     bool    bootIsSeparate  = false;
     bool    homeIsSeparate  = false;
 
-    QString treeMkdirCmd    = "sudo -S mkdir /media/kylin/ /media/kylin/dev";
-    QString rootMkdirCmd    = "sudo -S mkdir /media/kylin";
+    QString treeMkdirCmd    = "sudo -S mkdir /tmp/kylin/ /tmp/kylin/dev";
+    QString rootMkdirCmd    = "sudo -S mkdir /tmp/kylin";
     QString rootMountCmd    = "sudo -S mount ";
     QString bootMountCmd    = "sudo -S mount ";
     QString efiMountCmd     = "sudo -S mount ";
     QString homeMountCmd    = "sudo -S mount ";
 
-    QString chrootCmd       = "sudo -S chroot /media/kylin";
-    QString grubInstallCmd  = "sudo -S grub-install --target=";
+    QString chrootCmd       = "sudo -S chroot /tmp/kylin";
+    QString grubInstallCmd  = "sudo -S grub-install ";
     bool    needGrubInstall = false;
     QString grubMkconfigCmd = "sudo -S grub-mkconfig -o /boot/grub/grub.cfg";
     QString updateGrubCmd   = "sudo -S update-grub";
 
-    QString devMountCmd     = "sudo -S mount --bind /dev /media/kylin";
-    QString procMountCmd    = "sudo -S mount --bind /proc /media/kylin";
-    QString sysMountCmd     = "sudo -S mount --bind /sys /media/kylin";
+    QString devMountCmd     = "sudo -S mount --bind /dev /tmp/kylin";
+    QString procMountCmd    = "sudo -S mount --bind /proc /tmp/kylin";
+    QString sysMountCmd     = "sudo -S mount --bind /sys /tmp/kylin";
 
     QString umountAllCmd    = "sudo -S umount -l ";
 

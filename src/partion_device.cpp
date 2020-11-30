@@ -39,9 +39,9 @@ PartionDevice::PartionDevice(bool hasPwd, QString userPwd,QString partionDeviceN
 
     QString tempStr = partionDeviceName;
     cmdUmountStr = "sudo -S umount "      + tempStr;
-    cmdMkdirStr  = "sudo -S mkdir /media" + tempStr.remove(0,4);
-    cmdMountStr  = "sudo -S mount /dev"   + tempStr + " /media" + tempStr;
-    fstabPath    = "/media"               + tempStr + "/etc/fstab";
+    cmdMkdirStr  = "sudo -S mkdir /tmp" + tempStr.remove(0,4);
+    cmdMountStr  = "sudo -S mount /dev"   + tempStr + " /tmp" + tempStr;
+    fstabPath    = "/tmp"               + tempStr + "/etc/fstab";
 
     archDetectCmd   = "sudo -S archdetect";
 
@@ -289,7 +289,7 @@ void PartionDevice::partionTypeOfDevice(QString partionDeviceName)
     //拼接出分区当前的挂载目录
     QString filePathCmdString = partionDeviceName;
     QString temp = filePathCmdString;
-    filePathCmdString = "/media/" + temp.remove(0,5);
+    filePathCmdString = "/tmp/" + temp.remove(0,5);
 
     //查看系统架构
     qDebug() << "查看系统架构指令：" << archDetectCmd;
@@ -535,42 +535,42 @@ void PartionDevice::archdetectCmdInfo(QString outputInfo)
     else if(outputInfo.contains("amd64/efi"))
     {
         needGrubInstall = true;
-        systemClassEfi = "x86_64-efi";
+        systemClassEfi = "--target=x86_64-efi";
         qDebug() << "需要进行grub-install！" ;
         qDebug() << "系统架构类型为" << systemClassEfi;
     }
     else if(outputInfo.contains("arm64/efi"))
     {
         needGrubInstall = true;
-        systemClassEfi = "arm64-efi";
+        systemClassEfi = "--target=arm64-efi";
         qDebug() << "需要进行grub-install！" ;
         qDebug() << "系统架构类型为" << systemClassEfi;
     }
     else if(outputInfo.contains("arm/efi"))
     {
         needGrubInstall = true;
-        systemClassEfi = "arm-efi";
+        systemClassEfi = "--target=arm-efi";
         qDebug() << "需要进行grub-install！" ;
         qDebug() << "系统架构类型为" << systemClassEfi;
     }
     else if(outputInfo.contains("amd64"))
     {
         needGrubInstall = true;
-        systemClassEfi = "x86_64-efi";
+        systemClassEfi = "--target=x86_64-efi";
         qDebug() << "需要进行grub-install！" ;
         qDebug() << "系统架构类型为" << systemClassEfi;
     }
     else if(outputInfo.contains("mipsel"))
     {
         needGrubInstall = true;
-        systemClassEfi = "mipsel-loongson";
+        systemClassEfi = "--target=mipsel-loongson";
         qDebug() << "需要进行grub-install！" ;
         qDebug() << "系统架构类型为" << systemClassEfi;
     }
     else
     {
         needGrubInstall = true;
-        systemClassEfi = "i386-pc";
+        systemClassEfi = "--target=i386-pc";
         qDebug() << "需要进行grub-install！" ;
         qDebug() << "系统架构类型为" << systemClassEfi;
     }

@@ -198,6 +198,13 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
 
         qDebug() << "Linux系统文件分区个数为:" << QString::number(numOfLinuxPartion) << "个";
 
+        if(0 == numOfLinuxPartion)
+        {
+            qDebug() << "硬盘中没有Linux系统文件分区！";
+            emit failAndReturn();
+            return;
+        }
+
         //结束准备界面，进入修复开始界面，命令执行过程很快，增加4秒延时，防止页面一闪而过，给用户造成疑惑。
         QTimer::singleShot(4000, [=](){
             emit changeToMainPage();//向主窗口发送信号，执行下一流程

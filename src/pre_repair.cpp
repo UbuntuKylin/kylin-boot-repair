@@ -141,7 +141,7 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
 
 
             currentSystem.efiMountCmd += currentSystem.efiPath;
-            currentSystem.efiMountCmd += " /media/kylin";
+            currentSystem.efiMountCmd += " /tmp/kylin";
             currentSystem.efiMountCmd += currentDevice->DeviceName;
             currentSystem.efiMountCmd += "/boot/efi";
 
@@ -150,7 +150,7 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
 
             QString rootMountCmdTemp = currentDevice->DeviceName;
             currentSystem.rootMountCmd += rootMountCmdTemp;
-            currentSystem.rootMountCmd += " /media/kylin";
+            currentSystem.rootMountCmd += " /tmp/kylin";
             currentSystem.rootMountCmd += rootMountCmdTemp;
 
             qDebug() << "挂载root目录的命令是 ：" << currentSystem.rootMountCmd;
@@ -159,7 +159,7 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
             {
                 qDebug() << "挂载boot目录" ;
                 currentSystem.bootMountCmd += currentDevice->bootPath;
-                currentSystem.bootMountCmd += " /media/kylin";
+                currentSystem.bootMountCmd += " /tmp/kylin";
                 currentSystem.bootMountCmd += rootMountCmdTemp;
                 currentSystem.bootMountCmd += "/boot";
 ;
@@ -170,7 +170,7 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
             {
                 qDebug() << "挂载home目录" ;
                 currentSystem.homeMountCmd += currentDevice->homePath;
-                currentSystem.homeMountCmd += " /media/kylin";
+                currentSystem.homeMountCmd += " /tmp/kylin";
                 currentSystem.homeMountCmd += rootMountCmdTemp;
                 currentSystem.homeMountCmd += "/home";
 
@@ -193,6 +193,13 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
             if(currentSystem.needGrubInstall && !(currentDevice->systemClassEfi.isEmpty()))
             {
                 currentSystem.grubInstallCmd += currentDevice->systemClassEfi;
+                currentSystem.grubInstallCmd += " --boot-directory=/boot";
+
+                currentSystem.grubInstallCmd += " --efi-directory=/boot/efi";
+
+                currentSystem.grubInstallCmd += " --recheck";
+//                currentSystem.grubInstallCmd += " --kylin-no-efi-register";
+                qDebug() << "grubInstallCmd命令为：" << currentSystem.grubInstallCmd;
             }
             else
             {
@@ -216,48 +223,60 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
     }
 
     qDebug() << "主线程中： 所有分区遍历完毕共有" << systemNumOnDisk << "个系统安装在该硬盘";
-    if(!systemNumOnDisk)
+    if(0 == systemNumOnDisk)
     {
         emit failAndReturn();
         return;
     }
-//grub支持多系统直接修复，共有一个grub文件
-//    for(uint i = 0 ; i < systemNumOnDisk; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
-//    {
-//        currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
-//        if(currentSystem->repairGrubFile())            //grub引导文件修复
-//        {
-//            repairSuccess = true;
-//            break;
-//        }
-//        else
-//        {
-//            if(i == systemNumOnDisk)
-//            {
-//                repairSuccess = false;
-//                break;
-//            }
-//            repairSuccess = false;
-//        }
-//    }
+    //grub支持多系统直接修复，共有一个grub文件
+    for(uint i = 0 ; i < systemNumOnDisk; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
+    {
+        qDebug() << "修复表单中第" << i + 1 << "个系统中。";
+        currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
+        connect(currentSystem,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
+        currentSystem->repairGrubFile();           //grub引导文件修复
 
-    currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(0));
-    connect(currentSystem,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
-    currentSystem->repairGrubFile();           //grub引导文件修复
+        if(currentSystem->isV101)
+        {
+            break;
+        }
+    }
+
+//    currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(1));
+//    connect(currentSystem,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
+//    currentSystem->repairGrubFile();           //grub引导文件修复
 
 }
 
-void PreRepair::getRepairResult(bool res)
+void PreRepair::getRepairResult(bool repairRes,bool v101)
 {
-    repairSuccess = res;
-    if(repairSuccess)
+
+    repairSuccess &= repairRes;
+    repairTimes++;
+    isV101 = v101;
+    qDebug() << "修复完成表单中第" << repairTimes << "个系统。";
+    if(repairRes)
     {
-        qDebug() << "修复成功！！！";
-        emit changeToFinishPage();                    //发送信号，使主线程翻页
+        qDebug() << "修复成功";
     }
     else
     {
-        qDebug() << "boot_repair过程中修复失败！！！";
-        emit failAndReturn();
+        qDebug() << "修复失败";
     }
+
+
+    if(systemNumOnDisk == repairTimes || true == isV101)
+    {
+        if(repairSuccess)
+        {
+            qDebug() << "修复成功！！！";
+            emit changeToFinishPage();                    //发送信号，使主线程翻页
+        }
+        else
+        {
+            qDebug() << "boot_repair过程中修复失败！！！";
+            emit failAndReturn();
+        }
+    }
+
 }

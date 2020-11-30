@@ -21,14 +21,18 @@ public:
     ~BootRepair();
     void repairGrubFile();
 
+    bool      isV101          = false;
 public slots://提供给各线程的槽函数
     void readcmdRepairBashInfo();
 
 signals://发送信号给主窗体
     //void setInfo(QString inputInfo);//写入状态栏信息
-    void repairResult(bool result);
+    void repairResult(bool repairResult,bool v101);
 
 private:
+
+    bool systemVersionCheck();
+
     bool hasPassWord  = false;
     QString userPassWord = "";
 

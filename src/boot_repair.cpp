@@ -24,6 +24,23 @@ BootRepair::BootRepair(bool hasPwd, QString userPwd, linuxSystemInfo systemStruc
     hasPassWord  = hasPwd;
     userPassWord = userPwd;
     currentSystem = systemStruct;
+
+    qDebug() << "创建挂载文件所需要文件夹：" << currentSystem.treeMkdirCmd;
+    treeMkdirCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.treeMkdirCmd,this);
+    //connect(treeMkdirCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+    treeMkdirCmd->cmdExecute();
+
+    qDebug() << "创建挂载根目录文件夹：" << currentSystem.rootMkdirCmd;
+    rootMkdirCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.rootMkdirCmd,this);
+    //connect(rootMkdirCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+    rootMkdirCmd->cmdExecute();
+
+    qDebug() << "挂载根目录：" << currentSystem.rootMountCmd;
+    rootMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.rootMountCmd,this);
+    //connect(rootMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+    rootMountCmd->cmdExecute();
+
+    isV101 = systemVersionCheck();
 }
 
 /************************************************
@@ -76,26 +93,26 @@ void BootRepair::repairGrubFile()
         qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
         qDebug() << "严重错误！！！无法检测到efi分区，无法继续修复！";
         qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-        emit repairResult(false);
+        emit repairResult(false,false);
         return ;//检测失败，返回false
     }
 
 
 
-    qDebug() << "创建挂载文件所需要文件夹：" << currentSystem.treeMkdirCmd;
-    treeMkdirCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.treeMkdirCmd,this);
-    //connect(treeMkdirCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-    treeMkdirCmd->cmdExecute();
+//    qDebug() << "创建挂载文件所需要文件夹：" << currentSystem.treeMkdirCmd;
+//    treeMkdirCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.treeMkdirCmd,this);
+//    //connect(treeMkdirCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+//    treeMkdirCmd->cmdExecute();
 
-    qDebug() << "创建挂载根目录文件夹：" << currentSystem.rootMkdirCmd;
-    rootMkdirCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.rootMkdirCmd,this);
-    //connect(rootMkdirCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-    rootMkdirCmd->cmdExecute();
+//    qDebug() << "创建挂载根目录文件夹：" << currentSystem.rootMkdirCmd;
+//    rootMkdirCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.rootMkdirCmd,this);
+//    //connect(rootMkdirCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+//    rootMkdirCmd->cmdExecute();
 
-    qDebug() << "挂载根目录：" << currentSystem.rootMountCmd;
-    rootMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.rootMountCmd,this);
-    //connect(rootMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-    rootMountCmd->cmdExecute();
+//    qDebug() << "挂载根目录：" << currentSystem.rootMountCmd;
+//    rootMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.rootMountCmd,this);
+//    //connect(rootMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+//    rootMountCmd->cmdExecute();
 
     if(currentSystem.bootIsSeparate)
     {
@@ -192,14 +209,8 @@ void BootRepair::repairGrubFile()
         qDebug() << "无需执行grub-install";
         finalResult = true;
     }
-    //延迟60s，再检查是否修复成功。
-    QTimer::singleShot(60000, [=](){
-        emit repairResult(finalResult);//向主窗口发送信号，执行下一流程
-        qDebug() << "修复结果为" << finalResult;
-        qDebug() << "拆卸已装载的分区" << currentSystem.umountAllCmd;
-        umountAllCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.umountAllCmd,this);
-    });
 
+    emit repairResult(finalResult,isV101);
 }
 
 /************************************************
@@ -228,3 +239,60 @@ void BootRepair::readcmdRepairBashInfo()
     }
 }
 
+/************************************************
+* 函数名称：systemVersionCheck
+* 功能描述：是否是V10.1系统检查
+* 输入参数：无
+* 输出参数：无
+* 修改日期：2020.11.30
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+bool BootRepair::systemVersionCheck()
+{
+    qDebug() << "检查" << "/tmp/kylin" << currentSystem.deviceName << "/etc/os-release" << "是否存在";
+    QString etcPath = "/tmp/kylin" + currentSystem.deviceName + "/etc/os-release";
+    QFile osrelease(etcPath);
+
+    if(osrelease.exists())
+    {
+        qDebug() << "os-release文件存在！";
+    }
+    else
+    {
+        qDebug() << "os-release文件不存在！";
+        return false;
+    }
+
+    bool isOk = osrelease.open(QFile::ReadOnly);
+    if (!isOk) {
+        qDebug() << "无法打开osrelease文件!";
+        return false;
+    }
+
+    QByteArray osreleaseArray = osrelease.readAll();
+
+    if(osreleaseArray.isEmpty())
+    {
+        qDebug() << "osrelease内容为空！";
+        return false;
+    }
+    else
+    {
+
+        //把输出内容按行分割成元素添加至list
+        QStringList list = (QString::fromLocal8Bit(osreleaseArray)).split("\n");
+        for(QString& si : list)                        //遍历list中的各行
+        {
+            qDebug() << si;
+            if(si.contains("V10.1"))
+            {
+                qDebug() << "该系统为V10.1系统！";
+                return true;
+            }
+        }
+        qDebug() << "该系统为其他系统！";
+    }
+    return false;
+}

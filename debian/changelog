@@ -1,3 +1,21 @@
+kylin-boot-repair (1.0.20kord~rc3) v101; urgency=medium
+
+  * 更改挂载目录，解决修复后残留挂载目录问题。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Sat, 28 Nov 2020 10:17:40 +0800
+
+kylin-boot-repair (1.0.20kord~rc2) v101; urgency=medium
+
+  * Bug 25032 【麒麟引导修复】跟随系统字体时不完全跟随
+
+ -- hanzehui <hanzehui@kylinos.cn>  Thu, 26 Nov 2020 16:17:40 +0800
+
+kylin-boot-repair (1.0.18kord) v101; urgency=medium
+
+  * 修复翻译不完全问题
+
+ -- hanzehui <hanzehui@kylinos.cn>  Mon, 23 Nov 2020 11:17:40 +0800
+
 kylin-boot-repair (1.0.17kord) v101; urgency=medium
 
   * 添加国际化翻译文件

@@ -24,7 +24,7 @@ public:
 
 public slots://提供给各线程的槽函数
     void start_pushButton_clicked(QStringList list, uint num);//开始按钮按下后连接的槽函数
-    void getRepairResult(bool res);                        //获取修复结果
+    void getRepairResult(bool res,bool v101);                        //获取修复结果
 signals://发送信号给主窗体
     void changeToFinishPage();                              //主窗体翻页信号
     void failAndReturn();
@@ -45,7 +45,10 @@ private:
 
     BootRepair *currentSystem;
 
-    bool repairSuccess = false;
+    bool repairSuccess = true;
+
+    uint repairTimes = 0;
+    bool isV101 = false;
 
 };
 

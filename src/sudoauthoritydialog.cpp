@@ -328,15 +328,15 @@ void SudoAuthorityDialog::pageChangeForTheme(QString nowThemeStyle)
         title->setStyleSheet("color:rgba(255, 255, 255, 0.85);font-size:18px;");
         tip->setStyleSheet("color:rgba(255, 255, 255, 0.85);font-size:14px;");
         result->setStyleSheet("color:rgba(255, 255, 255, 0.85);font-size:14px;");
-        //dialogUser->setStyleSheet("background:rgba(20, 20, 20, 1);color:rgba(255, 255, 255, 1));font-size:14px;");
-        user->setStyleSheet("color:rgba(255, 255, 255, 1));font-size:14px;");
+        dialogUser->setStyleSheet("color:rgba(255, 255, 255, 1));font-size:14px;");
+        user->setStyleSheet("color:rgba(255, 255, 255, 1);font-size:14px;");
         dialogKey->setStyleSheet("color:rgba(255, 255, 255, 0.85);font-size:14px;");
-        btnCancel->setStyleSheet("QPushButton#btnCancel{background:rgba(20, 20, 20, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);}"
-                                   "QPushButton#btnCancel:hover{background:rgba(62, 108, 229, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);}"
-                                   "QPushButton#btnCancel:pressed{background:rgba(50, 88, 202, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);}");
-        btnOk->setStyleSheet("QPushButton#btnOk{background:rgba(20, 20, 20, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);}"
-                                   "QPushButton#btnOk:hover{background:rgba(62, 108, 229, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);}"
-                                   "QPushButton#btnOk:pressed{background:rgba(50, 88, 202, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);}");
+        btnCancel->setStyleSheet("QPushButton#btnCancel{background:rgba(20, 20, 20, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);font-size:14px;}"
+                                   "QPushButton#btnCancel:hover{background:rgba(62, 108, 229, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);font-size:14px;}"
+                                   "QPushButton#btnCancel:pressed{background:rgba(50, 88, 202, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);font-size:14px;}");
+        btnOk->setStyleSheet("QPushButton#btnOk{background:rgba(20, 20, 20, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);font-size:14px;}"
+                                   "QPushButton#btnOk:hover{background:rgba(62, 108, 229, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);font-size:14px;}"
+                                   "QPushButton#btnOk:pressed{background:rgba(50, 88, 202, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);font-size:14px;}");
         //body->setStyleSheet("QWidget #body{background:rgba(20, 20, 20, 1);border-radius:12px;}");
     }
     else
@@ -346,12 +346,13 @@ void SudoAuthorityDialog::pageChangeForTheme(QString nowThemeStyle)
         result->setStyleSheet("color:rgba(0, 0, 0, 1);font-size:14px;");
         dialogUser->setStyleSheet("color:rgba(0, 0, 0, 1);font-size:14px;");
         dialogKey->setStyleSheet("color:rgba(0, 0, 0, 1);font-size:14px;");
-        btnCancel->setStyleSheet("QPushButton#btnCancel{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);}"
-                                   "QPushButton#btnCancel:hover{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);}"
-                                   "QPushButton#btnCancel:pressed{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);}");
-        btnOk->setStyleSheet("QPushButton#btnOk{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);}"
-                                   "QPushButton#btnOk:hover{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);}"
-                                   "QPushButton#btnOk:pressed{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);}");
+        user->setStyleSheet("color:rgba(0, 0, 0, 1);font-size:14px;");
+        btnCancel->setStyleSheet("QPushButton#btnCancel{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);font-size:14px;}"
+                                   "QPushButton#btnCancel:hover{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);font-size:14px;}"
+                                   "QPushButton#btnCancel:pressed{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);font-size:14px;}");
+        btnOk->setStyleSheet("QPushButton#btnOk{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);font-size:14px;}"
+                                   "QPushButton#btnOk:hover{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);font-size:14px;}"
+                                   "QPushButton#btnOk:pressed{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);font-size:14px;}");
         //body->setStyleSheet("QWidget #body{background:rgba(221, 223, 231, 1);border-radius:12px;}");
     }
 }
