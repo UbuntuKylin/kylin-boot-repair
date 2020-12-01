@@ -1,3 +1,9 @@
+kylin-boot-repair (1.0.24kord) v101; urgency=medium
+
+  * 解决修复单系统无法退出程序问题。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 01 Dec 2020 19:17:40 +0800
+
 kylin-boot-repair (1.0.23kord) v101; urgency=medium
 
   * 解决fdisk返回内容过多，qbetarray无法读取完全问题。

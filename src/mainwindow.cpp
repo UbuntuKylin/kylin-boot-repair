@@ -391,7 +391,16 @@ void MainWindow::initGsetting()
 *************************************************/
 void MainWindow::setThemeStyle()
 {
-    QString nowThemeStyle = m_pThemeStyle->get("styleName").toString();
+    QString nowThemeStyle = "";
+    if(m_pThemeStyle==nullptr)                  //V10系统不能进行主题切换，需要进行空指针判断
+    {
+        nowThemeStyle = "ukui-default";
+    }
+    else
+    {
+        nowThemeStyle = m_pThemeStyle->get("styleName").toString();
+    }
+
     qDebug() << "设置程序主题模式为" << nowThemeStyle;
     styleWidget->ThemeChooseForWidget(nowThemeStyle);
 

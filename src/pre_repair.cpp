@@ -225,22 +225,35 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
     qDebug() << "主线程中： 所有分区遍历完毕共有" << systemNumOnDisk << "个系统安装在该硬盘";
     if(0 == systemNumOnDisk)
     {
+        qDebug() << "硬盘中没有系统，无法修复！";
         emit failAndReturn();
         return;
     }
     //grub支持多系统直接修复，共有一个grub文件
-    for(uint i = 0 ; i < systemNumOnDisk - 1; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
+    else if(1 == systemNumOnDisk)
     {
-        qDebug() << "修复表单中第" << i + 1 << "个系统中。";
-        currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
+        qDebug() << "硬盘中只有一个系统！";
+        currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(0));
         connect(currentSystem,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
         currentSystem->repairGrubFile();           //grub引导文件修复
-
-        if(currentSystem->isV101)
+    }
+    else
+    {
+        qDebug() << "安装了多个系统，为防止有安装V10.1系统，需遍历修复，直至修复了V10.1系统";
+        for(uint i = 0 ; i < systemNumOnDisk - 1; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
         {
-            break;
+            qDebug() << "修复表单中第" << i + 1 << "个系统中。";
+            currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
+            connect(currentSystem,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
+            currentSystem->repairGrubFile();           //grub引导文件修复
+
+            if(currentSystem->isV101)
+            {
+                break;
+            }
         }
     }
+
 
 //    currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(1));
 //    connect(currentSystem,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
