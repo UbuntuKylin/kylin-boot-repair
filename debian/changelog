@@ -1,3 +1,9 @@
+kylin-boot-repair (1.0.21kord) v101; urgency=medium
+
+  * 解决多系统混装，低版本系统grub探针无法检测到高版本系统问题。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 01 Dec 2020 10:17:40 +0800
+
 kylin-boot-repair (1.0.20kord~rc3) v101; urgency=medium
 
   * 更改挂载目录，解决修复后残留挂载目录问题。

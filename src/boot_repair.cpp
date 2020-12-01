@@ -197,20 +197,22 @@ void BootRepair::repairGrubFile()
     {
         qDebug() << "需要执行grub-install，但命令为空";
         finalResult = false;//逻辑存在问题，检测失败，返回false
+        emit repairResult(finalResult,isV101);
     }
     else if(false == currentSystem.needGrubInstall && !(currentSystem.grubInstallCmd.isEmpty()))
     {
         qDebug() << "不需要执行grub-install，但命令不为空";
         qDebug() << "命令内容为：" << currentSystem.grubInstallCmd;
         finalResult = false;//逻辑存在问题，检测失败，返回false
+        emit repairResult(finalResult,isV101);
     }
     else
     {
         qDebug() << "无需执行grub-install";
         finalResult = true;
+        emit repairResult(finalResult,isV101);
     }
 
-    emit repairResult(finalResult,isV101);
 }
 
 /************************************************
@@ -227,16 +229,23 @@ void BootRepair::readcmdRepairBashInfo()
 {
     QByteArray cmdStdOut = chrootCmd->readAllStandardOutput();
     QByteArray cmdStdOutErr = chrootCmd->readAllStandardError();
-    qDebug() << "readAllStandardOutput" << QString::fromLocal8Bit(cmdStdOut);
+
     qDebug() << "readAllStandardError" << QString::fromLocal8Bit(cmdStdOutErr);
-    if(!cmdStdOut.isEmpty() && (cmdStdOut.contains("finished") || cmdStdOut.contains("安装完成")))
+    if(!cmdStdOut.isEmpty())// && (cmdStdOut.contains("finished") || cmdStdOut.contains("安装完成")))
     {
-        finalResult = true;
+        qDebug() << "readAllStandardOutput" << QString::fromLocal8Bit(cmdStdOut);
+        finalResult = false;
+        emit repairResult(finalResult,isV101);//向主窗口发送信号，执行下一流程
+        return;
     }
     if(!cmdStdOutErr.isEmpty() && (cmdStdOutErr.contains("finished") || cmdStdOutErr.contains("安装完成")))
     {
         finalResult = true;
+        emit repairResult(finalResult,isV101);//向主窗口发送信号，执行下一流程
+        return;
     }
+
+
 }
 
 /************************************************

@@ -37,7 +37,7 @@ PreRepair::PreRepair(bool hasPwd, QString userPwd, QObject *parent) : QObject(pa
 PreRepair::~PreRepair()
 {
     currentDevice->deleteLater();
-
+    currentSystem->deleteLater();
 }
 
 /************************************************
@@ -162,7 +162,7 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
                 currentSystem.bootMountCmd += " /tmp/kylin";
                 currentSystem.bootMountCmd += rootMountCmdTemp;
                 currentSystem.bootMountCmd += "/boot";
-;
+
                 qDebug() << "挂载boot目录的命令是 ：" << currentSystem.bootMountCmd;
             }
 
@@ -229,7 +229,7 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
         return;
     }
     //grub支持多系统直接修复，共有一个grub文件
-    for(uint i = 0 ; i < systemNumOnDisk; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
+    for(uint i = 0 ; i < systemNumOnDisk - 1; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
     {
         qDebug() << "修复表单中第" << i + 1 << "个系统中。";
         currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
