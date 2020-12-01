@@ -1,3 +1,15 @@
+kylin-boot-repair (1.0.23kord) v101; urgency=medium
+
+  * 解决fdisk返回内容过多，qbetarray无法读取完全问题。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 01 Dec 2020 17:17:40 +0800
+
+kylin-boot-repair (1.0.22kord) v101; urgency=medium
+
+  * 解决多系统混装未修复完全即返回结果导致异常退出问题。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Tue, 01 Dec 2020 13:17:40 +0800
+
 kylin-boot-repair (1.0.21kord) v101; urgency=medium
 
   * 解决多系统混装，低版本系统grub探针无法检测到高版本系统问题。

@@ -244,6 +244,12 @@ void BootRepair::readcmdRepairBashInfo()
         emit repairResult(finalResult,isV101);//向主窗口发送信号，执行下一流程
         return;
     }
+    if(!cmdStdOutErr.isEmpty() && (cmdStdOutErr.contains("segement error") || cmdStdOutErr.contains("段错误")))
+    {
+        finalResult = false;
+        emit repairResult(finalResult,isV101);//向主窗口发送信号，执行下一流程
+        return;
+    }
 
 
 }

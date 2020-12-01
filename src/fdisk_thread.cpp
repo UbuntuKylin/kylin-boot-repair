@@ -115,10 +115,21 @@ void FdiskThread::readcmdFdiskBashErrorInfo()
 *************************************************/
 void FdiskThread::readcmdFdiskBashInfo()
 {
-    QByteArray cmdStdOut = cmdFdiskBash->readAllStandardOutput();
+    QString tempLine;
+    QStringList cmdStdOut;
+    while((tempLine = cmdFdiskBash->readLine()) != NULL)
+    {
+        if(tempLine.count("Linux 文件系统") || tempLine.count("Linux filesystem") ||\
+           tempLine.count("EFI 文件系统") || tempLine.count("EFI filesystem")\
+                || tempLine.count("Linux") || tempLine.count("EFI"))
+        {
+            qDebug() << tempLine;
+            cmdStdOut << tempLine.left(tempLine.size() - 1);
+        }
+    }
     if(!cmdStdOut.isEmpty() && !(cmdStdOut.contains("[sudo]")))
     {
-        qDebug() << QString::fromLocal8Bit(cmdStdOut);
+
         startPreHandle(cmdStdOut);
         cmdFdiskBash->kill();
     }
@@ -134,7 +145,7 @@ void FdiskThread::readcmdFdiskBashInfo()
 *   兼容V10.1，其fdisk命令回显内容无系统文件字样，导致失效
 *
 *************************************************/
-void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
+void FdiskThread::startPreHandle(QStringList cmdOutFromFdisk)
 {
     qDebug() << "开始处理fdisk返回信息";
     //入参检查
@@ -149,48 +160,48 @@ void FdiskThread::startPreHandle(QByteArray cmdOutFromFdisk)
     }
     else
     {
-        //sudo fdisk -l的固定返回信息，最后一列为Linux 文件系统或EFI 文件系统为系统相关目录，home目录无影响，不提取。
-        if(cmdOutFromFdisk.count("Linux 文件系统") || cmdOutFromFdisk.count("Linux filesystem") ||\
-           cmdOutFromFdisk.count("EFI 文件系统") || cmdOutFromFdisk.count("EFI filesystem")\
-                || cmdOutFromFdisk.count("Linux") || cmdOutFromFdisk.count("EFI"))
+        qDebug() << "有Linux文件系统。";
+        numOfLinuxPartion = 0;
+        //优麒麟默认安装时会划分/boot/efi分区
+        QStringList list = cmdOutFromFdisk;//(cmdOutFromFdisk.split("\n");     //把输出内容按行分割成元素添加至list
+        qDebug() << "list中有" << list.size() << "行";
+        for(QString& si : list)                        //遍历list中的各行
         {
-            qDebug() << "有Linux文件系统。";
-            numOfLinuxPartion = 0;
-            //优麒麟默认安装时会划分/boot/efi分区
-            QStringList list = (QString::fromLocal8Bit(cmdOutFromFdisk)).split("\n");     //把输出内容按行分割成元素添加至list
-
-            for(QString& si : list)                        //遍历list中的各行
+            qDebug() << si;
+            QStringList strlist = si.split(" ");       //遍历各行str中被空格隔开的字段
+            int size = strlist.size();                 //各str中被空格隔开字段个数
+            //字段少于2时肯定不是分区目录相关信息列，下面使用时读取了容器中第2个成员，会导致越界，所以加以排除。
+            if (size < 2)
             {
-                QStringList strlist = si.split(" ");       //遍历各行str中被空格隔开的字段
-                int size = strlist.size();                 //各str中被空格隔开字段个数
-                //字段少于2时肯定不是分区目录相关信息列，下面使用时读取了容器中第2个成员，会导致越界，所以加以排除。
-                if (size < 2)
-                {
-                    continue;
-                }
-                //2010
-                if(("Linux" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data()))\
-                    || ("EFI" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data())))
-                {
-                    //TODO此处可以增加限定，已有的分区不要再加入
-                    allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
-                    //QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
-                    //QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
-                    //qDebug() << deviceLocation << "为" << deviceType << "类型分区";
-                }
-                //2004
-                else if(((("filesystem" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data()))\
-                    || ("文件系统" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data())))\
-                        && ("Linux" == QString::fromLocal8Bit(strlist.at(size - 2).toLocal8Bit().data())))\
-                    ||  ("EFI" == QString::fromLocal8Bit(strlist.at(size - 2).toLocal8Bit().data())))
-                {
-                    //TODO此处可以增加限定，已有的分区不要再加入
-                    allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
-                    //QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
-                    //QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
-                    //qDebug() << deviceLocation << "为" << deviceType << "类型分区";
-                }
+                continue;
             }
+            qDebug() << QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
+            qDebug() << QString::fromLocal8Bit(strlist.at(size - 2).toLocal8Bit().data());
+            //10.1
+            if(("Linux" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data()))\
+                    || ("EFI" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data())))
+            {
+                //TODO此处可以增加限定，已有的分区不要再加入
+                allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
+                continue;
+                //QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
+                //QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
+                //qDebug() << deviceLocation << "为" << deviceType << "类型分区";
+            }
+            //2004
+            else if(((("filesystem" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data()))\
+                      || ("文件系统" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data())))\
+                     && ("Linux" == QString::fromLocal8Bit(strlist.at(size - 2).toLocal8Bit().data())))\
+                    ||  ("EFI" == QString::fromLocal8Bit(strlist.at(size - 2).toLocal8Bit().data())))
+            {
+                //TODO此处可以增加限定，已有的分区不要再加入
+                allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
+                continue;
+                //QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
+                //QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
+                //qDebug() << deviceLocation << "为" << deviceType << "类型分区";
+            }
+
         }
         listOfDevice = allDeviceInfoStr;//私有成员赋值，方便向外传递。
 

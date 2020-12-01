@@ -193,9 +193,9 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
             if(currentSystem.needGrubInstall && !(currentDevice->systemClassEfi.isEmpty()))
             {
                 currentSystem.grubInstallCmd += currentDevice->systemClassEfi;
-                currentSystem.grubInstallCmd += " --boot-directory=/boot";
+//                currentSystem.grubInstallCmd += " --boot-directory=/boot";
 
-                currentSystem.grubInstallCmd += " --efi-directory=/boot/efi";
+//                currentSystem.grubInstallCmd += " --efi-directory=/boot/efi";
 
                 currentSystem.grubInstallCmd += " --recheck";
 //                currentSystem.grubInstallCmd += " --kylin-no-efi-register";

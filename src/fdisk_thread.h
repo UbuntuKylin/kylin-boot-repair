@@ -42,7 +42,7 @@ private:
     void readcmdMountBashInfo();//读取*cmdMountBash执行命令后返回内容函数
     void readcmdBootRepairBashBashInfo();//读取*cmdBootRepairBash执行命令后返回内容函数
     void readcmdFdiskBashErrorInfo();
-    void startPreHandle(QByteArray cmdOutFromFdisk);//处理fdisk返回的内容，提取硬盘信息
+    void startPreHandle(QStringList cmdOutFromFdisk);//处理fdisk返回的内容，提取硬盘信息
     void startMount();//根据硬盘信息，创建文件夹,装载硬盘
 
     bool hasPassWord = false;
