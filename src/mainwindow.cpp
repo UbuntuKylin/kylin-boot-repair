@@ -517,3 +517,26 @@ void MainWindow::changeToFinishPage()
 //    styleWidget->widgetMin->setEnabled(true);
 }
 
+/************************************************
+* 函数名称：pullUpWindow
+* 功能描述：最小化拉起函数
+* 输入参数：无
+* 输出参数：
+* 修改日期：2020.12.02
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void MainWindow::pullUpWindow()
+{
+    qDebug()<<"MainWindow::pullUpWindow  iswindowminized:" << styleWidget->swshadow->isMinimized();
+    if(styleWidget->swshadow->isMinimized())
+    {
+        styleWidget->swshadow->showNormal();
+        styleWidget->swshadow->raise();
+        styleWidget->swshadow->activateWindow();
+    }
+
+    //qDebug()<<styleWidget->swshadow->parent();
+
+}

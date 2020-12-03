@@ -482,13 +482,14 @@ void PartionDevice::readFstabInfo()
             }
             if ( 0 == (QString::compare(efiPath,"")))
             {
-                //错误情况，无法处理！
-                qDebug() << "非uefi模式安装系统，无法修复！";
-                //emit setInfo("非uefi模式安装系统，无法修复！");
+                //legacy引导模式
+                qDebug() << "legacy引导安装系统";
                 isUEFIBoot = false;
             }
             else
             {
+                //uefi引导模式
+                qDebug() << "uefi引导安装系统";
                 isUEFIBoot = true;
             }
 

@@ -1,6 +1,9 @@
-QT       += core gui
+QT       += core gui dbus KWindowSystem x11extras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+
+LIBS +=-lpthread
+LIBS +=-lX11
 
 CONFIG += c++11
 CONFIG += link_pkgconfig
@@ -20,6 +23,7 @@ LIBS    += -lpolkit-qt5-core-1
 SOURCES += \
     src/boot_repair.cpp \
     src/cmd_bash.cpp \
+    src/dbusadaptor.cpp \
     src/fdisk_thread.cpp \
     src/finish_page.cpp \
     src/logwidget.cpp \
@@ -37,11 +41,13 @@ SOURCES += \
     src/sudoauthoritydialog.cpp \
     src/tabmenushadow.cpp \
     src/tabwidget.cpp \
-    src/warning_page.cpp
+    src/warning_page.cpp \
+    src/xatom-helper.cpp
 
 HEADERS += \
     src/boot_repair.h \
     src/cmd_bash.h \
+    src/dbusadaptor.h \
     src/fdisk_thread.h \
     src/finish_page.h \
     src/logwidget.h \
@@ -59,7 +65,8 @@ HEADERS += \
     src/sudoauthoritydialog.h \
     src/tabmenushadow.h \
     src/tabwidget.h \
-    src/warning_page.h
+    src/warning_page.h \
+    src/xatom-helper.h
 
 FORMS +=
 

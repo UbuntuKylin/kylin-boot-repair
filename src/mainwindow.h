@@ -65,7 +65,7 @@ public:
     ~MainWindow();
 
     QString outputTime = nullptr;                         //用于获取本次程序启动时间
-
+    void pullUpWindow();
 public slots://提供给各线程的槽函数
 
     void passwordNoInput();                               //密码输入对话框弹窗没有输入就被关闭

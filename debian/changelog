@@ -1,3 +1,45 @@
+kylin-boot-repair (1.0.26kord~rc6) v101; urgency=medium
+
+  * legacy引导模式的系统，要遍历修复。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Thu, 03 Dec 2020 19:27:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc5) v101; urgency=medium
+
+  * 添加限制，硬盘分区列表中已有的分区，不再重复添加。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Thu, 03 Dec 2020 19:17:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc4) v101; urgency=medium
+
+  * 解决无需install和需要install的修复方式都有完成修复字样的读取区分。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Thu, 03 Dec 2020 16:17:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc3) v101; urgency=medium
+
+  * 添加区分legacy架构代码分支。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Thu, 03 Dec 2020 15:17:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc2) v101; urgency=medium
+
+  * fdisk返回内容不全问题。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Thu, 03 Dec 2020 12:17:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc1) v101; urgency=medium
+
+  * 解决因存在错误分区而无法获取已有分区的问题。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Thu, 03 Dec 2020 11:17:40 +0800
+
+kylin-boot-repair (1.0.25kord) v101; urgency=medium
+
+  * 添加legacy引导系统修复分支。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Thu, 03 Dec 2020 10:17:40 +0800
+
 kylin-boot-repair (1.0.24kord) v101; urgency=medium
 
   * 解决修复单系统无法退出程序问题。

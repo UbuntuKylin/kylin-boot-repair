@@ -98,7 +98,8 @@ void FdiskThread::readcmdFdiskBashErrorInfo()
     {
         qDebug() << "读取硬盘过程出现问题！";
         qDebug() << QString::fromLocal8Bit(cmdStdOut);
-        emit failAndReturn();
+//        cmdFdiskBash->kill();
+//        emit failAndReturn();
     }
 }
 
@@ -116,22 +117,32 @@ void FdiskThread::readcmdFdiskBashErrorInfo()
 void FdiskThread::readcmdFdiskBashInfo()
 {
     QString tempLine;
-    QStringList cmdStdOut;
-    while((tempLine = cmdFdiskBash->readLine()) != NULL)
+
+    fdiskTimer->stop();
+    QTimer::singleShot(1000, this, [=](){
+        qDebug() << "一秒后再处理文本！";
+        startPreHandle(fdiskCmdStdOut);
+        cmdFdiskBash->kill();
+    });
+
+    while((tempLine = cmdFdiskBash->readLine()) != "")
     {
-        if(tempLine.count("Linux 文件系统") || tempLine.count("Linux filesystem") ||\
+        qDebug() << "原始返回内容：" << tempLine;
+        tempLine = tempLine.left(tempLine.size() - 1);
+        if((tempLine.count("Linux 文件系统") || tempLine.count("Linux filesystem") ||\
            tempLine.count("EFI 文件系统") || tempLine.count("EFI filesystem")\
-                || tempLine.count("Linux") || tempLine.count("EFI"))
+                || tempLine.count("Linux") || tempLine.count("EFI"))\
+                && (0 == tempLine.count("swap") && 0 == tempLine.count("SWAP") && 0 == tempLine.count("Swap")))
         {
             qDebug() << tempLine;
-            cmdStdOut << tempLine.left(tempLine.size() - 1);
+            fdiskCmdStdOut << tempLine;
         }
     }
-    if(!cmdStdOut.isEmpty() && !(cmdStdOut.contains("[sudo]")))
+    if(!fdiskCmdStdOut.isEmpty() && !(fdiskCmdStdOut.contains("[sudo]")))
     {
 
-        startPreHandle(cmdStdOut);
-        cmdFdiskBash->kill();
+        fdiskTimer->start();
+        qDebug() << "开始计时！";
     }
 }
 
@@ -182,7 +193,11 @@ void FdiskThread::startPreHandle(QStringList cmdOutFromFdisk)
                     || ("EFI" == QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data())))
             {
                 //TODO此处可以增加限定，已有的分区不要再加入
-                allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
+                if(!allDeviceInfoStr.count(strlist.at(0).toLocal8Bit().data()))
+                {
+                    allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
+                }
+
                 continue;
                 //QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
                 //QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());
@@ -195,7 +210,10 @@ void FdiskThread::startPreHandle(QStringList cmdOutFromFdisk)
                     ||  ("EFI" == QString::fromLocal8Bit(strlist.at(size - 2).toLocal8Bit().data())))
             {
                 //TODO此处可以增加限定，已有的分区不要再加入
-                allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
+                if(!allDeviceInfoStr.count(strlist.at(0).toLocal8Bit().data()))
+                {
+                    allDeviceInfoStr << strlist.at(0).toLocal8Bit().data();   //将有用的信息装入string list中
+                }
                 continue;
                 //QString deviceLocation = QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()) ;
                 //QString deviceType = QString::fromLocal8Bit(strlist.at(size - 1).toLocal8Bit().data());

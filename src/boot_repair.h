@@ -22,9 +22,10 @@ public:
     void repairGrubFile();
 
     bool      isV101          = false;
+    linuxSystemInfo currentSystem;
 public slots://提供给各线程的槽函数
-    void readcmdRepairBashInfo();
-
+    void readCmdRepairBashInfo();
+    void readInstallCmdRepairBashInfo();
 signals://发送信号给主窗体
     //void setInfo(QString inputInfo);//写入状态栏信息
     void repairResult(bool repairResult,bool v101);
@@ -36,7 +37,7 @@ private:
     bool hasPassWord  = false;
     QString userPassWord = "";
 
-    linuxSystemInfo currentSystem;
+
     QProcess* chrootCmd       = nullptr;
     QProcess* grubMkconfigCmd = nullptr;
     QProcess* updateGrubCmd   = nullptr;

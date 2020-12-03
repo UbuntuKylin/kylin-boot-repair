@@ -53,10 +53,12 @@ private:
     QProcess *cmdBootRepairBash = nullptr;//qprocess指针，用来写入repair命令
 
     QStringList allDeviceInfoStr = {};
-
+    QStringList fdiskCmdStdOut   = {};
 
     uint rootPartionNum;                //root目录的个数，即该电脑上安装了多少个linux内核系统
     uint bootPartionNum;                //boot目录的个数，即该电脑上安装了多少个linux内核系统
+
+    QTimer *fdiskTimer = new QTimer(this);
 
 };
 

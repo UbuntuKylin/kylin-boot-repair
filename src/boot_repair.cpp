@@ -88,131 +88,203 @@ BootRepair::~BootRepair()
 *************************************************/
 void BootRepair::repairGrubFile()
 {
-    if (false == currentSystem.isUEFIBoot)
+    if (false == currentSystem.isUEFIBoot)//legacy引导方式
     {
         qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-        qDebug() << "严重错误！！！无法检测到efi分区，无法继续修复！";
+        qDebug() << "!!!!!!!!系统引导方式为legacy方式引导!!!!!!!!";
         qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
-        emit repairResult(false,false);
-        return ;//检测失败，返回false
-    }
+        isV101 = false;
+        qDebug() << "legacy引导方式ms不支持多系统修复";
+        if(currentSystem.bootIsSeparate)
+        {
+            qDebug() << "该系统中，存在/boot单独分区";
+            qDebug() << currentSystem.bootMountCmd;
+            bootMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.bootMountCmd,this);
+            //connect(bootMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+            bootMountCmd->cmdExecute();
+        }
+        else
+        {
+            qDebug() << "该系统中/boot未单独分区";
+        }
 
+        if(currentSystem.homeIsSeparate)
+        {
+            qDebug() << "该系统中/home单独分区了";
+            qDebug() << currentSystem.homeIsSeparate;
+            homeMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.homeMountCmd,this);
+            //connect(homeMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+            homeMountCmd->cmdExecute();
+        }
+        else
+        {
+            qDebug() << "该系统中/home未单独分区";
+        }
 
+        qDebug() << currentSystem.devMountCmd;
+        devMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.devMountCmd,this);
+        //connect(devMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+        devMountCmd->cmdExecute();
 
-//    qDebug() << "创建挂载文件所需要文件夹：" << currentSystem.treeMkdirCmd;
-//    treeMkdirCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.treeMkdirCmd,this);
-//    //connect(treeMkdirCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-//    treeMkdirCmd->cmdExecute();
+        qDebug() << currentSystem.procMountCmd;
+        procMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.procMountCmd,this);
+        //connect(procMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+        procMountCmd->cmdExecute();
 
-//    qDebug() << "创建挂载根目录文件夹：" << currentSystem.rootMkdirCmd;
-//    rootMkdirCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.rootMkdirCmd,this);
-//    //connect(rootMkdirCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-//    rootMkdirCmd->cmdExecute();
+        qDebug() << currentSystem.sysMountCmd;
+        sysMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.sysMountCmd,this);
+        //connect(sysMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+        sysMountCmd->cmdExecute();
 
-//    qDebug() << "挂载根目录：" << currentSystem.rootMountCmd;
-//    rootMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.rootMountCmd,this);
-//    //connect(rootMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-//    rootMountCmd->cmdExecute();
+        //这几条命令需要在chroot命令之后的模式下使用，所以需要是在一个QProcess里运行
+        qDebug() << currentSystem.chrootCmd;
+        //此条不需要，暂时保留
+        //qDebug() << currentSystem.grubMkconfigCmd;
+        qDebug() << currentSystem.updateGrubCmd;
+        qDebug() << currentSystem.grubInstallCmd;
 
-    if(currentSystem.bootIsSeparate)
-    {
-        qDebug() << "该系统中，存在/boot单独分区";
-        qDebug() << currentSystem.bootMountCmd;
-        bootMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.bootMountCmd,this);
-        //connect(bootMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-        bootMountCmd->cmdExecute();
-    }
-    else
-    {
-        qDebug() << "该系统中/boot未单独分区";
-    }
+        chrootCmd = new QProcess();   //创建QProcess对象并连接信号与槽
+        connect(chrootCmd,&QProcess::readyReadStandardOutput,this,&BootRepair::readCmdRepairBashInfo);
+        connect(chrootCmd,&QProcess::readyReadStandardError,this,&BootRepair::readCmdRepairBashInfo);
 
-    qDebug() << currentSystem.efiMountCmd;
-    efiMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.efiMountCmd,this);
-    //connect(efiMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-    efiMountCmd->cmdExecute();
+        chrootCmd->start("bash");
 
-    if(currentSystem.homeIsSeparate)
-    {
-        qDebug() << "该系统中/home单独分区了";
-        qDebug() << currentSystem.homeIsSeparate;
-        homeMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.homeMountCmd,this);
-        //connect(homeMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-        homeMountCmd->cmdExecute();
-    }
-    else
-    {
-        qDebug() << "该系统中/home未单独分区";
-    }
+        chrootCmd->write(currentSystem.chrootCmd.toLocal8Bit() + '\n');
+        qDebug() << "执行chroot命令" << currentSystem.chrootCmd;
+        if(hasPassWord)
+        {
+            chrootCmd->write(userPassWord.toLocal8Bit() + '\n');
+        }
+        //此条不需要，暂时保留
+        //qDebug() << currentSystem.grubMkconfigCmd;
+        //chrootCmd->write(currentSystem.grubMkconfigCmd.toLocal8Bit()+ "\n");
 
-    qDebug() << currentSystem.devMountCmd;
-    devMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.devMountCmd,this);
-    //connect(devMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-    devMountCmd->cmdExecute();
+        //进行grubinstall
+//        qDebug() << "需要执行grub-install，命令内容为：" << currentSystem.grubInstallCmd;
 
-    qDebug() << currentSystem.procMountCmd;
-    procMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.procMountCmd,this);
-    //connect(procMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-    procMountCmd->cmdExecute();
+//        chrootCmd->write(currentSystem.grubInstallCmd.toLocal8Bit()+ "\n");
+//        qDebug() << "执行install命令" << currentSystem.grubInstallCmd;
 
-    qDebug() << currentSystem.sysMountCmd;
-    sysMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.sysMountCmd,this);
-    //connect(sysMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
-    sysMountCmd->cmdExecute();
+        chrootCmd->write(currentSystem.updateGrubCmd.toLocal8Bit() + '\n');
+        qDebug() << "执行update命令" << currentSystem.updateGrubCmd;
 
-    //这几条命令需要在chroot命令之后的模式下使用，所以需要是在一个QProcess里运行
-    qDebug() << currentSystem.chrootCmd;
-    //此条不需要，暂时保留
-    //qDebug() << currentSystem.grubMkconfigCmd;
-    qDebug() << currentSystem.updateGrubCmd;
-    qDebug() << currentSystem.grubInstallCmd;
-
-    chrootCmd = new QProcess();   //创建QProcess对象并连接信号与槽
-    connect(chrootCmd,&QProcess::readyReadStandardOutput,this,&BootRepair::readcmdRepairBashInfo);
-    connect(chrootCmd,&QProcess::readyReadStandardError,this,&BootRepair::readcmdRepairBashInfo);
-
-    chrootCmd->start("bash");
-
-    chrootCmd->write(currentSystem.chrootCmd.toLocal8Bit() + '\n');
-    qDebug() << "执行chroot命令" << currentSystem.chrootCmd;
-    if(hasPassWord)
-    {
-        chrootCmd->write(userPassWord.toLocal8Bit() + '\n');
-    }
-    //此条不需要，暂时保留
-    //qDebug() << currentSystem.grubMkconfigCmd;
-    //chrootCmd->write(currentSystem.grubMkconfigCmd.toLocal8Bit()+ "\n");
-
-    chrootCmd->write(currentSystem.updateGrubCmd.toLocal8Bit() + '\n');
-    qDebug() << "执行update命令" << currentSystem.updateGrubCmd;
-    //这里要检查是否需要进行grubinstall
-    if(currentSystem.needGrubInstall && !(currentSystem.grubInstallCmd.isEmpty()))
-    {
-        qDebug() << "需要执行grub-install，命令内容为：" << currentSystem.grubInstallCmd;
-
-        chrootCmd->write(currentSystem.grubInstallCmd.toLocal8Bit()+ "\n");
-        qDebug() << "执行install命令" << currentSystem.grubInstallCmd;
-    }
-    else if(currentSystem.needGrubInstall && currentSystem.grubInstallCmd.isEmpty())
-    {
-        qDebug() << "需要执行grub-install，但命令为空";
-        finalResult = false;//逻辑存在问题，检测失败，返回false
-        emit repairResult(finalResult,isV101);
-    }
-    else if(false == currentSystem.needGrubInstall && !(currentSystem.grubInstallCmd.isEmpty()))
-    {
-        qDebug() << "不需要执行grub-install，但命令不为空";
-        qDebug() << "命令内容为：" << currentSystem.grubInstallCmd;
-        finalResult = false;//逻辑存在问题，检测失败，返回false
-        emit repairResult(finalResult,isV101);
     }
     else
     {
-        qDebug() << "无需执行grub-install";
-        finalResult = true;
-        emit repairResult(finalResult,isV101);
-    }
+        qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+        qDebug() << "!!!!!!!!!系统引导方式为uefi方式引导!!!!!!!!!";
+        qDebug() << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
+        if(currentSystem.bootIsSeparate)
+        {
+            qDebug() << "该系统中，存在/boot单独分区";
+            qDebug() << currentSystem.bootMountCmd;
+            bootMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.bootMountCmd,this);
+            //connect(bootMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+            bootMountCmd->cmdExecute();
+        }
+        else
+        {
+            qDebug() << "该系统中/boot未单独分区";
+        }
 
+        qDebug() << currentSystem.efiMountCmd;
+        efiMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.efiMountCmd,this);
+        //connect(efiMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+        efiMountCmd->cmdExecute();
+
+        if(currentSystem.homeIsSeparate)
+        {
+            qDebug() << "该系统中/home单独分区了";
+            qDebug() << currentSystem.homeIsSeparate;
+            homeMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.homeMountCmd,this);
+            //connect(homeMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+            homeMountCmd->cmdExecute();
+        }
+        else
+        {
+            qDebug() << "该系统中/home未单独分区";
+        }
+
+        qDebug() << currentSystem.devMountCmd;
+        devMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.devMountCmd,this);
+        //connect(devMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+        devMountCmd->cmdExecute();
+
+        qDebug() << currentSystem.procMountCmd;
+        procMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.procMountCmd,this);
+        //connect(procMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+        procMountCmd->cmdExecute();
+
+        qDebug() << currentSystem.sysMountCmd;
+        sysMountCmd = new CmdBash(hasPassWord,userPassWord,currentSystem.sysMountCmd,this);
+        //connect(sysMountCmd,&CmdBash::cmdInfo,this,&BootRepair::cmdInfo);
+        sysMountCmd->cmdExecute();
+
+        //这几条命令需要在chroot命令之后的模式下使用，所以需要是在一个QProcess里运行
+        qDebug() << currentSystem.chrootCmd;
+        //此条不需要，暂时保留
+        //qDebug() << currentSystem.grubMkconfigCmd;
+        qDebug() << currentSystem.updateGrubCmd;
+        qDebug() << currentSystem.grubInstallCmd;
+
+        if(currentSystem.needGrubInstall)
+        {
+            chrootCmd = new QProcess();   //创建QProcess对象并连接信号与槽
+            connect(chrootCmd,&QProcess::readyReadStandardOutput,this,&BootRepair::readInstallCmdRepairBashInfo);
+            connect(chrootCmd,&QProcess::readyReadStandardError,this,&BootRepair::readInstallCmdRepairBashInfo);
+        }
+        else
+        {
+            chrootCmd = new QProcess();   //创建QProcess对象并连接信号与槽
+            connect(chrootCmd,&QProcess::readyReadStandardOutput,this,&BootRepair::readCmdRepairBashInfo);
+            connect(chrootCmd,&QProcess::readyReadStandardError,this,&BootRepair::readCmdRepairBashInfo);
+        }
+
+        chrootCmd->start("bash");
+
+        chrootCmd->write(currentSystem.chrootCmd.toLocal8Bit() + '\n');
+        qDebug() << "执行chroot命令" << currentSystem.chrootCmd;
+        if(hasPassWord)
+        {
+            chrootCmd->write(userPassWord.toLocal8Bit() + '\n');
+        }
+        //此条不需要，暂时保留
+        //qDebug() << currentSystem.grubMkconfigCmd;
+        //chrootCmd->write(currentSystem.grubMkconfigCmd.toLocal8Bit()+ "\n");
+
+
+        //这里要检查是否需要进行grubinstall
+        if(currentSystem.needGrubInstall && !(currentSystem.grubInstallCmd.isEmpty()))
+        {
+            chrootCmd->write(currentSystem.updateGrubCmd.toLocal8Bit() + '\n');
+            qDebug() << "执行update命令" << currentSystem.updateGrubCmd;
+
+            qDebug() << "需要执行grub-install，命令内容为：" << currentSystem.grubInstallCmd;
+
+            chrootCmd->write(currentSystem.grubInstallCmd.toLocal8Bit()+ "\n");
+            qDebug() << "执行install命令" << currentSystem.grubInstallCmd;
+        }
+        else if(currentSystem.needGrubInstall && currentSystem.grubInstallCmd.isEmpty())
+        {
+            qDebug() << "需要执行grub-install，但命令为空";
+            finalResult = false;//逻辑存在问题，检测失败，返回false
+            emit repairResult(finalResult,isV101);
+        }
+        else if(false == currentSystem.needGrubInstall && !(currentSystem.grubInstallCmd.isEmpty()))
+        {
+            qDebug() << "不需要执行grub-install，但命令不为空";
+            qDebug() << "命令内容为：" << currentSystem.grubInstallCmd;
+            finalResult = false;//逻辑存在问题，检测失败，返回false
+            emit repairResult(finalResult,isV101);
+        }
+        else
+        {
+            chrootCmd->write(currentSystem.updateGrubCmd.toLocal8Bit() + '\n');
+            qDebug() << "执行update命令" << currentSystem.updateGrubCmd;
+
+            qDebug() << "无需执行grub-install";
+        }
+    }
 }
 
 /************************************************
@@ -225,7 +297,7 @@ void BootRepair::repairGrubFile()
 *   创建  HZH
 *
 *************************************************/
-void BootRepair::readcmdRepairBashInfo()
+void BootRepair::readCmdRepairBashInfo()
 {
     QByteArray cmdStdOut = chrootCmd->readAllStandardOutput();
     QByteArray cmdStdOutErr = chrootCmd->readAllStandardError();
@@ -238,11 +310,56 @@ void BootRepair::readcmdRepairBashInfo()
         emit repairResult(finalResult,isV101);//向主窗口发送信号，执行下一流程
         return;
     }
-    if(!cmdStdOutErr.isEmpty() && (cmdStdOutErr.contains("finished") || cmdStdOutErr.contains("安装完成")))
+    if(!cmdStdOutErr.isEmpty() && (cmdStdOutErr.contains("finished") || cmdStdOutErr.contains("完成")))
     {
         finalResult = true;
+        //延10s迟结束修复流程，防止grub.cfg文件未生成。
+        QTimer::singleShot(10000, [=](){
+            emit repairResult(finalResult,isV101);//向主窗口发送信号，执行下一流程
+            return;
+        });
+    }
+    if(!cmdStdOutErr.isEmpty() && (cmdStdOutErr.contains("segement error") || cmdStdOutErr.contains("段错误")))
+    {
+        finalResult = false;
         emit repairResult(finalResult,isV101);//向主窗口发送信号，执行下一流程
         return;
+    }
+
+
+}
+
+/************************************************
+* 函数名称：readInstallCmdRepairBashInfo
+* 功能描述：检查修复结果文本
+* 输入参数：QString inputInfo
+* 输出参数：无
+* 修改日期：2020.10.12
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void BootRepair::readInstallCmdRepairBashInfo()
+{
+    QByteArray cmdStdOut = chrootCmd->readAllStandardOutput();
+    QByteArray cmdStdOutErr = chrootCmd->readAllStandardError();
+
+    qDebug() << "readAllStandardError" << QString::fromLocal8Bit(cmdStdOutErr);
+    if(!cmdStdOut.isEmpty())// && (cmdStdOut.contains("finished") || cmdStdOut.contains("安装完成")))
+    {
+        qDebug() << "readAllStandardOutput" << QString::fromLocal8Bit(cmdStdOut);
+        finalResult = false;
+        emit repairResult(finalResult,isV101);//向主窗口发送信号，执行下一流程
+        return;
+    }
+    if(!cmdStdOutErr.isEmpty() && (cmdStdOutErr.contains("install finished") || cmdStdOutErr.contains("安装完成")))
+    {
+        finalResult = true;
+        //延10s迟结束修复流程，防止grub.cfg文件未生成。
+        QTimer::singleShot(10000, [=](){
+            emit repairResult(finalResult,isV101);//向主窗口发送信号，执行下一流程
+            return;
+        });
     }
     if(!cmdStdOutErr.isEmpty() && (cmdStdOutErr.contains("segement error") || cmdStdOutErr.contains("段错误")))
     {

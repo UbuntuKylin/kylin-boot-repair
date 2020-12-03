@@ -128,7 +128,7 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
             currentSystem.umountAllCmd += currentSystem.rootPath;
             currentSystem.umountAllCmd += "/dev";
 
-            //如果是非uefi启动会有何影响？
+            //legacy与uefi启动方式不同，legacy无efi分区，修复时亦无需grub-install
             currentSystem.isUEFIBoot = currentDevice->isUEFIBoot;
             if(true == currentSystem.isUEFIBoot)
             {
@@ -193,6 +193,7 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
             if(currentSystem.needGrubInstall && !(currentDevice->systemClassEfi.isEmpty()))
             {
                 currentSystem.grubInstallCmd += currentDevice->systemClassEfi;
+
 //                currentSystem.grubInstallCmd += " --boot-directory=/boot";
 
 //                currentSystem.grubInstallCmd += " --efi-directory=/boot/efi";
@@ -203,11 +204,12 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
             }
             else
             {
+                //uefi引导，但aarch架构，无需grub-install
+
                 currentSystem.needGrubInstall = false;
                 currentSystem.grubInstallCmd.clear();
+
             }
-
-
 
             readyToRepairList.append(currentSystem);              //将当前处理的根目录所属的系统信息添加至string list
         }
@@ -240,14 +242,14 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
     else
     {
         qDebug() << "安装了多个系统，为防止有安装V10.1系统，需遍历修复，直至修复了V10.1系统";
-        for(uint i = 0 ; i < systemNumOnDisk - 1; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
+        for(uint i = 0 ; i < systemNumOnDisk; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
         {
             qDebug() << "修复表单中第" << i + 1 << "个系统中。";
             currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
             connect(currentSystem,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
             currentSystem->repairGrubFile();           //grub引导文件修复
 
-            if(currentSystem->isV101)
+            if(currentSystem->isV101 && currentSystem->currentSystem.isUEFIBoot)
             {
                 break;
             }

@@ -7,6 +7,8 @@
 *   创建  HZH
 *************************************************/
 #include "mainwindow.h"
+#include "dbusadaptor.h"
+#include "xatom-helper.h"
 #include <QDebug>
 #include <QFile>
 #include <QTextStream>
@@ -14,6 +16,41 @@
 #include <QLibraryInfo>
 #include <QApplication>
 
+/************************************************
+* 函数名称：responseCommand
+* 功能描述：dbus响应函数
+* 输入参数：QApplication指针
+* 输出参数：
+* 修改日期：2020.12.02
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void responseCommand(QApplication &a) //响应外部dbus命令
+{
+    //提供DBus接口，添加show参数
+    QCommandLineParser parser;
+    parser.setApplicationDescription(QCoreApplication::translate("main", "kylinbootrepair"));
+    parser.addHelpOption();
+    parser.addVersionOption();
+
+    QCommandLineOption swOption(QStringLiteral("show"),QCoreApplication::translate("main", "show kylin-boot-repair test"));
+
+    parser.addOptions({swOption});
+    parser.process(a);
+
+    if(parser.isSet(swOption) || !QDBusConnection::sessionBus().registerService("com.kylin.bootrepair"))
+    {
+//        if(!a.isRunning())return;
+            QDBusInterface *interface = new QDBusInterface("com.kylin.bootrepair",
+                                                           "/com/kylin/bootrepair",
+                                                           "com.kylin.bootrepair",
+                                                           QDBusConnection::sessionBus(),
+                                                           NULL);
+
+            interface->call(QStringLiteral("showMainWindow"));
+    }
+}
 /************************************************
 * 函数名称：qtMessagePutIntoLog
 * 功能描述：日志记录函数
@@ -51,7 +88,12 @@ void qtMessagePutIntoLog(QtMsgType type, const QMessageLogContext &context, cons
 *************************************************/
 int main(int argc, char *argv[])
 {
+    //高清屏幕自适应
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+
     QApplication a(argc, argv);
+    responseCommand(a);//响应dbus绑定事件
 
     QTranslator app_trans;
     QTranslator qt_trans;
@@ -89,7 +131,18 @@ int main(int argc, char *argv[])
 
     QString latestTime = QString(QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss"));
     MainWindow w;
+    DbusAdaptor adaptor(&w);
+    Q_UNUSED(adaptor);
+    auto connection = QDBusConnection::sessionBus();
+    qDebug()<<"建立DBus服务状态： "<< (connection.registerService("com.kylin.bootrepair")&&connection.registerObject("/com/kylin/bootrepair", &w));
+
     w.outputTime = latestTime;
+
+    MotifWmHints hints;
+    hints.flags = MWM_HINTS_FUNCTIONS|MWM_HINTS_DECORATIONS;
+    hints.functions = MWM_FUNC_ALL;
+    hints.decorations = MWM_DECOR_BORDER;
+    XAtomHelper::getInstance()->setWindowMotifHint(w.winId(), hints);
 
     return a.exec();
 }
