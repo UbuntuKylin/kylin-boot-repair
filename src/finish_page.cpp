@@ -18,9 +18,8 @@
 *   创建  HZH
 *
 *************************************************/
-FinishPage::FinishPage(StyleWidgetAttribute page_swa)
+FinishPage::FinishPage(const StyleWidgetAttribute& page_swa):swa(page_swa)
 {
-    swa=page_swa;
     initControlQss();//初始化样式
 }
 
@@ -125,7 +124,7 @@ void FinishPage::initControlQss()
 *   创建  HZH
 *
 *************************************************/
-void FinishPage::pageChangeForTheme(QString str)
+void FinishPage::pageChangeForTheme(const QString& str)
 {
     if("ukui-dark" == str || "ukui-black" == str)
     {

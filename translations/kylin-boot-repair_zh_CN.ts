@@ -145,6 +145,18 @@
         <translatorcomment>麒麟引导修复</translatorcomment>
         <translation>麒麟引导修复</translation>
     </message>
+    <message>
+        <location filename="../src/stylewidget.cpp" line="147"/>
+        <source>Help</source>
+        <translatorcomment>帮助</translatorcomment>
+        <translation>帮助</translation>
+    </message>
+    <message>
+        <location filename="../src/stylewidget.cpp" line="149"/>
+        <source>About</source>
+        <translatorcomment>关于</translatorcomment>
+        <translation>关于</translation>
+    </message>
 </context>
 <context>
     <name>SudoAuthorityDialog</name>
@@ -248,6 +260,27 @@
         <source>Error occurred,failed</source>
         <translatorcomment>过程出现问题，修复失败！</translatorcomment>
         <translation>过程出现问题，修复失败！</translation>
+    </message>
+</context>
+<context>
+    <name>AboutWidget</name>
+    <message>
+        <location filename="../src/aboutwidget.cpp" line="17"/>
+        <source>KylinBootRepairAbout</source>
+        <translatorcomment>关于</translatorcomment>
+        <translation>关于</translation>
+    </message>
+    <message>
+        <location filename="../src/aboutwidget.cpp" line="141"/>
+        <source>Kylin Boot Repair</source>
+        <translatorcomment>麒麟引导修复</translatorcomment>
+        <translation>麒麟引导修复</translation>
+    </message>
+    <message>
+        <location filename="../src/aboutwidget.cpp" line="149"/>
+        <source>Version:</source>
+        <translatorcomment>版本：</translatorcomment>
+        <translation>版本：</translation>
     </message>
 </context>
 </TS>

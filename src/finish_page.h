@@ -31,8 +31,8 @@ class FinishPage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit FinishPage( StyleWidgetAttribute);
-    void pageChangeForTheme(QString str);
+    explicit FinishPage(const StyleWidgetAttribute& styleAttribute);
+    void pageChangeForTheme(const QString& str);
 public slots:
 
 signals:

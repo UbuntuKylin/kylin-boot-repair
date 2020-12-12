@@ -28,7 +28,7 @@ class RepairPage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RepairPage( StyleWidgetAttribute);
+    explicit RepairPage(const StyleWidgetAttribute& page_swa);
 
 signals:
 
@@ -40,7 +40,7 @@ private:
     QLabel *repairingText = nullptr;//修复引导标语
 
     void initControlQss();
-    void pageChangeForTheme(QString str);
+    void pageChangeForTheme(const QString& str);
 };
 
 #endif // REPAIRPAGE_H

@@ -18,10 +18,10 @@
 *   创建  HZH
 *
 *************************************************/
-PreRepair::PreRepair(bool hasPwd, QString userPwd, QObject *parent) : QObject(parent)
+PreRepair::PreRepair(const bool& hasPwd,const QString& userPwd, QObject *parent)
+    : QObject(parent), hasPassWord(hasPwd), userPassWord(userPwd)
 {
-    hasPassWord  = hasPwd;
-    userPassWord = userPwd;
+    currentBootRepair = nullptr;
 }
 
 /************************************************
@@ -37,7 +37,7 @@ PreRepair::PreRepair(bool hasPwd, QString userPwd, QObject *parent) : QObject(pa
 PreRepair::~PreRepair()
 {
     currentDevice->deleteLater();
-    currentSystem->deleteLater();
+    currentBootRepair->deleteLater();
 }
 
 /************************************************
@@ -50,7 +50,7 @@ PreRepair::~PreRepair()
 *   创建  HZH
 *
 *************************************************/
-void PreRepair::start_pushButton_clicked(QStringList list, uint num)
+void PreRepair::start_pushButton_clicked(const QStringList& list, const uint& num)
 {
     qDebug() << "start_pushButton_clicked";
     hardDisklist = list;
@@ -60,7 +60,12 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
         qDebug() << "当前分区名：" << s;
         qDebug() << "创建新的名为 " << s << " 的partionDevice类";
         currentDevice = new PartionDevice(hasPassWord,userPassWord,s);
-
+        if(nullptr == currentDevice)
+        {
+            qDebug() << "PartionDevice对象创建失败！";
+            emit failAndReturn();
+            return;
+        }
         connect(currentDevice,&PartionDevice::failAndReturn,this,&PreRepair::failAndReturn);
         currentDevice->readFstabInfo();                         //读取fstab文件中linux分区信息
         if(currentDevice->isRootPartion)                        //只有是根目录的时候才进行处理
@@ -235,9 +240,15 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
     else if(1 == systemNumOnDisk)
     {
         qDebug() << "硬盘中只有一个系统！";
-        currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(0));
-        connect(currentSystem,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
-        currentSystem->repairGrubFile();           //grub引导文件修复
+        currentBootRepair = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(0));
+        if(nullptr == currentBootRepair)
+        {
+            qDebug() << "BootRepair对象创建失败！";
+            emit failAndReturn();
+            return;
+        }
+        connect(currentBootRepair,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
+        currentBootRepair->repairGrubFile();           //grub引导文件修复
     }
     else
     {
@@ -245,11 +256,17 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
         for(uint i = 0 ; i < systemNumOnDisk; i++)      //遍历string list中的系统，若多系统，则分别挂载修复
         {
             qDebug() << "修复表单中第" << i + 1 << "个系统中。";
-            currentSystem = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
-            connect(currentSystem,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
-            currentSystem->repairGrubFile();           //grub引导文件修复
+            currentBootRepair = new BootRepair(hasPassWord,userPassWord,readyToRepairList.at(i));
+            if(nullptr == currentBootRepair)
+            {
+                qDebug() << "BootRepair对象创建失败！";
+                emit failAndReturn();
+                return;
+            }
+            connect(currentBootRepair,&BootRepair::repairResult,this,&PreRepair::getRepairResult);
+            currentBootRepair->repairGrubFile();           //grub引导文件修复
 
-            if(currentSystem->isV101 && currentSystem->currentSystem.isUEFIBoot)
+            if(currentBootRepair->isV101 && currentBootRepair->currentSystem.isUEFIBoot)
             {
                 break;
             }
@@ -263,14 +280,14 @@ void PreRepair::start_pushButton_clicked(QStringList list, uint num)
 
 }
 
-void PreRepair::getRepairResult(bool repairRes,bool v101)
+void PreRepair::getRepairResult(const bool& res,const bool& v101)
 {
 
-    repairSuccess &= repairRes;
+    repairSuccess &= res;
     repairTimes++;
     isV101 = v101;
     qDebug() << "修复完成表单中第" << repairTimes << "个系统。";
-    if(repairRes)
+    if(res)
     {
         qDebug() << "修复成功";
     }

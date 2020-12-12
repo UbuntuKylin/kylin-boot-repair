@@ -29,7 +29,7 @@ class RepairPage2 : public QWidget
 {
     Q_OBJECT
 public:
-    explicit RepairPage2( StyleWidgetAttribute);
+    explicit RepairPage2(const StyleWidgetAttribute& page_swa);
 
 signals:
 
@@ -37,13 +37,13 @@ private:
 
     StyleWidgetAttribute swa;//属性
 
-    QMovie *movieLoading=nullptr;
-    QLabel *lableMovie=nullptr;
+    QMovie *movieLoading  = nullptr;
+    QLabel *lableMovie    = nullptr;
     QLabel *repairingIcon = nullptr;//修复分区标志
     QLabel *repairingText = nullptr;//修复分区标语
 
     void initControlQss();
-    void pageChangeForTheme(QString str);
+    void pageChangeForTheme(const QString& str);
 
 };
 

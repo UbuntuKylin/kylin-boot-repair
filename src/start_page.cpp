@@ -18,9 +18,9 @@
 *   创建  HZH
 *
 *************************************************/
-StartPage::StartPage(StyleWidgetAttribute page_swa)
+StartPage::StartPage(const StyleWidgetAttribute& page_swa)
+    :swa(page_swa)
 {
-    swa=page_swa;
     initControlQss();//初始化样式
 }
 
@@ -37,8 +37,11 @@ StartPage::StartPage(StyleWidgetAttribute page_swa)
 void StartPage::initControlQss()
 {
     repairStart = new QPushButton(this);
-    QFont pushButton_repairStart;
-    pushButton_repairStart.setFamily(QFontDatabase::applicationFontFamilies(QFontDatabase::addApplicationFont(":/data/PingFang-Jian-ChangGuiTi-2.ttf")).at(0));//读取字体
+    if(nullptr == repairStart)
+    {
+        qDebug() << "repairStart对象创建失败！";
+        return;
+    }
     repairStart->setFixedSize(240,40);
     repairStart->setText(tr("Start Repair"));//开始修复
     repairStart->setEnabled(true);
@@ -49,15 +52,18 @@ void StartPage::initControlQss()
     });
 
     advanceChoice = new QPushButton(this);
-    QFont pushButton_advanceChoice;
-    pushButton_advanceChoice.setFamily(QFontDatabase::applicationFontFamilies(QFontDatabase::addApplicationFont(":/data/PingFang-Jian-ChangGuiTi-2.ttf")).at(0));//读取字体
+    if(nullptr == advanceChoice)
+    {
+        qDebug() << "advanceChoice对象创建失败！";
+        return;
+    }
     advanceChoice->setFixedSize(240,40);
     advanceChoice->setText(tr("Repair by hand"));//手动修改GRUB
     advanceChoice->setEnabled(true);
 
     connect(advanceChoice,&QPushButton::clicked,this,[=](){
         int tempCheck = 0;
-
+        //如果更换终端，则无法调用！！
         tempCheck = system("mate-terminal --title='手动修复' -x  \
                             bash -c 'echo 手动修复麒麟系统方法，请勿贸然尝试：; \
                                      echo 本方法仅适用于麒麟系统，对于双系统等复杂情况，需视情况自行调整。; \
@@ -94,13 +100,28 @@ void StartPage::initControlQss()
     });
 
     startIcon = new QLabel;
+    if(nullptr == startIcon)
+    {
+        qDebug() << "startIcon对象创建失败！";
+        return;
+    }
     startIcon->setStyleSheet("border-image:url(:/data/main.png);border:0px;");
     startIcon->setFixedSize(144,144);
 
     startText = new QLabel;
+    if(nullptr == startText)
+    {
+        qDebug() << "startText对象创建失败！";
+        return;
+    }
     startText->setText(tr("Repair Normal Grub Errors"));//修复计算机引导程序的常见问题
 
     QHBoxLayout *hl0=new QHBoxLayout;
+    if(nullptr == hl0)
+    {
+        qDebug() << "hl0对象创建失败！";
+        return;
+    }
     hl0->addSpacing(0);
     hl0->setMargin(0);
     hl0->addStretch(10);
@@ -108,6 +129,11 @@ void StartPage::initControlQss()
     hl0->addStretch(10);
 
     QHBoxLayout *hl1=new QHBoxLayout;
+    if(nullptr == hl1)
+    {
+        qDebug() << "hl1对象创建失败！";
+        return;
+    }
     hl1->addSpacing(0);
     hl1->setMargin(0);
     hl1->addStretch(10);
@@ -116,6 +142,11 @@ void StartPage::initControlQss()
 
 
     QVBoxLayout *vl0=new QVBoxLayout;
+    if(nullptr == vl0)
+    {
+        qDebug() << "vl0对象创建失败！";
+        return;
+    }
     vl0->addSpacing(0);
     vl0->addLayout(hl0);
     vl0->addSpacing(15);
@@ -123,6 +154,11 @@ void StartPage::initControlQss()
     vl0->addStretch(99);
 
     QHBoxLayout *hl2=new QHBoxLayout;
+    if(nullptr == hl2)
+    {
+        qDebug() << "hl2对象创建失败！";
+        return;
+    }
     hl2->addSpacing(0);
     hl2->setMargin(0);
     hl2->addStretch(10);
@@ -130,6 +166,11 @@ void StartPage::initControlQss()
     hl2->addStretch(10);
 
     QHBoxLayout *hl3=new QHBoxLayout;
+    if(nullptr == hl3)
+    {
+        qDebug() << "hl3对象创建失败！";
+        return;
+    }
     hl3->addSpacing(0);
     hl3->setMargin(0);
     hl3->addStretch(10);
@@ -138,6 +179,11 @@ void StartPage::initControlQss()
 
 
     QVBoxLayout *vl1=new QVBoxLayout;
+    if(nullptr == vl1)
+    {
+        qDebug() << "vl1对象创建失败！";
+        return;
+    }
     vl1->addSpacing(26);
     vl1->addLayout(vl0,1);
     vl1->addSpacing(15);
@@ -149,6 +195,11 @@ void StartPage::initControlQss()
     vl1->addStretch(99);
 
     QHBoxLayout *vl00=new QHBoxLayout;
+    if(nullptr == vl00)
+    {
+        qDebug() << "vl00对象创建失败！";
+        return;
+    }
 
     vl00->addLayout(vl1);
     this->setLayout(vl00);
@@ -165,8 +216,13 @@ void StartPage::initControlQss()
 *   创建  HZH
 *
 *************************************************/
-void StartPage::pageChangeForTheme(QString str)
+void StartPage::pageChangeForTheme(const QString& str)
 {
+    if("" == str)
+    {
+        qDebug() << "未获取主题信息";
+        return;
+    }
     if("ukui-dark" == str || "ukui-black" == str)
     {
         startText->setStyleSheet("color:rgba(255, 255, 255, 0.85);font-size:14px;");

@@ -18,11 +18,10 @@
 *   创建  HZH
 *
 *************************************************/
-CmdBash::CmdBash(bool hasPwd,QString userPwd,QString inputCmd, QObject *parent) : QObject(parent)
+CmdBash::CmdBash(const bool& hasPassWord,const QString& userPassWord,const QString& inputCmd, QObject *parent) :
+    QObject(parent), hasPassWord(hasPassWord), userPassWord(userPassWord), cmd(inputCmd)
 {
-    hasPassWord = hasPwd;
-    userPassWord = userPwd;
-    cmd = inputCmd;
+
     bashFinished = false;
     qDebug() << "创建名为 " << cmd << "的线程";
 }
@@ -60,7 +59,17 @@ CmdBash::~CmdBash()
 *************************************************/
 void CmdBash::cmdExecute()
 {
+    if(cmd.isEmpty())
+    {
+        qDebug() << "执行命令为空，错误！";
+        return;
+    }
     currentBash = new QProcess();
+    if(nullptr == currentBash)
+    {
+        qDebug() << "currentBash创建失败，错误！";
+        return;
+    }
     currentBash->start("bash");
     currentBash->waitForStarted();
 

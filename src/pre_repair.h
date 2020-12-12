@@ -19,19 +19,19 @@ class PreRepair : public QObject
 {
     Q_OBJECT
 public:
-    explicit PreRepair(bool hasPwd, QString userPwd, QObject *parent = nullptr);
+    explicit PreRepair(const bool& hasPwd, const QString& userPwd, QObject *parent = nullptr);
     ~PreRepair();
 
 public slots://提供给各线程的槽函数
-    void start_pushButton_clicked(QStringList list, uint num);//开始按钮按下后连接的槽函数
-    void getRepairResult(bool res,bool v101);                        //获取修复结果
+    void start_pushButton_clicked(const QStringList& list, const uint& num);//开始按钮按下后连接的槽函数
+    void getRepairResult(const bool& res,const bool& v101);                        //获取修复结果
 signals://发送信号给主窗体
     void changeToFinishPage();                              //主窗体翻页信号
     void failAndReturn();
 
 private:
-    bool hasPassWord = false;
-    QString userPassWord = "";
+    bool hasPassWord;
+    QString userPassWord;
 
     PartionDevice *currentDevice = nullptr;
 
@@ -43,7 +43,7 @@ private:
     uint hardDiskNum = 0;
 
 
-    BootRepair *currentSystem;
+    BootRepair *currentBootRepair;
 
     bool repairSuccess = true;
 

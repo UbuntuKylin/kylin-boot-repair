@@ -125,6 +125,16 @@
         <source>KylinBootRepair</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <location filename="../src/stylewidget.cpp" line="147"/>
+        <source>Help</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/stylewidget.cpp" line="149"/>
+        <source>About</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SudoAuthorityDialog</name>
@@ -211,6 +221,24 @@
     <message>
         <location filename="../src/warning_page.cpp" line="83"/>
         <source>Error occurred,failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>AboutWidget</name>
+    <message>
+        <location filename="../src/aboutwidget.cpp" line="17"/>
+        <source>KylinBootRepairAbout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/aboutwidget.cpp" line="141"/>
+        <source>Kylin Boot Repair</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/aboutwidget.cpp" line="149"/>
+        <source>Version: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>

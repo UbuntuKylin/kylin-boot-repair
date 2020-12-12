@@ -1,3 +1,45 @@
+kylin-boot-repair (1.0.26kord~rc13) v101; urgency=medium
+
+  * 调整版本格式内容
+
+ -- hanzehui <hanzehui@kylinos.cn>  Sat, 12 Dec 2020 11:49:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc12) v101; urgency=medium
+
+  * 增加翻译内容
+
+ -- hanzehui <hanzehui@kylinos.cn>  Sat, 12 Dec 2020 11:29:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc11) v101; urgency=medium
+
+  * 增加help和about功能
+
+ -- hanzehui <hanzehui@kylinos.cn>  Sat, 12 Dec 2020 10:29:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc10) v101; urgency=medium
+
+  * PPA测试
+
+ -- hanzehui <hanzehui@kylinos.cn>  Sun, 05 Dec 2020 10:29:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc9) v101; urgency=medium
+
+  * PPA测试
+
+ -- hanzehui <hanzehui@kylinos.cn>  Sun, 05 Dec 2020 10:27:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc8) v101; urgency=medium
+
+  * PPA测试
+
+ -- hanzehui <hanzehui@kylinos.cn>  Sun, 05 Dec 2020 09:27:40 +0800
+
+kylin-boot-repair (1.0.26kord~rc7) v101; urgency=medium
+
+  * 代码静态检查告警去除。
+
+ -- hanzehui <hanzehui@kylinos.cn>  Fri, 04 Dec 2020 19:27:40 +0800
+
 kylin-boot-repair (1.0.26kord~rc6) v101; urgency=medium
 
   * legacy引导模式的系统，要遍历修复。

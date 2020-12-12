@@ -20,22 +20,15 @@
 *   创建  HZH
 *
 *************************************************/
-PartionDevice::PartionDevice(bool hasPwd, QString userPwd,QString partionDeviceName, QObject *parent) : QObject(parent)
+PartionDevice::PartionDevice(const bool& hasPwd, const QString& userPwd,const QString& partionDeviceName, QObject *parent)
+    : QObject(parent),DeviceName(partionDeviceName), hasPassWord(hasPwd), userPassWord(userPwd)
 {
-    hasPassWord = hasPwd;
-    userPassWord = userPwd;
-
-    DeviceName = partionDeviceName;
     qDebug() << "当前分区硬盘名称为：" << DeviceName;
 
     isRootPartion = false;
     bootIsSeparate    = false;
     isBootPartion = false;
     isEfiParion   = false;
-
-    //belongToRootDeviceName = "";
-    selfBootDeviceName     = "";
-    selfEfiDeviceName      = "";
 
     QString tempStr = partionDeviceName;
     cmdUmountStr = "sudo -S umount "      + tempStr;
@@ -45,9 +38,9 @@ PartionDevice::PartionDevice(bool hasPwd, QString userPwd,QString partionDeviceN
 
     archDetectCmd   = "sudo -S archdetect";
 
-    realRootMountStr = "";
-    realBootMountStr = "";
-    realEfiMountStr  = "";
+    //realRootMountStr = "";
+    //realBootMountStr = "";
+    //realEfiMountStr  = "";
 }
 
 /************************************************
@@ -86,14 +79,20 @@ void PartionDevice::prepareOfFirstMount()
     qDebug() << "执行拆卸硬盘指令：" << cmdUmountStr;
     cmdUmountBash = new CmdBash(hasPassWord,userPassWord,cmdUmountStr,this);
     //connect(cmdUmountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
-    cmdUmountBash->cmdExecute();
+    if(nullptr != cmdUmountBash)
+    {
+        cmdUmountBash->cmdExecute();
+    }
 
     //创建对应的文件夹
     qDebug() << "执行创建文件夹指令：" << cmdMkdirStr;
     cmdMkdirBash = new CmdBash(hasPassWord,userPassWord,cmdMkdirStr,this);
     //connect(cmdMkdirBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
     qDebug() << "new cmdBash" ;
-    cmdMkdirBash->cmdExecute();
+    if(nullptr != cmdMkdirBash)
+    {
+        cmdMkdirBash->cmdExecute();
+    }
 
     qDebug() << "cmdExecute()" ;
     qDebug() << cmdMkdirBash->currentBash->readAll();
@@ -104,9 +103,10 @@ void PartionDevice::prepareOfFirstMount()
     qDebug() << "执行挂载硬盘指令：" << cmdMountStr;
     cmdMountBash = new CmdBash(hasPassWord,userPassWord,cmdMountStr,this);
     //connect(cmdMountBash,&CmdBash::cmdInfo,this,&PartionDevice::cmdInfo);
-    cmdMountBash->cmdExecute();
-
-
+    if(nullptr != cmdMountBash)
+    {
+        cmdMountBash->cmdExecute();
+    }
 
 //    cmdMount->write(cmdMountStr.toLocal8Bit() + '\n');
 
@@ -284,7 +284,7 @@ void PartionDevice::prepareOfFirstMount()
 *   修改  HZH  去除通过efi下文件夹读取架构类型流程
 *
 *************************************************/
-void PartionDevice::partionTypeOfDevice(QString partionDeviceName)
+void PartionDevice::partionTypeOfDevice(const QString& partionDeviceName)
 {
     //拼接出分区当前的挂载目录
     QString filePathCmdString = partionDeviceName;
@@ -324,7 +324,7 @@ void PartionDevice::partionTypeOfDevice(QString partionDeviceName)
                 if(dirName == "boot")//如果该目录下包含名为boot的文件夹，则该目录为root分区挂载目录
                 {
                     isRootPartion = true;
-                    realRootMountStr = filePathCmdString;
+                    //realRootMountStr = filePathCmdString;
                     QDir *bootdir = new QDir(filePathCmdString + "/boot");
                     if(bootdir->isEmpty())//boot文件夹为空，则boot有被单独分区
                     {
@@ -376,26 +376,26 @@ void PartionDevice::readFstabInfo()
     qDebug() << "开始确定硬盘类型";
     partionTypeOfDevice(DeviceName);
 
-    if(isRootPartion)
-    {
-        qDebug() << "该硬盘分区为root目录";
-    }
-    else
-    {
-        qDebug() << "该硬盘分区非root分区";
-        if(isBootPartion)
-        {
-            qDebug() << "该硬盘分区为boot目录";
-        }
-        else if(isEfiParion)
-        {
-            qDebug() << "该硬盘分区为efi目录";
-        }
-        else
-        {
-            qDebug() << "home或swap分区";
-        }
-    }
+//    if(isRootPartion)
+//    {
+//        qDebug() << "该硬盘分区为root目录";
+//    }
+//    else
+//    {
+//        qDebug() << "该硬盘分区非root分区";
+//        if(isBootPartion)
+//        {
+//            qDebug() << "该硬盘分区为boot目录";
+//        }
+//        else if(isEfiParion)
+//        {
+//            qDebug() << "该硬盘分区为efi目录";
+//        }
+//        else
+//        {
+//            qDebug() << "home或swap分区";
+//        }
+//    }
 
     if(isRootPartion)//若为root分区，则读取fstab文件
     {
@@ -429,75 +429,8 @@ void PartionDevice::readFstabInfo()
         }
         else
         {
+            handleFstabFileInfo(fstabArray);
 
-            //把输出内容按行分割成元素添加至list
-            QStringList list = (QString::fromLocal8Bit(fstabArray)).split("\n");
-            for(QString& si : list)                        //遍历list中的各行
-            {
-                QStringList strlist = si.split(" ");
-                int size = strlist.size();                 //各str中被空格隔开字段个数
-                if (size < 2)
-                {
-                    continue;
-                }
-
-                else if("/boot" == QString::fromLocal8Bit(strlist.at(1).toLocal8Bit().data()) && \
-                        "#" == QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()))
-                {
-                    qDebug() << strlist;
-                    selfBootDeviceName = QString::fromLocal8Bit(strlist.at(4).toLocal8Bit().data());
-                    realBootMountStr = selfBootDeviceName;
-                    bootPath = selfBootDeviceName;
-                    qDebug() << "realBootMountStr" << realBootMountStr;
-                    bootIsSeparate = true;
-                    continue;
-                }
-
-                else if("/boot/efi" == QString::fromLocal8Bit(strlist.at(1).toLocal8Bit().data()) && \
-                        "#" == QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()))
-                {
-                    qDebug() << strlist;
-                    selfEfiDeviceName = QString::fromLocal8Bit(strlist.at(4).toLocal8Bit().data());
-                    realEfiMountStr = selfEfiDeviceName;
-                    efiPath = selfEfiDeviceName;
-                    qDebug() << "realEfiMountStr" << realEfiMountStr;
-                    continue;
-                }
-                else if("/home" == QString::fromLocal8Bit(strlist.at(1).toLocal8Bit().data()) && \
-                        "#" == QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()))
-                {
-                    qDebug() << strlist;
-                    selfHomeDeviceName = QString::fromLocal8Bit(strlist.at(4).toLocal8Bit().data());
-                    realHomeMountStr = selfHomeDeviceName;
-                    homePath = realHomeMountStr;
-                    qDebug() << "realHomeMountStr" << realHomeMountStr;
-                    continue;
-                }
-            }
-
-            if ( 0 != (QString::compare(bootPath,"")))
-            {
-                qDebug() << "fstab中boot对应路径不为空，boot单独分区了！ ";
-                bootIsSeparate = true;
-            }
-            if ( 0 == (QString::compare(efiPath,"")))
-            {
-                //legacy引导模式
-                qDebug() << "legacy引导安装系统";
-                isUEFIBoot = false;
-            }
-            else
-            {
-                //uefi引导模式
-                qDebug() << "uefi引导安装系统";
-                isUEFIBoot = true;
-            }
-
-            if ( 0 != (QString::compare(homePath,"")))
-            {
-                qDebug() << "fstab中boot对应路径不为空，boot单独分区了！ ";
-                homeIsSeparate = true;
-            }
         }
     }
     else
@@ -512,8 +445,8 @@ void PartionDevice::readFstabInfo()
 }
 
 /************************************************
-* 函数名称：cmdInfo
-* 功能描述：发送信号给主线程，暂时不用，为空。
+* 函数名称：archdetectCmdInfo
+* 功能描述：架构判断。
 * 输入参数：QString inputInfo
 * 输出参数：无
 * 修改日期：2020.10.12
@@ -521,12 +454,7 @@ void PartionDevice::readFstabInfo()
 *   创建  HZH
 *
 *************************************************/
-//void PartionDevice::cmdInfo(QString inputInfo)
-//{
-//    //emit setInfo(inputInfo);
-//}
-
-void PartionDevice::archdetectCmdInfo(QString outputInfo)
+void PartionDevice::archdetectCmdInfo(const QString&  outputInfo)
 {
     if(outputInfo.contains("generic"))
     {
@@ -574,5 +502,87 @@ void PartionDevice::archdetectCmdInfo(QString outputInfo)
         systemClassEfi = "--target=i386-pc";
         qDebug() << "需要进行grub-install！" ;
         qDebug() << "系统架构类型为" << systemClassEfi;
+    }
+}
+
+/************************************************
+* 函数名称：archdetectCmdInfo
+* 功能描述：架构判断。
+* 输入参数：QString inputInfo
+* 输出参数：无
+* 修改日期：2020.10.12
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void PartionDevice::handleFstabFileInfo(const QByteArray& fstabArray)
+{
+    //把输出内容按行分割成元素添加至list
+    QStringList list = (QString::fromLocal8Bit(fstabArray)).split("\n");
+    for(QString& si : list)                        //遍历list中的各行
+    {
+        QStringList strlist = si.split(" ");
+        int size = strlist.size();                 //各str中被空格隔开字段个数
+        if (size < 2)
+        {
+            continue;
+        }
+
+        else if("/boot" == QString::fromLocal8Bit(strlist.at(1).toLocal8Bit().data()) && \
+                "#" == QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()))
+        {
+            qDebug() << strlist;
+            selfBootDeviceName = QString::fromLocal8Bit(strlist.at(4).toLocal8Bit().data());
+
+            bootPath = selfBootDeviceName;
+            qDebug() << "realBootMountStr" << bootPath;
+            bootIsSeparate = true;
+            continue;
+        }
+
+        else if("/boot/efi" == QString::fromLocal8Bit(strlist.at(1).toLocal8Bit().data()) && \
+                "#" == QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()))
+        {
+            qDebug() << strlist;
+            selfEfiDeviceName = QString::fromLocal8Bit(strlist.at(4).toLocal8Bit().data());
+
+            efiPath = selfEfiDeviceName;
+            qDebug() << "realEfiMountStr" << efiPath;
+            continue;
+        }
+        else if("/home" == QString::fromLocal8Bit(strlist.at(1).toLocal8Bit().data()) && \
+                "#" == QString::fromLocal8Bit(strlist.at(0).toLocal8Bit().data()))
+        {
+            qDebug() << strlist;
+            selfHomeDeviceName = QString::fromLocal8Bit(strlist.at(4).toLocal8Bit().data());
+
+            homePath = selfHomeDeviceName;
+            qDebug() << "realHomeMountStr" << homePath;
+            continue;
+        }
+    }
+
+    if ( 0 != (QString::compare(bootPath,"")))
+    {
+        qDebug() << "fstab中boot对应路径不为空，boot单独分区了！ ";
+        bootIsSeparate = true;
+    }
+    if ( 0 == (QString::compare(efiPath,"")))
+    {
+        //legacy引导模式
+        qDebug() << "legacy引导安装系统";
+        isUEFIBoot = false;
+    }
+    else
+    {
+        //uefi引导模式
+        qDebug() << "uefi引导安装系统";
+        isUEFIBoot = true;
+    }
+
+    if ( 0 != (QString::compare(homePath,"")))
+    {
+        qDebug() << "fstab中boot对应路径不为空，boot单独分区了！ ";
+        homeIsSeparate = true;
     }
 }

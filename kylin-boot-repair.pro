@@ -1,4 +1,4 @@
-QT       += core gui dbus KWindowSystem x11extras
+QT       += core gui network  dbus KWindowSystem x11extras
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -9,6 +9,13 @@ CONFIG += c++11
 CONFIG += link_pkgconfig
 PKGCONFIG += gsettings-qt
 
+# v10禁用窗管
+lessThan(QT_VERSION, 5.9){
+        DEFINES += __V10__
+        QT      -= x11extras
+        LIBS    -= -lpthread
+    LIBS    -= -lX11
+}
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -21,8 +28,10 @@ LIBS    += -lpolkit-qt5-core-1
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    src/aboutwidget.cpp \
     src/boot_repair.cpp \
     src/cmd_bash.cpp \
+    src/daemonipcdbus.cpp \
     src/dbusadaptor.cpp \
     src/fdisk_thread.cpp \
     src/finish_page.cpp \
@@ -41,12 +50,13 @@ SOURCES += \
     src/sudoauthoritydialog.cpp \
     src/tabmenushadow.cpp \
     src/tabwidget.cpp \
-    src/warning_page.cpp \
-    src/xatom-helper.cpp
+    src/warning_page.cpp
 
 HEADERS += \
+    src/aboutwidget.h \
     src/boot_repair.h \
     src/cmd_bash.h \
+    src/daemonipcdbus.h \
     src/dbusadaptor.h \
     src/fdisk_thread.h \
     src/finish_page.h \
@@ -65,8 +75,7 @@ HEADERS += \
     src/sudoauthoritydialog.h \
     src/tabmenushadow.h \
     src/tabwidget.h \
-    src/warning_page.h \
-    src/xatom-helper.h
+    src/warning_page.h
 
 FORMS +=
 

@@ -18,8 +18,9 @@
 *
 *************************************************/
 StyleWidget::StyleWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool isDialog )
+    :local_swa(swa)
 {
-    local_swa = swa;
+    m_pDaemonIpcDbus = new DaemonIpcDbus();
     m_isDialog=isDialog;
     swshadow = new StyleWidgetShadow(swa);
     this->setWindowIcon(QIcon(":/data/guide_repair24.png"));
@@ -37,7 +38,10 @@ StyleWidget::StyleWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool
     tabWinWidget->move(260 , 45);
     tabWinWidget->raise();
 
+    StyleWidgetAttribute aboutWin(ABOUTWINDOWWIDETH,ABOUTWINDOWHEIGHT,0,ABOUTWIDGETRADIUS,ABOUTSHADOWWIDTH,ABOUTSHADOWALPHA,ABOUTTITLEHEIGHT);
+    aboutWinWidget=new AboutWidget(aboutWin,tr("KylinBootRepairAbout"));//麒麟引导修复日志
 
+    aboutWinWidget->showOrHide();
 
 }
 
@@ -53,6 +57,7 @@ StyleWidget::StyleWidget(StyleWidgetAttribute swa, QString dialogTitleText, bool
 StyleWidget::~StyleWidget()
 {
     swshadow->deleteLater();
+    delete aboutWinWidget;
 }
 
 /************************************************
@@ -81,7 +86,7 @@ void StyleWidget::WidgetStyleClose()
 *   创建  HZH
 *
 *************************************************/
-void StyleWidget::myStyle(StyleWidgetAttribute swa)
+void StyleWidget::myStyle(const StyleWidgetAttribute& swa)
 {
     //窗口设置
     this->setWindowFlags(Qt::FramelessWindowHint);// | Qt::Popup);//无边框
@@ -117,16 +122,7 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
 
     QSize smallWidgetSize(30,30);//小按钮大小
 
-    widgetMenuBtn =new QPushButton;//最小化按钮
-    widgetMenuBtn->setObjectName("widgetMenuBtn");
-    widgetMenuBtn->setIconSize(smallWidgetSize);
-    widgetMenuBtn->setFixedSize(smallWidgetSize);
-
-    connect(widgetMenuBtn,&QPushButton::clicked,this,[=]{
-        widgetMenuPopUp();
-    });
-
-    widgetMin =new QPushButton;//最小化按钮
+    widgetMin = new QPushButton;//最小化按钮
     widgetMin->setObjectName("widgetMin");
     widgetMin->setIconSize(smallWidgetSize);
     widgetMin->setFixedSize(smallWidgetSize);
@@ -134,18 +130,35 @@ void StyleWidget::myStyle(StyleWidgetAttribute swa)
         swshadow->setWindowState(Qt::WindowMinimized);
     });
 
-    widgetClose =new QPushButton;//关闭按钮
+    widgetClose = new QPushButton;//关闭按钮
     widgetClose->setObjectName("widgetClose");
     widgetClose->setIconSize(smallWidgetSize);
     widgetClose->setFixedSize(smallWidgetSize);
     connect(widgetClose,&QPushButton::clicked,this,&StyleWidget::WidgetStyleClose);
 
+    widgetMenu = new QPushButton;
+    widgetMenu->setObjectName("widgetMenu");
+    widgetMenu->setIconSize(smallWidgetSize);
+    widgetMenu->setFixedSize(smallWidgetSize);
+
+    styleMenu = new QMenu();
+    QList<QAction *> actions ;
+    actionHelp = new QAction(styleMenu);
+    actionHelp->setText(tr("Help"));
+    actionAbout = new QAction(styleMenu);
+    actionAbout->setText(tr("About"));
+    actions << actionHelp << actionAbout;
+    styleMenu->addActions(actions);
+    widgetMenu->setMenu(styleMenu);
+
+    connect(styleMenu,&QMenu::triggered,this,&StyleWidget::trigerMenu);
+
     //布局
     QHBoxLayout *hlt0=new QHBoxLayout;//右上角按钮内部，水平布局
     hlt0->setMargin(0);
     hlt0->setSpacing(0);
-    //hlt0->addWidget(widgetMenuBtn, 1);
-    //hlt0->addSpacing(4);
+    hlt0->addWidget(widgetMenu, 1);
+    hlt0->addSpacing(4);
     hlt0->addWidget(widgetMin, 1);
     hlt0->addSpacing(4);
     hlt0->addWidget(widgetClose, 1);
@@ -252,10 +265,16 @@ void StyleWidget::showOrHide()
 *   创建  HZH
 *
 *************************************************/
-void StyleWidget::ThemeChooseForWidget(QString str)
+void StyleWidget::ThemeChooseForWidget(const QString& str)
 {
+    if("" == str)
+    {
+        qDebug() << "获取主题信息失败！";
+        return;
+    }
 
     tabWinWidget->ThemeChooseForWidget(str);
+    aboutWinWidget->ThemeChooseForWidget(str);
 
     if("ukui-dark" == str || "ukui-black" == str)
     {
@@ -269,16 +288,16 @@ void StyleWidget::ThemeChooseForWidget(QString str)
         body->setStyleSheet(bodyStyleSheet);
 
 
-        widgetMenuBtn->setStyleSheet("StyleWidget #widgetMenuBtn{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_h.png);border-radius:4px;font-size:14px;}"
-                                 "StyleWidget #widgetMenuBtn:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/menu_h.png);border-radius:4px;font-size:14px;}"
-                                 "StyleWidget #widgetMenuBtn:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/menu_h.png);border-radius:4px;font-size:14px;}");
         widgetMin->setStyleSheet("StyleWidget #widgetMin{background-color:rgba(255,255,255,0);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}"
                                  "StyleWidget #widgetMin:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}"
                                  "StyleWidget #widgetMin:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}");
         widgetClose->setStyleSheet("StyleWidget #widgetClose{background-color:rgba(255,255,255,0);border-image:url(:/data/close_h.png);border-radius:4px;font-size:14px;}"
                                    "StyleWidget #widgetClose:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;font-size:14px;}"
                                    "StyleWidget #widgetClose:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;font-size:14px;}");
-
+        widgetMenu->setStyleSheet("StyleWidget #widgetMenu{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_h.png);border-radius:4px;}"
+                                  "StyleWidget #widgetMenu:hover{background-color:rgba(0,0,0,0.04);border-image:url(:/data/menu_h.png);border-radius:4px;}"
+                                  "StyleWidget #widgetMenu:pressed{background-color:rgba(0,0,0,0.08);border-image:url(:/data/menu_h.png);border-radius:4px;}"
+                                 "StyleWidget #widgetMenu::menu-indicator{image:None;}");
     }
     else
     {
@@ -292,16 +311,16 @@ void StyleWidget::ThemeChooseForWidget(QString str)
        body->setStyleSheet(bodyStyleSheet);
 
 
-       widgetMenuBtn->setStyleSheet("StyleWidget #widgetMenuBtn{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_d.png);border-radius:4px;font-size:14px;}"
-                                "StyleWidget #widgetMenuBtn:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/menu_d.png);border-radius:4px;font-size:14px;}"
-                                "StyleWidget #widgetMenuBtn:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/menu_d.png);border-radius:4px;font-size:14px;}");
        widgetMin->setStyleSheet("StyleWidget #widgetMin{background-color:rgba(255,255,255,0);border-image:url(:/data/min_d.png);border-radius:4px;font-size:14px;}"
                                 "StyleWidget #widgetMin:hover{background-color:rgba(108, 142, 235, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}"
                                 "StyleWidget #widgetMin:pressed{background-color:rgba(50, 88, 202, 1);border-image:url(:/data/min_h.png);border-radius:4px;font-size:14px;}");
        widgetClose->setStyleSheet("StyleWidget #widgetClose{background-color:rgba(255,255,255,0);border-image:url(:/data/close_d.png);border-radius:4px;font-size:14px;}"
                                   "StyleWidget #widgetClose:hover{background-color:rgba(240,64,52,1);border-image:url(:/data/close_h.png);border-radius:4px;font-size:14px;}"
                                   "StyleWidget #widgetClose:pressed{background-color:rgba(215,51,53,1);border-image:url(:/data/close_p.png);border-radius:4px;font-size:14px;}");
-
+       widgetMenu->setStyleSheet("StyleWidget #widgetMenu{background-color:rgba(255,255,255,0);border-image:url(:/data/menu_d.png);border-radius:4px;}"
+                                 "StyleWidget #widgetMenu:hover{background-color:rgba(0,0,0,0.04);border-image:url(:/data/menu_d.png);border-radius:4px;}"
+                                 "StyleWidget #widgetMenu:pressed{background-color:rgba(0,0,0,0.08);border-image:url(:/data/menu_d.png);border-radius:4px;}"
+                                "StyleWidget #widgetMenu::menu-indicator{image:None;}");
     }
 
 }
@@ -310,3 +329,39 @@ void StyleWidget::widgetMenuPopUp()
     tabWinWidget->showOrHide();
 }
 
+/************************************************
+* 函数名称：keyPressEvent
+* 功能描述：F1键打开用户手册对应页
+* 输入参数：QKeyEvent *event键盘事件
+* 输出参数：
+* 修改日期：2020.12.08
+* 修改内容：
+*   创建  HZH
+*
+*************************************************/
+void StyleWidget::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_F1)
+    {
+        if(!m_pDaemonIpcDbus->daemonIsNotRunning()){
+            m_pDaemonIpcDbus->showGuide("");
+        }
+    }
+}
+
+void StyleWidget::trigerMenu(QAction *act)
+{
+    if(tr("Help") == act->text())
+    {
+        qDebug() << "Help";
+        if(!m_pDaemonIpcDbus->daemonIsNotRunning())
+        {
+            m_pDaemonIpcDbus->showGuide("");
+        }
+    }
+    else if(tr("About") == act->text())
+    {
+        qDebug() << "About";
+        aboutWinWidget->showOrHide();
+    }
+}

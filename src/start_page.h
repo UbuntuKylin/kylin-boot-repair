@@ -28,8 +28,8 @@ class StartPage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit StartPage( StyleWidgetAttribute);
-    void pageChangeForTheme(QString str);
+    explicit StartPage(const StyleWidgetAttribute& page_swa);
+    void pageChangeForTheme(const QString& str);
 
 signals:
     void makeStart();                          //开始修复信号

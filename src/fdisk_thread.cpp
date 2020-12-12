@@ -19,10 +19,10 @@
 *   创建  HZH
 *
 *************************************************/
-FdiskThread::FdiskThread(bool hasPwd, QString userPwd,QObject *parent) : QObject(parent)
+FdiskThread::FdiskThread(const bool& hasPwd,const QString& userPwd,QObject *parent)
+    : QObject(parent), hasPassWord(hasPwd), userPassWord(userPwd)
 {
-    hasPassWord = hasPwd;
-    userPassWord = userPwd;
+    numOfLinuxPartion = 0;
 }
 
 /************************************************

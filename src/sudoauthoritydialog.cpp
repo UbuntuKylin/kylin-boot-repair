@@ -47,6 +47,9 @@ void SudoAuthorityDialog::uiInit()
 {
     this->setWindowIcon(QIcon(":/data/guide_repair24.png"));
     this->setWindowTitle(tr("KylinBootRepair"));//麒麟引导修复工具
+    //窗口设置
+    this->setWindowFlags(Qt::FramelessWindowHint);// | Qt::Popup);//无边框
+    this->setAttribute(Qt::WA_TranslucentBackground, true);//窗体透明
 
     body = new QWidget(this);
     body->setFixedSize(420,270);
@@ -337,7 +340,7 @@ void SudoAuthorityDialog::pageChangeForTheme(QString nowThemeStyle)
         btnOk->setStyleSheet("QPushButton#btnOk{background:rgba(20, 20, 20, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);font-size:14px;}"
                                    "QPushButton#btnOk:hover{background:rgba(62, 108, 229, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);font-size:14px;}"
                                    "QPushButton#btnOk:pressed{background:rgba(50, 88, 202, 1);font-size:14px;color:rgba(255, 255, 255, 0.85);font-size:14px;}");
-        //body->setStyleSheet("QWidget #body{background:rgba(20, 20, 20, 1);border-radius:12px;}");
+        body->setStyleSheet("SudoAuthorityDialog #body{background:rgba(20, 20, 20, 1);border-radius:12px;}");
     }
     else
     {
@@ -353,7 +356,7 @@ void SudoAuthorityDialog::pageChangeForTheme(QString nowThemeStyle)
         btnOk->setStyleSheet("QPushButton#btnOk{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);font-size:14px;}"
                                    "QPushButton#btnOk:hover{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);font-size:14px;}"
                                    "QPushButton#btnOk:pressed{background:rgba(221, 223, 231, 1);font-size:14px;color:rgba(0, 0, 0, 1);font-size:14px;}");
-        //body->setStyleSheet("QWidget #body{background:rgba(221, 223, 231, 1);border-radius:12px;}");
+        body->setStyleSheet("SudoAuthorityDialog #body{background:rgba(221, 223, 231, 1);border-radius:12px;}");
     }
 }
 

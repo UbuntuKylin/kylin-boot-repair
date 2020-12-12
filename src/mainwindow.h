@@ -53,6 +53,7 @@
 #include "pre_repair.h"
 #include "sudoauthoritydialog.h"
 
+
 #define FITTHEMEWINDOW "org.ukui.style"
 
 class MainWindow : public QWidget
@@ -139,5 +140,7 @@ private:
 
     bool    hasPassword = true;
     QString rootCmd = "sudo -S -l";
+
+
 };
 #endif // MAINWINDOW_H

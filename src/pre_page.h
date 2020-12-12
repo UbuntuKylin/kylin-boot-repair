@@ -29,8 +29,8 @@ class PrePage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit PrePage( StyleWidgetAttribute);
-    void pageChangeForTheme(QString str);
+    explicit PrePage( const StyleWidgetAttribute& page_swa);
+    void pageChangeForTheme(const QString& str);
 
 public slots:
 

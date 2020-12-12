@@ -17,25 +17,30 @@ class BootRepair : public QObject
 {
     Q_OBJECT
 public:
-    explicit BootRepair(bool hasPwd, QString userPwd,linuxSystemInfo systemStruct, QObject *parent = nullptr);
+    explicit BootRepair(const bool& hasPwd, const QString& userPwd,const linuxSystemInfo& systemStruct, QObject *parent = nullptr);
     ~BootRepair();
     void repairGrubFile();
 
-    bool      isV101          = false;
+    bool isV101 = false;
     linuxSystemInfo currentSystem;
 public slots://提供给各线程的槽函数
     void readCmdRepairBashInfo();
     void readInstallCmdRepairBashInfo();
 signals://发送信号给主窗体
-    //void setInfo(QString inputInfo);//写入状态栏信息
+
     void repairResult(bool repairResult,bool v101);
 
 private:
 
     bool systemVersionCheck();
 
-    bool hasPassWord  = false;
-    QString userPassWord = "";
+    void legacyRepairGrubFile();
+    void uefiRepairGrubFile();
+
+    void grubinstallCheck();
+
+    bool hasPassWord ;
+    QString userPassWord ;
 
 
     QProcess* chrootCmd       = nullptr;

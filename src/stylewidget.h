@@ -12,15 +12,26 @@
 #define VALUE_DIS 2000
 
 #define TABWINDOWWIDETH 80                   //窗口宽度
-#define TABWINDOWHEIGHT 84                  //窗口高度
+#define TABWINDOWHEIGHT 84                   //窗口高度
 #define TABTITLEHEIGHT 42                    //标题栏高度
-#define TABSHADOWWIDTH 6                    //阴影宽度
-#define TABWIDGETRADIUS 6                   //窗口圆角
+#define TABSHADOWWIDTH 6                     //阴影宽度
+#define TABWIDGETRADIUS 6                    //窗口圆角
 #define TABBUTTONRADIUS 6                    //按钮圆角
 #define TABSHADOWALPHA 0.08                  //阴影透明度
 
+#define ABOUTWINDOWWIDETH  420                 //窗口宽度
+#define ABOUTWINDOWHEIGHT  316                 //窗口高度
+#define ABOUTTITLEHEIGHT 42                    //标题栏高度
+#define ABOUTSHADOWWIDTH 6                     //阴影宽度
+#define ABOUTWIDGETRADIUS 6                    //窗口圆角
+#define ABOUTBUTTONRADIUS 6                    //按钮圆角
+#define ABOUTSHADOWALPHA 0.08                  //阴影透明度
+
+
 #include "stylewidgetshadow.h"
 #include "tabwidget.h"
+#include "aboutwidget.h"
+#include "daemonipcdbus.h"
 
 //控件
 #include <QWidget>
@@ -51,27 +62,34 @@ public:
     void showOrHide();//切换显示和隐藏状态
     void WidgetStyleClose();//点击关闭事件
 
-    void ThemeChooseForWidget(QString str);
+    void ThemeChooseForWidget(const QString& str);
 
     void widgetMenuPopUp();
 
     QPushButton *widgetMenuBtn = nullptr;//菜单按钮
-    QPushButton *widgetClose = nullptr;//关闭窗口
-    QPushButton *widgetMin = nullptr;//最小化窗口
+    QPushButton *widgetClose   = nullptr;//关闭窗口
+    QPushButton *widgetMin     = nullptr;//最小化窗口
+    QPushButton *widgetMenu    = nullptr;//下拉菜单按钮
+    QMenu       *styleMenu     = nullptr;//下拉菜单
+    QAction *actionHelp = nullptr;
+    QAction *actionAbout = nullptr;
+
+    void trigerMenu(QAction *act);
 
     StyleWidgetShadow *swshadow = nullptr;//阴影
 private:
-    virtual void paintEvent(QPaintEvent *ev);//重绘窗口
+    virtual void paintEvent(QPaintEvent *event);//重绘窗口
 
-    void myStyle(StyleWidgetAttribute swa);//设定样式
+    void myStyle(const StyleWidgetAttribute& swa);//设定样式
 
     StyleWidgetAttribute local_swa;
 
 
     TabMenuShadow *tabWinWidgetshadow = nullptr;
     TabWidget *tabWinWidget = nullptr;
+    AboutWidget *aboutWinWidget = nullptr;
 
-    QWidget *widgetMenu = nullptr;//下拉菜单
+    //QWidget *widgetMenu = nullptr;//下拉菜单
 
     QWidget *title = nullptr;//标题栏
     QLabel *text = nullptr;//标题
@@ -82,6 +100,9 @@ private:
     bool paintOnce=false;//只绘制一次
     bool m_isLeftButtonPressed = false;
     QPoint m_last;
+
+    DaemonIpcDbus *m_pDaemonIpcDbus;
+    void keyPressEvent(QKeyEvent *event);
 };
 
 #endif // STYLEWIDGET_H

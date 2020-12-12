@@ -22,11 +22,10 @@ class FdiskThread : public QObject
 {
     Q_OBJECT
 public:
-    explicit FdiskThread(bool hasPwd, QString userPwd,QObject *parent = nullptr);
+    explicit FdiskThread(const bool& hasPwd,const QString& userPwd,QObject *parent = nullptr);
     ~FdiskThread();
-    QStringList listOfDevice;
+    QStringList listOfDevice = {};
     uint numOfLinuxPartion;
-    bool fdiskHandled;
 
 signals://发送信号给主窗体
     void changeToMainPage();
@@ -45,8 +44,8 @@ private:
     void startPreHandle(QStringList cmdOutFromFdisk);//处理fdisk返回的内容，提取硬盘信息
     void startMount();//根据硬盘信息，创建文件夹,装载硬盘
 
-    bool hasPassWord = false;
-    QString userPassWord = "";
+    const bool hasPassWord;
+    const QString userPassWord;
 
     QProcess *cmdFdiskBash = nullptr;//qprocess指针，用来写入fdisk命令
     QProcess *cmdMountBash = nullptr;//qprocess指针，用来写入mkdir命令
@@ -55,8 +54,8 @@ private:
     QStringList allDeviceInfoStr = {};
     QStringList fdiskCmdStdOut   = {};
 
-    uint rootPartionNum;                //root目录的个数，即该电脑上安装了多少个linux内核系统
-    uint bootPartionNum;                //boot目录的个数，即该电脑上安装了多少个linux内核系统
+    uint rootPartionNum = 0;                //root目录的个数，即该电脑上安装了多少个linux内核系统
+    uint bootPartionNum = 0;                //boot目录的个数，即该电脑上安装了多少个linux内核系统
 
     QTimer *fdiskTimer = new QTimer(this);
 

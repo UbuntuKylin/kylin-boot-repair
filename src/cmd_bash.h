@@ -22,13 +22,13 @@ class CmdBash : public QObject
 {
     Q_OBJECT
 public:
-    explicit CmdBash(bool hasPassWord,QString userPassWord,QString inputCmd, QObject *parent);
+    explicit CmdBash(const bool& hasPassWord,const QString& userPassWord,const QString& inputCmd, QObject *parent);
     ~CmdBash();
 
-    bool hasPassWord = false;
-    QString userPassWord = "";
+    bool hasPassWord ;
+    QString userPassWord ;
+    QString cmd ;
 
-    QString cmd = "";
     QProcess *currentBash = nullptr;
 
     bool bashFinished = false;           //命令语句执行结果
