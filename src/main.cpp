@@ -15,6 +15,11 @@
 #include <QLibraryInfo>
 #include <QApplication>
 
+#define DOUBLE 2
+#define MAX_FILE_SIZE 1024
+#define LOG_FILE0 "demo_0.log"
+#define LOG_FILE1 "demo_1.log"
+#define LOG_FILE_PATH "/.cache/kylin-boot-repair/log"
 /************************************************
 * 函数名称：responseCommand
 * 功能描述：dbus响应函数
@@ -60,20 +65,64 @@ void responseCommand(QApplication &a) //响应外部dbus命令
 *   创建  HZH
 *
 *************************************************/
-void qtMessagePutIntoLog(QtMsgType type, const QMessageLogContext &context, const QString &qDebugMsg)
+void messageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
-    QString logTxt;
-    QString currentTime = QString(QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss"));
-    logTxt = QString(currentTime + ": %1").arg(qDebugMsg);
+    QByteArray localMsg = msg.toLocal8Bit();
+    QByteArray currentTime = QTime::currentTime().toString().toLocal8Bit();
 
-    QString logPath = "/tmp/";
-    QFile outputLog(logPath+"BootRepairLog.txt");
-    outputLog.open(QIODevice::WriteOnly | QIODevice::Append);
-    QTextStream os(&outputLog);
-    os << logTxt << "\r\n";
-    os.flush();              //保证文本实时刷新
-    outputLog.flush();
-    outputLog.close();
+    QString name[DOUBLE] = {LOG_FILE0, LOG_FILE1};
+    FILE *log_file = nullptr;
+    QString logFilePath;
+    int fileSize;
+    static int i = 0;
+    QDir dir;
+    bool flag = 0;
+
+    logFilePath = QDir::homePath() + LOG_FILE_PATH;
+    if (dir.mkpath(logFilePath)) {
+        flag = 1;
+    }
+
+    if (flag) {
+        logFilePath = logFilePath + "/" + name[i];
+        log_file = fopen(logFilePath.toLocal8Bit().constData(), "a+");
+    }
+
+    const char *file = context.file ? context.file : "";
+    const char *function = context.function ? context.function : "";
+    switch (type) {
+    case QtDebugMsg:
+        if (!log_file) {
+            break;
+        }
+        fprintf(log_file, "Debug: %s: %s (%s:%u, %s)\n", currentTime.constData(), localMsg.constData(), file, context.line, function);
+        break;
+    case QtInfoMsg:
+        fprintf(log_file? log_file: stdout, "Info: %s: %s (%s:%u, %s)\n", currentTime.constData(), localMsg.constData(), file, context.line, function);
+        break;
+    case QtWarningMsg:
+        fprintf(log_file? log_file: stderr, "Warning: %s: %s (%s:%u, %s)\n", currentTime.constData(), localMsg.constData(), file, context.line, function);
+        break;
+    case QtCriticalMsg:
+        fprintf(log_file? log_file: stderr, "Critical: %s: %s (%s:%u, %s)\n", currentTime.constData(), localMsg.constData(), file, context.line, function);
+        break;
+    case QtFatalMsg:
+        fprintf(log_file? log_file: stderr, "Fatal: %s: %s (%s:%u, %s)\n", currentTime.constData(), localMsg.constData(), file, context.line, function);
+        break;
+    }
+
+    if (log_file) {
+        fileSize = ftell(log_file);
+        if (fileSize >= MAX_FILE_SIZE) {
+            i = (i + 1) % DOUBLE;
+            logFilePath = QDir::homePath() + LOG_FILE_PATH + "/" + name[i];
+            if (QFile::exists(logFilePath)) {
+                QFile temp(logFilePath);
+                temp.remove();
+            }
+        }
+        fclose(log_file);
+    }
 }
 
 /************************************************
@@ -87,11 +136,22 @@ void qtMessagePutIntoLog(QtMsgType type, const QMessageLogContext &context, cons
 *************************************************/
 int main(int argc, char *argv[])
 {
+    //打开日志
+    qInstallMessageHandler(messageOutput);
+    qDebug() << "*******************************************************";
+    qDebug() << "*";
+    qDebug() << "* 启动麒麟引导修复工具";
+    qDebug() << "* 当前时间：" << QString(QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss"));
+    qDebug() << "*";
+    qDebug() << "*******************************************************";
+
     //高清屏幕自适应
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QCoreApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
 
     QApplication a(argc, argv);
+    a.setApplicationVersion("1.0.16kord~rc10");
+
     responseCommand(a);//响应dbus绑定事件
 
     QTranslator app_trans;
@@ -119,14 +179,7 @@ int main(int argc, char *argv[])
             a.installTranslator(&qt_trans);
     }
 
-    //打开日志
-    //qInstallMessageHandler(qtMessagePutIntoLog);
-    qDebug() << "*******************************************************";
-    qDebug() << "*";
-    qDebug() << "* 启动麒麟引导修复工具";
-    qDebug() << "* 当前时间：" << QString(QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss"));
-    qDebug() << "*";
-    qDebug() << "*******************************************************";
+
 
     QString latestTime = QString(QDateTime::currentDateTime().toString("yyyy-MM-dd-hh-mm-ss"));
     MainWindow w;
